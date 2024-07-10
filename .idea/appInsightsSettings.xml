@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.ionexa.nextgsi" />
+                  <option name="mobileSdkAppId" value="1:840980515665:android:06b355e5cc1fcdf0312170" />
+                  <option name="projectId" value="next-gsi" />
+                  <option name="projectNumber" value="840980515665" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

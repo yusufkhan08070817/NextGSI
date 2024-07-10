@@ -1,4 +1,4 @@
-package com.ionexa.nextgsi.LoginComponents
+package com.ionexa.nextgsi.Components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -17,7 +17,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -76,8 +79,12 @@ fun Login() {
 
 
 @Composable
-fun Logn_Register(modifier: Modifier = Modifier) {
-    var isLoginSelected by remember { mutableStateOf(true) }
+fun Logn_Register(
+    modifier: Modifier = Modifier,
+    isLoginSelected: Boolean,
+    onLoginSelectedChange: () -> Unit
+) {
+
 
     Row(
         modifier = Modifier
@@ -89,13 +96,13 @@ fun Logn_Register(modifier: Modifier = Modifier) {
         TextWithUnderLine(
             state = isLoginSelected,
             text = "Login",
-            onclick = { isLoginSelected = true }
+            onclick = { onLoginSelectedChange() }
         )
         Spacer(modifier = Modifier.width(16.dp)) // Add some spacing between the texts
         TextWithUnderLine(
             state = !isLoginSelected,
             text = "Register",
-            onclick = { isLoginSelected = false }
+            onclick = { onLoginSelectedChange() }
         )
     }
 }
@@ -166,8 +173,13 @@ fun Combined(modifier: Modifier = Modifier) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Email(modifier: Modifier = Modifier) {
-    var Email by remember { mutableStateOf("") }
+fun Email(
+    modifier: Modifier = Modifier,
+    error: Boolean,
+    Email: String,
+    setEmail: (String) -> Unit
+) {
+
 
     val color1 = Color(0xFFFFFFFF)
     Column(
@@ -179,8 +191,8 @@ fun Email(modifier: Modifier = Modifier) {
         Box() {
             TextField(
                 value = Email,
-                onValueChange = { Email = it },
-
+                onValueChange = { setEmail(it) },
+                placeholder = { Text("Enter your Email") },
                 leadingIcon = {
                     IconButton(onClick = { }) {
                         Icon(imageVector = Icons.Filled.Email, contentDescription = "Email")
@@ -188,7 +200,9 @@ fun Email(modifier: Modifier = Modifier) {
                 },
                 colors = TextFieldDefaults.textFieldColors(
                     containerColor = color1,
-                    cursorColor = Color.Black
+                    cursorColor = Color.Black,
+                    focusedIndicatorColor = if (error) Color.Transparent else Color.Red,
+                    unfocusedIndicatorColor = if (error) Color.Transparent else Color.Red,
 
                 )
 
@@ -202,8 +216,8 @@ fun Email(modifier: Modifier = Modifier) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Password(modifier: Modifier = Modifier) {
-    var Password by remember { mutableStateOf("") }
+fun Password(modifier: Modifier = Modifier,error:Boolean, Password: String, setPassword: (String) -> Unit) {
+
     var Istoggal by remember { mutableStateOf(false) }
     val color1 = Color(0xFFFFFFFF)
     Column(
@@ -215,7 +229,8 @@ fun Password(modifier: Modifier = Modifier) {
         Box() {
             TextField(
                 value = Password,
-                onValueChange = { Password = it },
+                onValueChange = { setPassword(it) },
+                placeholder = { Text(text = "Enter your Password") },
 
                 leadingIcon = {
                     IconButton(onClick = { }) {
@@ -238,8 +253,9 @@ fun Password(modifier: Modifier = Modifier) {
                     unfocusedTrailingIconColor = color1,
                     focusedTrailingIconColor = color1,
                     disabledTrailingIconColor = color1,
-
-                    )
+                    focusedIndicatorColor = if (error) Color.Transparent else Color.Red,
+                    unfocusedIndicatorColor = if (error) Color.Transparent else Color.Red,
+                )
 
 
             )
@@ -250,10 +266,12 @@ fun Password(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun RememberAndForgot(modifier: Modifier = Modifier) {
-    var IsChecked by remember {
-        mutableStateOf(false)
-    }
+fun RememberAndForgot(
+    modifier: Modifier = Modifier,
+    IsChecked: Boolean,
+    onCheckedChange: () -> Unit
+) {
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
@@ -261,7 +279,7 @@ fun RememberAndForgot(modifier: Modifier = Modifier) {
     ) {
         Row(horizontalArrangement = Arrangement.SpaceBetween) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Checkbox(checked = IsChecked, onCheckedChange = { IsChecked = !IsChecked })
+                Checkbox(checked = IsChecked, onCheckedChange = { onCheckedChange() })
 
                 Text(
                     text = "Remember password", style = TextStyle(
@@ -287,16 +305,27 @@ fun RememberAndForgot(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun ButtonWithCutCornerShape(Email:String,Passwerd:String, auth:(Email:String,Password:String)->Unit) {
+fun ButtonWithCutCornerShape(
+    Email: String,
+    Passwerd: String,
+    LoginAndRigister: Boolean,
+    authSignIn: (Email: String, Password: String) -> Unit,
+    authSignUp: (Email: String, Password: String) -> Unit
+) {
 
     Button(
-        onClick = {auth(Email,Passwerd)},
+        onClick = {
+            if (LoginAndRigister) authSignIn(Email, Passwerd) else authSignUp(
+                Email,
+                Passwerd
+            )
+        },
         colors = ButtonDefaults.buttonColors(Color(0xFF0386D0)),
         shape = CutCornerShape(10),
         modifier = Modifier.padding(horizontal = 30.dp)
     ) {
         Text(
-            text = "Login",
+            text = if (LoginAndRigister) "Login" else "Register",
             modifier = Modifier.fillMaxWidth(1f),
             textAlign = TextAlign.Center,
             style = TextStyle(
@@ -312,6 +341,7 @@ fun ButtonWithCutCornerShape(Email:String,Passwerd:String, auth:(Email:String,Pa
     }
 
 }
+
 @Composable
 fun LogWithGoogleFacebookApple(
     modifier: Modifier = Modifier,
@@ -357,4 +387,85 @@ fun LogWithGoogleFacebookApple(
     }
 
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun Register(
+    modifier: Modifier = Modifier,
+    Name: String,
+    PhoneNumber: String,
+    Address: String,
+    setName: (String) -> Unit,
+    setPhoneNumber: (String) -> Unit,
+    setAddress: (String) -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth(1f)
+            .padding(horizontal = 30.dp),
+        horizontalAlignment = CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        TextField(value = Name,
+            onValueChange = {
+                setName(it)
+            },
+            placeholder = { Text("Enter your Name") },
+            colors = TextFieldDefaults.textFieldColors(
+                containerColor = Color.White,
+                cursorColor = Color.Black,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent
+
+
+            ),
+            leadingIcon = {
+                IconButton(onClick = { }) {
+                    Icon(imageVector = Icons.Filled.AccountCircle, contentDescription = "Email")
+                }
+            }
+
+        )
+        Spacer(modifier = Modifier.height(10.dp))
+        TextField(value = PhoneNumber,
+            onValueChange = { setPhoneNumber(it) },
+            placeholder = { Text("Enter your Name") },
+            colors = TextFieldDefaults.textFieldColors(
+                containerColor = Color.White,
+                cursorColor = Color.Black,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent
+
+
+            ),
+            leadingIcon = {
+                IconButton(onClick = { }) {
+                    Icon(imageVector = Icons.Filled.Call, contentDescription = "Email")
+                }
+            }
+
+        )
+        Spacer(modifier = Modifier.height(10.dp))
+        TextField(value = Address,
+            onValueChange = { setAddress(it) },
+            placeholder = { Text("Enter your Name") },
+            colors = TextFieldDefaults.textFieldColors(
+                containerColor = Color.White,
+                cursorColor = Color.Black,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent
+
+
+            ),
+            leadingIcon = {
+                IconButton(onClick = { }) {
+                    Icon(imageVector = Icons.Filled.Home, contentDescription = "Email")
+                }
+            }
+
+        )
+    }
+}
+
+
 
