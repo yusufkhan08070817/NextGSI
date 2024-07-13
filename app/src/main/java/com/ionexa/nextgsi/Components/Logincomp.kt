@@ -25,6 +25,8 @@ import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -255,7 +257,9 @@ fun Password(modifier: Modifier = Modifier,error:Boolean, Password: String, setP
                     disabledTrailingIconColor = color1,
                     focusedIndicatorColor = if (error) Color.Transparent else Color.Red,
                     unfocusedIndicatorColor = if (error) Color.Transparent else Color.Red,
-                )
+                ),
+                visualTransformation = if (Istoggal) androidx.compose.ui.text.input.VisualTransformation.None else androidx.compose.ui.text.input.PasswordVisualTransformation(),
+                maxLines = 1
 
 
             )
@@ -426,10 +430,11 @@ fun Register(
             }
 
         )
+
         Spacer(modifier = Modifier.height(10.dp))
         TextField(value = PhoneNumber,
             onValueChange = { setPhoneNumber(it) },
-            placeholder = { Text("Enter your Name") },
+            placeholder = { Text("Enter your Phone Number") },
             colors = TextFieldDefaults.textFieldColors(
                 containerColor = Color.White,
                 cursorColor = Color.Black,
@@ -448,7 +453,7 @@ fun Register(
         Spacer(modifier = Modifier.height(10.dp))
         TextField(value = Address,
             onValueChange = { setAddress(it) },
-            placeholder = { Text("Enter your Name") },
+            placeholder = { Text("Enter your Address") },
             colors = TextFieldDefaults.textFieldColors(
                 containerColor = Color.White,
                 cursorColor = Color.Black,
@@ -468,4 +473,50 @@ fun Register(
 }
 
 
+@Composable
+fun Dropdownroll() {
+    var selectedOption by remember { mutableStateOf("Select account type") }
+    var expanded by remember { mutableStateOf(false) }
 
+    Row(modifier = Modifier.padding(), horizontalArrangement = Arrangement.Absolute.Right) {
+        DropdownButton(
+            options = listOf("customer", "Admin"),
+            selectedOption = selectedOption,
+            onOptionSelected = { option ->
+                selectedOption = option
+                expanded = false
+            },
+            expanded = expanded,
+            onExpandChange = { expanded = it }
+        )
+    }
+}
+
+@Composable
+fun DropdownButton(
+    options: List<String>,
+    selectedOption: String,
+    onOptionSelected: (String) -> Unit,
+    expanded: Boolean,
+    onExpandChange: (Boolean) -> Unit
+) {
+    Button(
+        onClick = { onExpandChange(!expanded) },
+        modifier = Modifier.padding(vertical = 8.dp),
+        colors = ButtonDefaults.run { buttonColors(containerColor = Color(0xFF0386D0)) }
+    ) {
+        Text(text = selectedOption, color = Color.White)
+    }
+
+    DropdownMenu(
+        expanded = expanded,
+        onDismissRequest = { onExpandChange(false) }
+    ) {
+        options.forEach { option ->
+            DropdownMenuItem(
+                text = { Text(option) },
+                onClick = { onOptionSelected(option) }
+            )
+        }
+    }
+}
