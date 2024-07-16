@@ -21,6 +21,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.ionexa.nextgsi.Components.ButtonWithCutCornerShape
 import com.ionexa.nextgsi.Components.Combined
 import com.ionexa.nextgsi.Components.Dropdownroll
@@ -31,12 +32,11 @@ import com.ionexa.nextgsi.Components.Logn_Register
 import com.ionexa.nextgsi.Components.Password
 import com.ionexa.nextgsi.Components.Register
 import com.ionexa.nextgsi.Components.RememberAndForgot
-import com.ionexa.nextgsi.MVVM.AuthViewModel
 import com.ionexa.nextgsi.MVVM.Loginmvvm
 import com.ionexa.nextgsi.R
 
 @Composable
-fun LoginPage( LoginViewModel: Loginmvvm, AuthViewMOdel: AuthViewModel) {
+fun LoginPage( LoginViewModel: Loginmvvm,navController: NavController) {
 
     val scrollState = rememberScrollState()
     Box(modifier = Modifier.fillMaxSize()) {
@@ -131,7 +131,8 @@ fun LoginPage( LoginViewModel: Loginmvvm, AuthViewMOdel: AuthViewModel) {
                     }else{
                         LoginViewModel.onpassworderror(true)
                     }
-                    AuthViewMOdel.signInWithEmail(email, password)
+                    //AuthViewMOdel.signInWithEmail(email, password)
+                    navController.navigate("Home")
 
                 },
                 authSignUp = { email, password ->
@@ -149,7 +150,7 @@ fun LoginPage( LoginViewModel: Loginmvvm, AuthViewMOdel: AuthViewModel) {
                     }else{
                         LoginViewModel.onpassworderror(false)
                     }
-                    AuthViewMOdel.signUpWithEmail(email, password)
+                  //  AuthViewMOdel.signUpWithEmail(email, password)
 
                 })
             LogWithGoogleFacebookApple(GoogleAuth = {
