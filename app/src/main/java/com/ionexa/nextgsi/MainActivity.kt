@@ -5,153 +5,69 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.ui.Alignment
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.ionexa.nextgsi.Components.*
-import com.ionexa.nextgsi.MVVM.AuthViewModel
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.ionexa.nextgsi.MVVM.HomeMVVM
 import com.ionexa.nextgsi.MVVM.Loginmvvm
+import com.ionexa.nextgsi.Pages.HomePage
+import com.ionexa.nextgsi.Pages.LoginPage
+import com.ionexa.nextgsi.Pages.Navagatation
+
+import com.ionexa.nextgsi.Pages.Splashscreen
 import com.ionexa.nextgsi.ui.theme.NextGsiTheme
 
 class MainActivity : ComponentActivity() {
     private val LoginViewModel by viewModels<Loginmvvm>()
-    private val AuthViewMOdel by viewModels<AuthViewModel>()
+    private val HomeViewModel by viewModels<HomeMVVM>()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            NextGsiTheme {
-                val scrollState = rememberScrollState()
-                Box(modifier = Modifier.fillMaxSize()) {
-                    Image(
-                        painter = painterResource(id = R.drawable.curve),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .align(Alignment.BottomCenter)
-                            .fillMaxWidth()
-                            .offset(50.dp, (-10).dp)
-                            .rotate(-10f),
-                        contentScale = ContentScale.Crop
-                    )
-                    Image(
-                        painter = painterResource(id = R.drawable.curve2),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .align(Alignment.BottomCenter)
-                            .fillMaxWidth()
-                            .offset(0.dp, (-10).dp),
-                        contentScale = ContentScale.Crop
-                    )
-
-                    Column(
-                        modifier = Modifier
-                            .verticalScroll(scrollState)
-                            .fillMaxSize()
-                            .padding(0.dp, 0.dp, 0.dp, 200.dp) // Add padding for better visual
-                    ) {
-                        Login()
-                        Combined(Modifier)
-                        Logn_Register(Modifier, LoginViewModel.LoginAndRigister) {
-                            LoginViewModel.onLoginAndRigister()
-                        }
-                        if (LoginViewModel.LoginAndRigister) {
-                            Email(Email = LoginViewModel.email,error=LoginViewModel.emailerror) {
-                                LoginViewModel.setemail(it)
-                            }
-                            Spacer(modifier = Modifier.height(30.dp))
-                            Password(Password = LoginViewModel.password,error=LoginViewModel.passworderror) {
-                                LoginViewModel.setpassword(it)
-                            }
-                            RememberAndForgot(IsChecked = LoginViewModel.remember) {
-                                LoginViewModel.onremember()
-                            }
-                        } else {
-                            Register(Name = LoginViewModel.name,
-                                PhoneNumber = LoginViewModel.phone,
-                                Address = LoginViewModel.address,
-
-                                setName = { name ->
-                                    LoginViewModel.setname(name)
-                                },
-                                setPhoneNumber = { phone ->
-                                    LoginViewModel.setphone(phone)
-                                },
-                                setAddress = { address ->
-                                    LoginViewModel.setaddress(address)
-                                })
-                            Spacer(modifier = Modifier.height(10.dp))
-                            Email(Email = LoginViewModel.email,error=LoginViewModel.emailerror) {
-                                LoginViewModel.setemail(it)
-                            }
-                            Spacer(modifier = Modifier.height(10.dp))
-                            Password(Password = LoginViewModel.password, error = LoginViewModel.passworderror) {
-                                LoginViewModel.setpassword(it)
-                            }
-                        }
-
-
-                        Spacer(modifier = Modifier.height(10.dp))
-                        ButtonWithCutCornerShape(LoginViewModel.email,
-                            LoginViewModel.password,
-                            LoginAndRigister = LoginViewModel.LoginAndRigister,
-                            authSignIn = { email, password ->
-                               if (email.isEmpty())
-                               {
-                                   LoginViewModel.onemailerror(false)
-                                   return@ButtonWithCutCornerShape
-                               }else{
-                                   LoginViewModel.onemailerror(true)
-                               }
-                                if (password.isEmpty())
-                                {
-                                    LoginViewModel.onpassworderror(false)
-                                    return@ButtonWithCutCornerShape
-                                }else{
-                                    LoginViewModel.onpassworderror(true)
-                                }
-                                AuthViewMOdel.signInWithEmail(email, password)
-
-                            },
-                            authSignUp = { email, password ->
-                                if (email.isEmpty())
-                                {
-                                    LoginViewModel.onemailerror(true)
-                                    return@ButtonWithCutCornerShape
-                                }else{
-                                    LoginViewModel.onemailerror(false)
-                                }
-                                if (password.isEmpty())
-                                {
-                                    LoginViewModel.onpassworderror(true)
-                                    return@ButtonWithCutCornerShape
-                                }else{
-                                    LoginViewModel.onpassworderror(false)
-                                }
-                                AuthViewMOdel.signUpWithEmail(email, password)
-
-                            })
-                        LogWithGoogleFacebookApple(GoogleAuth = {
-                            // Handle Google login
-                            println("Google login clicked")
-                        }, FaceBookAuth = {
-                            // Handle Facebook login
-                            println("Facebook login clicked")
-                        }, AppleAuth = {
-                            // Handle Apple login
-                            println("Apple login clicked")
-                        })
-
+            val navcontroller = rememberNavController()
+            NavHost(navController = navcontroller, startDestination = "SplashScreen") {
+                composable("LoginPage") {
+                    NextGsiTheme {
+                        LoginPage(LoginViewModel,navcontroller)
                     }
                 }
+                composable("SplashScreen") {
+                    Splashscreen(modifier = Modifier, navcontroller)
+                }
+                composable("Home") {
+                    HomePage(modifier = Modifier, navcontroller,HomeViewModel)
+                }
+
             }
         }
     }
 }
+
+
+
