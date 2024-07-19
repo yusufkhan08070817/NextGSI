@@ -86,7 +86,7 @@ fun HomePage(modifier: Modifier, navController: NavController, HomeMvvm: HomeMVV
 
 
         Scaffold(
-            bottomBar = { Navagatation() },
+            bottomBar = { NaviGatationWithFloatingActionButton(NaveContainerColor = Color(0xA700A4FF)) },
             modifier = modifier
                 .padding(bottom = 40.dp)
                 .fillMaxWidth(1f)
