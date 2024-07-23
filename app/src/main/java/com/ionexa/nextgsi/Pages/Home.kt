@@ -60,6 +60,7 @@ import com.ionexa.nextgsi.Components.Serchbar
 import com.ionexa.nextgsi.MVVM.HomeMVVM
 import com.ionexa.nextgsi.MVVM.Loginmvvm
 import com.ionexa.nextgsi.R
+import com.ionexa.nextgsi.SingleTon.NaveLabels
 
 @Composable
 fun HomePage(modifier: Modifier, navController: NavController, HomeMvvm: HomeMVVM) {
@@ -86,7 +87,11 @@ fun HomePage(modifier: Modifier, navController: NavController, HomeMvvm: HomeMVV
 
 
         Scaffold(
-            bottomBar = { Navagatation() },
+            bottomBar = {
+                NaviGatationWithFloatingActionButton(NaveContainerColor = Color(0xA700A4FF), FloatingActionButtonIconSize = 50.dp, ButtonFour = { navController.navigate(
+                    NaveLabels.Profile)})
+
+                        },
             modifier = modifier
                 .padding(bottom = 40.dp)
                 .fillMaxWidth(1f)

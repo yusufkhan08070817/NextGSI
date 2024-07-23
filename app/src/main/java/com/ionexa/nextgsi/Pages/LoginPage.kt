@@ -1,6 +1,7 @@
 package com.ionexa.nextgsi.Pages
 
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -34,6 +35,7 @@ import com.ionexa.nextgsi.Components.Register
 import com.ionexa.nextgsi.Components.RememberAndForgot
 import com.ionexa.nextgsi.MVVM.Loginmvvm
 import com.ionexa.nextgsi.R
+import com.ionexa.nextgsi.SingleTon.NaveLabels
 
 @Composable
 fun LoginPage( LoginViewModel: Loginmvvm,navController: NavController) {
@@ -71,44 +73,56 @@ fun LoginPage( LoginViewModel: Loginmvvm,navController: NavController) {
             Logn_Register( Modifier,LoginViewModel.LoginAndRigister) {
                 LoginViewModel.onLoginAndRigister()
             }
-            if (LoginViewModel.LoginAndRigister) {
-                Email(Email = LoginViewModel.email,error=LoginViewModel.emailerror) {
-                    LoginViewModel.setemail(it)
-                }
-                Spacer(modifier = Modifier.height(30.dp))
-                Password(Password = LoginViewModel.password,error=LoginViewModel.passworderror) {
-                    LoginViewModel.setpassword(it)
-                }
-                RememberAndForgot(IsChecked = LoginViewModel.remember) {
-                    LoginViewModel.onremember()
-                }
-            } else {
-                Register(Name = LoginViewModel.name,
-                    PhoneNumber = LoginViewModel.phone,
-                    Address = LoginViewModel.address,
-
-                    setName = { name ->
-                        LoginViewModel.setname(name)
-                    },
-                    setPhoneNumber = { phone ->
-                        LoginViewModel.setphone(phone)
-                    },
-                    setAddress = { address ->
-                        LoginViewModel.setaddress(address)
-                    })
-                Spacer(modifier = Modifier.height(10.dp))
-                Email(Email = LoginViewModel.email,error=LoginViewModel.emailerror) {
-                    LoginViewModel.setemail(it)
-                }
-                Spacer(modifier = Modifier.height(10.dp))
-                Password(Password = LoginViewModel.password, error = LoginViewModel.passworderror) {
-                    LoginViewModel.setpassword(it)
-                }
-                Spacer(modifier = Modifier.height(10.dp))
-               Row(modifier = Modifier.padding().fillMaxWidth(1f), horizontalArrangement = Arrangement.Center) {
-                   Dropdownroll()
+            AnimatedVisibility(visible = LoginViewModel.LoginAndRigister) {
+               Column {
+                   Email(Email = LoginViewModel.email,error=LoginViewModel.emailerror) {
+                       LoginViewModel.setemail(it)
+                   }
+                   Spacer(modifier = Modifier.height(30.dp))
+                   Password(Password = LoginViewModel.password,error=LoginViewModel.passworderror) {
+                       LoginViewModel.setpassword(it)
+                   }
+                   RememberAndForgot(IsChecked = LoginViewModel.remember) {
+                       LoginViewModel.onremember()
+                   }
                }
-                Spacer(modifier = Modifier.height(10.dp))
+            }
+            AnimatedVisibility(visible = !LoginViewModel.LoginAndRigister) {
+               Column {
+                   Register(Name = LoginViewModel.name,
+                       PhoneNumber = LoginViewModel.phone,
+                       Address = LoginViewModel.address,
+
+                       setName = { name ->
+                           LoginViewModel.setname(name)
+                       },
+                       setPhoneNumber = { phone ->
+                           LoginViewModel.setphone(phone)
+                       },
+                       setAddress = { address ->
+                           LoginViewModel.setaddress(address)
+                       })
+                   Spacer(modifier = Modifier.height(10.dp))
+                   Email(Email = LoginViewModel.email,error=LoginViewModel.emailerror) {
+                       LoginViewModel.setemail(it)
+                   }
+                   Spacer(modifier = Modifier.height(10.dp))
+                   Password(Password = LoginViewModel.password, error = LoginViewModel.passworderror) {
+                       LoginViewModel.setpassword(it)
+                   }
+                   Spacer(modifier = Modifier.height(10.dp))
+                   Row(modifier = Modifier
+                       .padding()
+                       .fillMaxWidth(1f), horizontalArrangement = Arrangement.Center) {
+                       Dropdownroll()
+                   }
+                   Spacer(modifier = Modifier.height(10.dp))
+               }
+            }
+            if (LoginViewModel.LoginAndRigister) {
+
+            } else {
+
             }
 
 
@@ -132,7 +146,7 @@ fun LoginPage( LoginViewModel: Loginmvvm,navController: NavController) {
                         LoginViewModel.onpassworderror(true)
                     }
                     //AuthViewMOdel.signInWithEmail(email, password)
-                    navController.navigate("Home")
+                    navController.navigate(NaveLabels.Home)
 
                 },
                 authSignUp = { email, password ->
