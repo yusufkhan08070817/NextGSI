@@ -20,6 +20,10 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Rect
@@ -54,7 +58,9 @@ fun NaviGatationWithFloatingActionButton(
     ButtonFour: () -> Unit = {},
     FloatingButton: () -> Unit = {},
 ) {
-
+var position by remember {
+    mutableStateOf(1)
+}
     val boxheight = (naveHight / 2) + 10.dp
     val Canvasheight = (naveHight / 2) + 20.dp
     Box(
@@ -132,21 +138,25 @@ fun NaviGatationWithFloatingActionButton(
                             .height(naveHight - 20.dp),
                     ) {
 
-                        IconButton(onClick = { ButtonThree()}, modifier = Modifier.padding(10.dp)) {
+                        IconButton(onClick = { ButtonThree();position=3}, modifier = Modifier.padding(10.dp)) {
                             Icon(
                                 imageVector = NormalIconList[2],
                                 contentDescription = "Search",
-                                tint = NormalIconColor,
-                                modifier = Modifier.width(NormalButtonSize).height(NormalButtonSize)
+                                tint = if (position==3) Color.White else NormalIconColor,
+                                modifier = Modifier
+                                    .width(NormalButtonSize)
+                                    .height(NormalButtonSize)
                             )
 
                         }
-                        IconButton(onClick = { ButtonFour() }, modifier = Modifier.padding(10.dp)) {
+                        IconButton(onClick = { ButtonFour() ;position=4}, modifier = Modifier.padding(10.dp)) {
                             Icon(
                                 imageVector = NormalIconList[3],
                                 contentDescription = "Search",
-                                tint = NormalIconColor,
-                                modifier = Modifier.width(NormalButtonSize).height(NormalButtonSize)
+                                tint = if (position==4) Color.White else NormalIconColor,
+                                modifier = Modifier
+                                    .width(NormalButtonSize)
+                                    .height(NormalButtonSize)
                             )
 
                         }
@@ -160,21 +170,26 @@ fun NaviGatationWithFloatingActionButton(
                             .height(naveHight - 20.dp),
                     ) {
 
-                        IconButton(onClick = { ButtonOne() }, modifier = Modifier.padding(10.dp)) {
+                        IconButton(onClick = { ButtonOne();position=1 }, modifier = Modifier.padding(10.dp)) {
                             Icon(
                                 imageVector = NormalIconList[0],
                                 contentDescription = "Search",
-                                tint = NormalIconColor,
-                                modifier = Modifier.width(NormalButtonSize).height(NormalButtonSize)
+                                tint = if (position==1) Color.White else NormalIconColor,
+                                modifier = Modifier
+                                    .width(NormalButtonSize)
+                                    .height(NormalButtonSize)
                             )
 
                         }
-                        IconButton(onClick = { ButtonTwo }, modifier = Modifier.padding(10.dp)) {
+                        IconButton(onClick = { ButtonTwo();position=2 }, modifier = Modifier.padding(10.dp)) {
+
                             Icon(
                                 imageVector = NormalIconList[1],
                                 contentDescription = "Search",
-                                tint = NormalIconColor,
-                                modifier = Modifier.width(NormalButtonSize).height(NormalButtonSize)
+                                tint = if (position==2) Color.White else NormalIconColor,
+                                modifier = Modifier
+                                    .width(NormalButtonSize)
+                                    .height(NormalButtonSize)
                             )
 
                         }
@@ -209,7 +224,8 @@ fun NaviGatationWithFloatingActionButton(
                             imageVector = FLoatingActionButtonIcon,
                             contentDescription = "Menu",
                             tint = FolatingButtonIconColor,
-                            modifier = Modifier.width(FloatingActionButtonIconSize)
+                            modifier = Modifier
+                                .width(FloatingActionButtonIconSize)
                                 .height(FloatingActionButtonIconSize)
                         )
 
