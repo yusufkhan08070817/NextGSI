@@ -15,10 +15,13 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -36,6 +39,8 @@ import com.ionexa.nextgsi.Components.RememberAndForgot
 import com.ionexa.nextgsi.MVVM.Loginmvvm
 import com.ionexa.nextgsi.R
 import com.ionexa.nextgsi.SingleTon.NaveLabels
+import com.ionexa.nextgsi.ui.theme.DarkOrchidwebcolor
+import com.ionexa.nextgsi.ui.theme.Standardpurple
 
 @Composable
 fun LoginPage( LoginViewModel: Loginmvvm,navController: NavController) {
@@ -50,7 +55,7 @@ fun LoginPage( LoginViewModel: Loginmvvm,navController: NavController) {
                 .fillMaxWidth()
                 .offset(50.dp, (-10).dp)
                 .rotate(-10f),
-            contentScale = ContentScale.Crop
+            contentScale = ContentScale.Crop, colorFilter = ColorFilter.tint(Standardpurple)
         )
         Image(
             painter = painterResource(id = R.drawable.curve2),
@@ -59,7 +64,7 @@ fun LoginPage( LoginViewModel: Loginmvvm,navController: NavController) {
                 .align(Alignment.BottomCenter)
                 .fillMaxWidth()
                 .offset(0.dp, (-10).dp),
-            contentScale = ContentScale.Crop
+            contentScale = ContentScale.Crop, colorFilter = ColorFilter.tint(DarkOrchidwebcolor)
         )
 
         Column(

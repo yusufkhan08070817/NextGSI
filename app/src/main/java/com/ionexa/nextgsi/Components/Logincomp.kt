@@ -54,7 +54,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ionexa.nextgsi.R
+import com.ionexa.nextgsi.ui.theme.BalckeshPurple
+import com.ionexa.nextgsi.ui.theme.DarkOrchid
+import com.ionexa.nextgsi.ui.theme.IndigoHeading
+
 import com.ionexa.nextgsi.ui.theme.Next
+import com.ionexa.nextgsi.ui.theme.RebeccaPurpleHilghtText
 
 @Composable
 fun Login() {
@@ -72,7 +77,7 @@ fun Login() {
             text = "Login", style = TextStyle(
                 fontSize = 40.sp,
                 fontFamily = Next,
-
+color = BalckeshPurple
                 )
 
         )
@@ -116,7 +121,7 @@ fun TextWithUnderLine(
     text: String,
     onclick: () -> Unit
 ) {
-    val textColor = if (state) Color(0xFF0386D0) else Color.Gray
+    val textColor = if (state) IndigoHeading else Color.Gray
     Text(
         text = text,
         color = textColor,
@@ -128,7 +133,7 @@ fun TextWithUnderLine(
                     val strokeWidth = 2.dp.toPx() // Bottom border thickness
                     val y = size.height - strokeWidth / 2
                     drawLine(
-                        color = Color(0xFF0386D0),
+                        color = IndigoHeading,
                         start = Offset(0f, y),
                         end = Offset(size.width, y),
                         strokeWidth = strokeWidth
@@ -163,7 +168,7 @@ fun Combined(modifier: Modifier = Modifier) {
                         spanStyle = SpanStyle(
                             fontFamily = Next,
                             fontSize = 26.sp,
-                            color = Color(0xFF0386D0)
+                            color = IndigoHeading
                         )
                     )
                 )
@@ -299,7 +304,7 @@ fun RememberAndForgot(
                     modifier = Modifier.padding(15.dp, 15.dp),
                     style = TextStyle(
 
-                        color = Color(0xFF0386D0)
+                        color = RebeccaPurpleHilghtText
                     )
                 )
             }
@@ -324,7 +329,7 @@ fun ButtonWithCutCornerShape(
                 Passwerd
             )
         },
-        colors = ButtonDefaults.buttonColors(Color(0xFF0386D0)),
+        colors = ButtonDefaults.buttonColors(DarkOrchid),
         shape = CutCornerShape(10),
         modifier = Modifier.padding(horizontal = 30.dp)
     ) {
@@ -503,7 +508,7 @@ fun DropdownButton(
     Button(
         onClick = { onExpandChange(!expanded) },
         modifier = Modifier.padding(vertical = 8.dp),
-        colors = ButtonDefaults.run { buttonColors(containerColor = Color(0xFF0386D0)) }
+        colors = ButtonDefaults.run { buttonColors(containerColor = DarkOrchid) }
     ) {
         Text(text = selectedOption, color = Color.White)
     }

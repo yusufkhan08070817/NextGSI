@@ -20,6 +20,7 @@ private val DarkColorScheme = darkColorScheme(
     onPrimary = DarkText,
     onSecondary = DarkText,
     onTertiary = DarkText,
+
 )
 
 private val LightColorScheme = lightColorScheme(

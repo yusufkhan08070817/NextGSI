@@ -100,10 +100,10 @@ var position by remember {
 
                         // Create a hole for the arch
                         val arcRect = Rect(
-                            left = (size.width / 2) - (size.width / 7),
-                            top = -arcHeight / 3f,
-                            right = size.width / 2 + (size.width / 7),
-                            bottom = arcHeight / 3f
+                            left = (size.width / 2f) - (size.width / 8),
+                            top = -arcHeight / 3.2f,
+                            right = size.width / 2f + (size.width / 8),
+                            bottom = arcHeight / 3.2f
                         )
 
 
