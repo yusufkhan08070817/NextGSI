@@ -1,4 +1,6 @@
 package com.ionexa.nextgsi.MVVM
 
-class ProfileMVVM {
+import androidx.lifecycle.ViewModel
+
+class ProfileMVVM:ViewModel() {
 }

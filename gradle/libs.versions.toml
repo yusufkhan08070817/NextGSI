@@ -1,5 +1,6 @@
 [versions]
 accompanistPager = "0.22.0-rc"
+accompanistWebview = "0.19.0"
 agp = "8.5.0"
 coilCompose = "2.6.0"
 kotlin = "1.9.0"
@@ -16,11 +17,15 @@ firebaseAuth = "23.0.0"
 lottieCompose = "5.2.0"
 navigationCompose = "2.7.7"
 material = "1.12.0"
+playServicesLocation = "21.0.0"
+webkit = "1.11.0"
 
 [libraries]
 accompanist-pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanistPager" }
+accompanist-webview = { module = "com.google.accompanist:accompanist-webview", version.ref = "accompanistWebview" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
+androidx-webkit = { module = "androidx.webkit:webkit", version.ref = "webkit" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
@@ -39,6 +44,7 @@ androidx-constraintlayout-compose = { group = "androidx.constraintlayout", name 
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
 lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "lottieCompose" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

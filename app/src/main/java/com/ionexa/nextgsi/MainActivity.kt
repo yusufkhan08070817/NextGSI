@@ -1,6 +1,7 @@
 package com.ionexa.nextgsi
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -23,16 +25,20 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Shapes
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -51,8 +57,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
+import com.ionexa.nextgsi.Components.MapeComp
 import com.ionexa.nextgsi.MVVM.HomeMVVM
 import com.ionexa.nextgsi.MVVM.Loginmvvm
+import com.ionexa.nextgsi.MVVM.MapeKCMVVM
 import com.ionexa.nextgsi.Pages.HomePage
 import com.ionexa.nextgsi.Pages.LoginPage
 
@@ -60,24 +68,55 @@ import com.ionexa.nextgsi.Pages.Navagatation
 import com.ionexa.nextgsi.Pages.ProfilePage
 
 import com.ionexa.nextgsi.Pages.Splashscreen
+import com.ionexa.nextgsi.SingleTon.Locatation
 import com.ionexa.nextgsi.SingleTon.NaveLabels
 import com.ionexa.nextgsi.ui.theme.NextGsiTheme
 
 class MainActivity : ComponentActivity() {
     private val LoginViewModel by viewModels<Loginmvvm>()
     private val HomeViewModel by viewModels<HomeMVVM>()
-private val ProfileViewModel by viewModels<Loginmvvm>()
+    private val ProfileViewModel by viewModels<Loginmvvm>()
+    private val MapeViewModel by viewModels<MapeKCMVVM>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-         Main(LoginViewModel = LoginViewModel, HomeViewModel =HomeViewModel , ProfileViewModel = ProfileViewModel)
+              Main(LoginViewModel = LoginViewModel, HomeViewModel =HomeViewModel , ProfileViewModel = ProfileViewModel)
         }
     }
 
 
 }
+
+// mapestuf
+
+/*
+   val latitude by rememberUpdatedState(Locatation.latitude)
+            val longitude by rememberUpdatedState(Locatation.longitude)
+
+            // Update the displayed text when location changes
+            LaunchedEffect(latitude, longitude) {
+                // This will recompose when latitude or longitude changes
+                Toast.makeText(this@MainActivity, "Latitude: $latitude, Longitude: $longitude" , Toast.LENGTH_SHORT).show()
+            }
+
+            // Display the latitude and longitude
+
+         Column {
+
+             MapeComp(
+                 Modifier
+                     .fillMaxWidth(1f)
+                     .fillMaxHeight(1f),MapeViewModel,this@MainActivity)
+         }
+            Button(onClick = {  MapeViewModel.updateLocataionString("Lund");
+                MapeViewModel.searchLocation() }, modifier = Modifier.offset(100.dp,100.dp)) {
+
+            }
+           Text(text = "Latitude: $latitude, Longitude: $longitude", modifier = Modifier.offset(10.dp,200.dp))
+         }
+ */
 
 @Composable
 fun Main(modifier: Modifier = Modifier, LoginViewModel: Loginmvvm,HomeViewModel: HomeMVVM, ProfileViewModel: Loginmvvm) {
@@ -104,8 +143,5 @@ fun Main(modifier: Modifier = Modifier, LoginViewModel: Loginmvvm,HomeViewModel:
 @Preview
 @Composable
 private fun prev() {
-    
+
 }
-
-
-
