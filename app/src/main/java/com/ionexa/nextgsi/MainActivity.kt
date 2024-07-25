@@ -1,20 +1,42 @@
 package com.ionexa.nextgsi
 
+import android.content.Context
+import android.content.pm.PackageManager
+import android.location.Location
 import android.os.Bundle
+import android.util.Log
 
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 
 import androidx.compose.ui.Modifier
-
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 
 
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.ionexa.nextgsi.Classes.LocationProvider
+import com.ionexa.nextgsi.Components.LocationScreen
 
 import com.ionexa.nextgsi.MVVM.HomeMVVM
 import com.ionexa.nextgsi.MVVM.Loginmvvm
@@ -34,23 +56,29 @@ class MainActivity : ComponentActivity() {
     private val ProfileViewModel by viewModels<Loginmvvm>()
     private val MapeViewModel by viewModels<MapeKCMVVM>()
 
+    private val locationProvider by lazy { LocationProvider(this) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+
             Main(
                 LoginViewModel = LoginViewModel,
                 HomeViewModel = HomeViewModel,
                 ProfileViewModel = ProfileViewModel
             )
+
+
+            // A surface container using the 'background' color from the theme
+
         }
     }
 
 
 }
-
 // mapestuf
-
+// LocationScreen(locationProvider,MapeViewModel)
 /*
    val latitude by rememberUpdatedState(Locatation.latitude)
             val longitude by rememberUpdatedState(Locatation.longitude)
