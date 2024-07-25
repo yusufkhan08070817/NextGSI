@@ -72,5 +72,14 @@ class MapeKCMVVM : ViewModel() {
 
     }
 
+    var yourlatitude by mutableStateOf(0.0)
+        private set
+    var yourlongitude by mutableStateOf(0.0)
+        private set
+    fun updateYourLocatation(latitude: Double, longitude: Double) {
+        yourlatitude = latitude
+        yourlongitude = longitude
+
+    }
 
 }
