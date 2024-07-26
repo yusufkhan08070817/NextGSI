@@ -1,46 +1,37 @@
 package com.ionexa.nextgsi
 
 import android.os.Bundle
-import android.util.Log
-import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import coil.compose.rememberImagePainter
 
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.database.*
-import com.google.firebase.database.DatabaseReference
-import kotlin.properties.Delegates
+data class Order(val imageUrl: String, val itemName: String, val itemDetails: String, val totalCost: String)
 
-class OrderHistoryActivity : AppCompatActivity() {
-
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var orderAdapter: OrderAdapter
-    private lateinit var orderList: MutableList<Order>
+class OrderHistoryActivity : ComponentActivity() {
+    private val orderList = mutableListOf<Order>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_order_history)
-
-        // Initialize RecyclerView
-        recyclerView = findViewById(R.id.recyclerViewOrders)
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        orderList = mutableListOf()
-        orderAdapter = OrderAdapter(orderList)
-        recyclerView.adapter = orderAdapter
-
+        setContent {
+            MaterialTheme {
+                OrderHistoryScreen(orderList)
+            }
+        }
         // Add some local data for testing
         addLocalData()
-
-
-        val totalSum = orderList.sumOf {
-            Integer.parseInt(it.totalCost.replace("₹", "").trim())
-        }
-
-        // Find the TextView by its ID
-        val totalCostTextView: TextView = findViewById(R.id.totalCost)
-
-        // Set the totalSum value as the text of the TextView
-        totalCostTextView.text = "₹$totalSum"
     }
 
     private fun addLocalData() {
@@ -58,54 +49,80 @@ class OrderHistoryActivity : AppCompatActivity() {
             Order("https://i.imgur.com/tGbaZCY.jpg", "Item 11", "Details of Item 11", "₹400")
         )
         orderList.addAll(orders)
-        orderAdapter.notifyDataSetChanged()
+    }
+}@Composable
+fun OrderHistoryScreen(orderList: List<Order>) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.SpaceBetween
+    ) {
+        // RecyclerView
+        LazyColumn(
+            modifier = Modifier.weight(1f),
+            contentPadding = PaddingValues(8.dp)
+        ) {
+            items(orderList) { order ->
+                OrderItem(order)
+            }
+        }
 
+        // Spacer to push the bill summary upward
+        Spacer(modifier = Modifier.height(16.dp))
 
+        // Bill summary
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+
+        ) {
+            Text(
+                text = "Bill Summary",
+                style = TextStyle(fontWeight = FontWeight.Bold),
+                modifier = Modifier.padding(bottom = 16.dp).padding(start = 16.dp)
+            )
+            val totalSum = orderList.sumOf {
+                it.totalCost.replace("₹", "").trim().toInt()
+            }
+            Text(
+                text = "₹$totalSum",
+                style = TextStyle(fontWeight = FontWeight.Bold),
+                modifier = Modifier.padding(bottom = 16.dp).padding(end = 16.dp)
+            )
+        }
     }
 }
 
 
-/*
 
-class OrderHistoryActivity : AppCompatActivity() {
-
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var orderAdapter: OrderAdapter
-    private lateinit var orderList: MutableList<Order>
-    private lateinit var database: DatabaseReference
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_order_history)
-
-        // Initialize RecyclerView
-        recyclerView = findViewById(R.id.recyclerViewOrders)
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        orderList = mutableListOf()
-        orderAdapter = OrderAdapter(orderList)
-        recyclerView.adapter = orderAdapter
-
-        // Initialize Firebase Database
-        database = FirebaseDatabase.getInstance().getReference("orders")
-
-        // Fetch orders from Firebase
-        database.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                orderList.clear()
-                for (orderSnapshot in snapshot.children) {
-                    val order = orderSnapshot.getValue(Order::class.java)
-                    if (order != null) {
-                        orderList.add(order)
-                    }
-                }
-                orderAdapter.notifyDataSetChanged()
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                // Handle database error
-            }
-        })
+@Composable
+fun OrderItem(order: Order) {
+    // Composable for displaying each order item
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Image(
+            painter = rememberImagePainter(order.imageUrl),
+            contentDescription = null,
+            modifier = Modifier
+                .size(80.dp)
+                .padding(end = 8.dp)
+        )
+        Column(
+            modifier = Modifier.weight(1f)
+        ) {
+            Text(text = order.itemName, style = TextStyle(fontWeight = FontWeight.Bold))
+            Text(text = order.itemDetails)
+        }
+        Text(
+            text = order.totalCost,
+            style = TextStyle(fontWeight = FontWeight.Bold),
+            modifier = Modifier.align(Alignment.CenterVertically)
+        )
     }
 }
 
- */
+
