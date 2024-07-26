@@ -66,7 +66,7 @@ import com.google.accompanist.pager.*
 import kotlinx.coroutines.delay
 
 import com.google.accompanist.pager.*
-
+import com.ionexa.nextgsi.DataClass.Productdata
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -415,4 +415,20 @@ fun ImageCarouselCard(images: List<String>) {
             }
         )
     }
+}
+
+@Composable
+fun ProductList(modifier: Modifier = Modifier,List:List<Productdata>) {
+
+
+}
+
+@Composable
+fun ProductCard(modifier: Modifier = Modifier) {
+    Card {
+        Column {
+
+        }
+    }
+
 }

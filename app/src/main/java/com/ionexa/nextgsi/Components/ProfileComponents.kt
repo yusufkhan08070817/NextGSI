@@ -1,0 +1,136 @@
+package com.ionexa.nextgsi.Components
+
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideIn
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import com.ionexa.nextgsi.R
+
+@Composable
+fun RectangleWithCurve(modifier: Modifier = Modifier,editable:()->Unit) {
+    Box(modifier = Modifier
+        .fillMaxWidth(1f)
+        .height(300.dp))
+    {
+
+        Canvas(modifier = Modifier
+            .fillMaxWidth(1f)
+            .height(200.dp)) {
+            val brush = Brush.linearGradient(listOf(Color(0xFF0a2a63), Color(0xFF0382cb)))
+
+            val path: Path = Path().apply {
+                drawCircle(brush, radius = size.width/1.4f, center = Offset(size.width/2,size.height/38f))
+                close()
+            }
+            drawPath(path, brush = brush)
+        }
+
+        Column(modifier = Modifier
+            .fillMaxWidth(1f)
+            .height(330.dp)
+            , horizontalAlignment = Alignment.CenterHorizontally,verticalArrangement = Arrangement.Bottom) {
+            Card(modifier= Modifier
+                .fillMaxWidth(0.4f)
+                .fillMaxHeight(0.48f),
+                colors = CardDefaults.cardColors(containerColor = Color.White), elevation = CardDefaults.elevatedCardElevation(2.dp), shape = CircleShape
+            ) {
+                AsyncImage(
+                    model = "https://static.vecteezy.com/system/resources/previews/002/002/403/large_2x/man-with-beard-avatar-character-isolated-icon-free-vector.jpg",
+                    contentDescription =null
+                    , modifier = Modifier
+                        .clip(shape = CircleShape)
+                        .fillMaxSize(1f)
+
+                )
+            }
+        }
+        Row(modifier = Modifier
+            .fillMaxWidth(0.8f)
+            .height(330.dp)
+            , horizontalArrangement = Arrangement.Absolute.Right, verticalAlignment = Alignment.Bottom) {
+            Card(onClick = {editable()},shape = CircleShape, colors = CardDefaults.cardColors(containerColor = Color.White), elevation = CardDefaults.elevatedCardElevation(10.dp)) {
+                IconButton(onClick = { editable() }) {
+                    Icon(imageVector = Icons.Default.Edit, contentDescription ="Edit" )
+
+                }
+            }
+        }
+    }
+
+}
+
+@Composable
+fun HeamBurger(hemState:()->Unit,state:Boolean) {
+
+    AnimatedVisibility(visible = state, enter = slideInHorizontally()+fadeIn(), exit = slideOutHorizontally()+ fadeOut()) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth(0.9f)
+                .fillMaxHeight(1f)
+        ) {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth(0.9f)
+                    .fillMaxHeight(1f),
+                colors = CardDefaults.cardColors(containerColor = Color.White)
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(0.9f)
+                        .padding(top = 20.dp), horizontalArrangement = Arrangement.Absolute.Right
+                ) {
+
+                    IconButton(onClick = { hemState() }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.cross),
+                            contentDescription = "HeamBurger",
+                            modifier = Modifier
+                                .padding(10.dp)
+                                .width(80.dp)
+                                .height(80.dp)
+                        )
+
+                    }
+
+                }
+            }
+
+        }
+    }
+}

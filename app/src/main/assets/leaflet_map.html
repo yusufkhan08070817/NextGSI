@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Leaflet Map with Search</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <style>
+        #map {
+            width: 100%;
+            height: 100vh;
+        }
+    </style>
+</head>
+<body>
+<div id="map"></div>
+<script>
+    var map = L.map('map').setView([21.153293, 81.315949], 13);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+    }).addTo(map);
+
+    var marker = L.marker([21.153293, 81.315949]).addTo(map);
+
+    function searchLocation(location) {
+        if (location) {
+            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${location}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.length > 0) {
+                        var lat = data[0].lat;
+                        var lon = data[0].lon;
+                        map.setView([lat, lon], 13);
+                        marker.setLatLng([lat, lon]);
+                        // Call Android interface to update location
+                        if (typeof Android !== 'undefined') {
+                            Android.onLocationPicked(lat, lon);
+                        }
+                    } else {
+                        alert("Location not found!");
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        } else {
+            alert("Please enter a location name.");
+        }
+    }
+
+    function setLocation(lat, lng) {
+        var newLatLng = new L.LatLng(lat, lng);
+        map.setView(newLatLng, 13);
+        marker.setLatLng(newLatLng);
+        // Call Android interface to update location
+        if (typeof Android !== 'undefined') {
+            Android.onLocationPicked(lat, lng);
+        }
+    }
+
+    function getLocation() {
+        var latLng = marker.getLatLng();
+        if (typeof Android !== 'undefined') {
+            Android.getCurrentLocation(latLng.lat, latLng.lng);
+        }
+    }
+
+    map.on('click', function(e) {
+        var latLng = e.latlng;
+        marker.setLatLng(latLng);
+        if (typeof Android !== 'undefined') {
+            Android.onLocationPicked(latLng.lat, latLng.lng);
+        }
+    });
+</script>
+</body>
+</html>
