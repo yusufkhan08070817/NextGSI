@@ -54,16 +54,21 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.ionexa.nextgsi.Classes.LocationProvider
 import com.ionexa.nextgsi.Components.FilterDialog
 import com.ionexa.nextgsi.Components.ImageCarouselCard
+import com.ionexa.nextgsi.Components.LocationScreen
 import com.ionexa.nextgsi.Components.Serchbar
 import com.ionexa.nextgsi.MVVM.HomeMVVM
 import com.ionexa.nextgsi.MVVM.Loginmvvm
+import com.ionexa.nextgsi.MVVM.MapeKCMVVM
 import com.ionexa.nextgsi.R
 import com.ionexa.nextgsi.SingleTon.NaveLabels
+import com.ionexa.nextgsi.ui.theme.Mediumpurple
 
 @Composable
-fun HomePage(modifier: Modifier, navController: NavController, HomeMvvm: HomeMVVM) {
+fun HomePage(modifier: Modifier, navController: NavController, HomeMvvm: HomeMVVM, locatationprovider: LocationProvider, MapeViewModel: MapeKCMVVM,) {
+    LocationScreen(Mapekcmvm = MapeViewModel, locationProvider = locatationprovider)
     val images = listOf(
         "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg",
         "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg",
@@ -86,15 +91,6 @@ fun HomePage(modifier: Modifier, navController: NavController, HomeMvvm: HomeMVV
 
 
 
-        Scaffold(
-            bottomBar = {
-                NaviGatationWithFloatingActionButton(NaveContainerColor = Color(0xA700A4FF), FloatingActionButtonIconSize = 50.dp, ButtonFour = { navController.navigate(
-                    NaveLabels.Profile)})
 
-                        },
-            modifier = modifier
-                .padding(bottom = 40.dp)
-                .fillMaxWidth(1f)
-        ) { it }
     }
 }

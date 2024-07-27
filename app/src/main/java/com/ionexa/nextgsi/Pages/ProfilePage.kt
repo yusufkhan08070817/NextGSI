@@ -7,6 +7,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -48,6 +49,7 @@ import com.ionexa.nextgsi.Components.HeamBurger
 import com.ionexa.nextgsi.Components.RectangleWithCurve
 import com.ionexa.nextgsi.R
 import com.ionexa.nextgsi.R.*
+import com.ionexa.nextgsi.ui.theme.DarkSlateBlue
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -147,13 +149,13 @@ fun ProfilePage(modifier: Modifier = Modifier, naveController: NavController) {
                 ) {
                     Button(
                         onClick = { eidtable = true },
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0386D0))
+                        colors = ButtonDefaults.buttonColors(containerColor = DarkSlateBlue)
                     ) {
                         Text(text = "Cancle")
                     }
                     Button(
                         onClick = { eidtable = true },
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0386D0))
+                        colors = ButtonDefaults.buttonColors(containerColor = DarkSlateBlue)
                     ) {
                         Text(text = "Save")
                     }

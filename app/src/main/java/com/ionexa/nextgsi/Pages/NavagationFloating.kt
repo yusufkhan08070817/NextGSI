@@ -1,6 +1,7 @@
 package com.ionexa.nextgsi.Pages
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,29 +29,32 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathFillType
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.ionexa.nextgsi.R
+import com.ionexa.nextgsi.SingleTon.Navagation
 
 @Composable
 fun NaviGatationWithFloatingActionButton(
     naveHight: Dp = 120.dp,
-    NormalButtonSize: Dp = 60.dp,
+    NormalButtonSize: Dp = 40.dp,
     FloatingActionButtonIconSize: Dp = 70.dp,
-    NormalIconList:List<ImageVector> = listOf(
-        Icons.Default.Home,
-        Icons.Default.Search,
-        Icons.Default.Menu,
-        Icons.Default.AccountCircle),
-    NormalIconColor:Color=Color.Black,
-    FLoatingActionButtonIcon: ImageVector =Icons.Default.Home,
-    FoatingsButtonElevatation: Dp=20.dp,
+    NormalIconList: List<Int> = listOf(
+        R.drawable.home,R.drawable.cart,R.drawable.fave,R.drawable.user
+    ),
+    NormalIconColor: Color = Color.Black,
+    FLoatingActionButtonIcon: Int = R.drawable.tracking,
+    FoatingsButtonElevatation: Dp = 20.dp,
     NaveContainerColor: Color = Color.White,
     FloatingButtonColor: Color = Color.White,
-    FolatingButtonIconColor:Color=Color.DarkGray
-    ,
+    FolatingButtonIconColor: Color = Color.DarkGray,
 
     ButtonOne: () -> Unit = {},
     ButtonTwo: () -> Unit = {},
@@ -58,9 +62,7 @@ fun NaviGatationWithFloatingActionButton(
     ButtonFour: () -> Unit = {},
     FloatingButton: () -> Unit = {},
 ) {
-var position by remember {
-    mutableStateOf(1)
-}
+
     val boxheight = (naveHight / 2) + 10.dp
     val Canvasheight = (naveHight / 2) + 20.dp
     Box(
@@ -138,26 +140,28 @@ var position by remember {
                             .height(naveHight - 20.dp),
                     ) {
 
-                        IconButton(onClick = { ButtonThree();position=3}, modifier = Modifier.padding(10.dp)) {
-                            Icon(
-                                imageVector = NormalIconList[2],
-                                contentDescription = "Search",
-                                tint = if (position==3) Color.White else NormalIconColor,
+                        IconButton(onClick = { ButtonThree();Navagation.position=3}, modifier = Modifier.padding(10.dp)) {
+
+                            Image(painter = painterResource(id =NormalIconList[2] ),  contentDescription = "Search",
+                                colorFilter = ColorFilter.tint(if (Navagation.position==3) Color.White else NormalIconColor) ,
                                 modifier = Modifier
                                     .width(NormalButtonSize)
-                                    .height(NormalButtonSize)
+                                    .height(NormalButtonSize),
+                                contentScale = ContentScale.Inside
                             )
 
+
+
                         }
-                        IconButton(onClick = { ButtonFour() ;position=4}, modifier = Modifier.padding(10.dp)) {
-                            Icon(
-                                imageVector = NormalIconList[3],
-                                contentDescription = "Search",
-                                tint = if (position==4) Color.White else NormalIconColor,
+                        IconButton(onClick = { ButtonFour() ;Navagation.position=4}, modifier = Modifier.padding(10.dp)) {
+                            Image(painter = painterResource(id =NormalIconList[3] ),  contentDescription = "Search",
+                                colorFilter = ColorFilter.tint(if (Navagation.position==4) Color.White else NormalIconColor) ,
                                 modifier = Modifier
                                     .width(NormalButtonSize)
-                                    .height(NormalButtonSize)
+                                    .height(NormalButtonSize),
+                                contentScale = ContentScale.Inside
                             )
+
 
                         }
                     }
@@ -170,28 +174,26 @@ var position by remember {
                             .height(naveHight - 20.dp),
                     ) {
 
-                        IconButton(onClick = { ButtonOne();position=1 }, modifier = Modifier.padding(10.dp)) {
-                            Icon(
-                                imageVector = NormalIconList[0],
-                                contentDescription = "Search",
-                                tint = if (position==1) Color.White else NormalIconColor,
+                        IconButton(onClick = { ButtonOne();Navagation.position=1 }, modifier = Modifier.padding(10.dp)) {
+
+                            Image(painter = painterResource(id =NormalIconList[0] ),  contentDescription = "Search",
+                                colorFilter = ColorFilter.tint(if (Navagation.position==1) Color.White else NormalIconColor) ,
                                 modifier = Modifier
                                     .width(NormalButtonSize)
-                                    .height(NormalButtonSize)
+                                    .height(NormalButtonSize),
+                                contentScale = ContentScale.Inside
                             )
 
                         }
-                        IconButton(onClick = { ButtonTwo();position=2 }, modifier = Modifier.padding(10.dp)) {
+                        IconButton(onClick = { ButtonTwo();Navagation.position=2 }, modifier = Modifier.padding(10.dp)) {
 
-                            Icon(
-                                imageVector = NormalIconList[1],
-                                contentDescription = "Search",
-                                tint = if (position==2) Color.White else NormalIconColor,
+                            Image(painter = painterResource(id =NormalIconList[1] ),  contentDescription = "Search",
+                                colorFilter = ColorFilter.tint(if (Navagation.position==2) Color.White else NormalIconColor) ,
                                 modifier = Modifier
                                     .width(NormalButtonSize)
-                                    .height(NormalButtonSize)
+                                    .height(NormalButtonSize),
+                                contentScale = ContentScale.Inside
                             )
-
                         }
                     }
                 }
@@ -219,14 +221,15 @@ var position by remember {
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    IconButton(onClick = { FloatingButton() }) {
-                        Icon(
-                            imageVector = FLoatingActionButtonIcon,
-                            contentDescription = "Menu",
-                            tint = FolatingButtonIconColor,
+                    IconButton(onClick = { FloatingButton();Navagation.position=5 }) {
+
+
+                        Image(painter = painterResource(id =FLoatingActionButtonIcon ),  contentDescription = "Search",
+                            colorFilter = ColorFilter.tint(if (Navagation.position==5) FolatingButtonIconColor else NormalIconColor) ,
                             modifier = Modifier
-                                .width(FloatingActionButtonIconSize)
-                                .height(FloatingActionButtonIconSize)
+                                .width(NormalButtonSize)
+                                .height(NormalButtonSize),
+                            contentScale = ContentScale.Inside
                         )
 
                     }
