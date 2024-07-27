@@ -61,19 +61,7 @@ fun LocationScreen(locationProvider: LocationProvider, Mapekcmvm: MapeKCMVVM) {
         }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        if (allPermissionsGranted && isLocationEnabled) {
-            Text(text = "Latitude: ${Mapekcmvm.yourlatitude}, Longitude: ${Mapekcmvm.yourlongitude}")
-        } else {
-            Text(text = "Requesting permissions or enabling location services...")
-        }
-    }
+
 }
 
 @Composable
