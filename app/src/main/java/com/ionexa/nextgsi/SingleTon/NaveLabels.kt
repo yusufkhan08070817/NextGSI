@@ -4,6 +4,7 @@ object NaveLabels {
     const val Home = "Home"
     const val Profile = "Profile"
 const val Cart = "Cart"
+    const val CartHistory="CartHistory"
     const val Login = "LoginPage"
     const val Tracking = "Tracking"
     const val product = "product"
