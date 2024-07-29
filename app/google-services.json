@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "840980515665",
-    "project_id": "next-gsi",
-    "storage_bucket": "next-gsi.appspot.com"
+    "project_number": "939114388837",
+    "project_id": "gsinext",
+    "storage_bucket": "gsinext.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:840980515665:android:06b355e5cc1fcdf0312170",
+        "mobilesdk_app_id": "1:939114388837:android:849231b59fcbf66102158c",
         "android_client_info": {
           "package_name": "com.ionexa.nextgsi"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBhGBfywA9MimdfkRKZVxK5x44R1gwJ4G0"
+          "current_key": "AIzaSyDEDHNiIokLuU5uAozFWjdWKk8CwdZ0J3w"
         }
       ],
       "services": {

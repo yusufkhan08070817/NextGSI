@@ -29,10 +29,12 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.ionexa.nextgsi.R
 import com.ionexa.nextgsi.ui.theme.Lavender
+import com.ionexa.nextgsi.ui.theme.RebeccaPurpleHilghtText
 
 
 @Composable
@@ -77,9 +79,15 @@ val stateScroll = rememberScrollState()
                     .padding(bottom = 0.dp)
                     .verticalScroll(stateScroll)
                 ) {
-                    TextCard(labletext = "hii", icon = R.drawable.hide){}
-                    TextCard(labletext = "hii", icon = R.drawable.hide){}
-                    TextCard(labletext = "hii", icon = R.drawable.hide){}
+                    TextCard(labletext = "Your Order", icon = R.drawable.order){}
+                    TextCard(labletext = "Address Book", icon = R.drawable.addressbook){}
+                    TextCard(labletext = "Collected coupons", icon = R.drawable.cupons){}
+                    TextCard(labletext = "Shear this app", icon = R.drawable.shear){}
+                    TextCard(labletext = "About us", icon = R.drawable.info){}
+                    TextCard(labletext = "Get Feeding Indian receipt", icon = R.drawable.receipt){}
+                    TextCard(labletext = "Account Privacy", icon = R.drawable.privacy){}
+                    TextCard(labletext = "Notification Prefernces", icon = R.drawable.noti){}
+                    TextCard(labletext = "Log Out", icon = R.drawable.baseline_logout_24){}
                 }
             }
 
@@ -113,7 +121,9 @@ fun TextCard(modifier: Modifier = Modifier,
            leadingIcon = {
                Image(painter = painterResource(id = icon), contentDescription = null, modifier = Modifier
                    .height(20.dp)
-                   .width(20.dp))
+                   .width(20.dp), colorFilter = ColorFilter.tint(RebeccaPurpleHilghtText)
+
+               )
            }
        )
 

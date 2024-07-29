@@ -55,6 +55,7 @@ import com.ionexa.nextgsi.MVVM.HomeMVVM
 import com.ionexa.nextgsi.MVVM.Loginmvvm
 import com.ionexa.nextgsi.MVVM.MapeKCMVVM
 import com.ionexa.nextgsi.MVVM.ProfileMVVM
+import com.ionexa.nextgsi.Pages.CartPage
 import com.ionexa.nextgsi.Pages.HomePage
 import com.ionexa.nextgsi.Pages.LoginPage
 import com.ionexa.nextgsi.Pages.MapeWithSerchBar
@@ -96,7 +97,7 @@ class MainActivity : ComponentActivity() {
                 ProfileViewModel = ProfileViewModel,
                 navController =Navigation.navController
                 ,MapeViewModel = MapeViewModel,
-                locatationprovider = locationProvider
+                locatationprovider = locationProvider, orderList = orderList
             )
 
 
@@ -136,9 +137,10 @@ fun Main(
     HomeViewModel: HomeMVVM,
     ProfileViewModel: ProfileMVVM,
     MapeViewModel: MapeKCMVVM,
-    locatationprovider:LocationProvider
+    locatationprovider:LocationProvider,
+    orderList :MutableList<Order>
 ) {
-    val duratation=500
+    val duratation=300
     NavHost(navController = navController, startDestination = NaveLabels.SplashScreen,
         enterTransition ={ fadeIn(tween(durationMillis = duratation)) },
         exitTransition = { fadeOut(tween(durationMillis = duratation)) }
@@ -164,6 +166,16 @@ fun Main(
         composable(NaveLabels.SerchWithLocatation) {
             ScreenWithBottomBar(navController) { innerPadding ->
                 MapeWithSerchBar(mapeKCMVVM = MapeViewModel)
+            }
+        }
+        composable(NaveLabels.Cart) {
+            ScreenWithBottomBar(navController) { innerPadding ->
+                CartPage()
+            }
+        }
+        composable(NaveLabels.CartHistory) {
+            ScreenWithBottomBar(navController) { innerPadding ->
+                OrderHistoryScreen(orderList = orderList)
             }
         }
         composable(NaveLabels.Tracking) {
@@ -203,6 +215,7 @@ fun ScreenWithBottomBar(
                FloatingActionButtonIconSize = 50.dp,
                ButtonFour = { navController.navigate(NaveLabels.Profile) },
                ButtonOne = { navController.navigate(NaveLabels.Home) },
+               ButtonTwo = {navController.navigate(NaveLabels.Cart)},
                FloatingButton = { navController.navigate(NaveLabels.Tracking) }
            )
        }
