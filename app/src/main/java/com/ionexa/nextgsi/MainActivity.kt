@@ -139,7 +139,7 @@ fun Main(
     locatationprovider:LocationProvider
 ) {
     val duratation=500
-    NavHost(navController = navController, startDestination = NaveLabels.Home,
+    NavHost(navController = navController, startDestination = NaveLabels.SplashScreen,
         enterTransition ={ fadeIn(tween(durationMillis = duratation)) },
         exitTransition = { fadeOut(tween(durationMillis = duratation)) }
         ) {
