@@ -8,4 +8,8 @@ import androidx.compose.runtime.setValue
 object Locatation {
     var latitude by mutableStateOf(0.0)
     var longitude by mutableStateOf(0.0)
+    var choosenlocatation by mutableStateOf("")
+    var state by mutableStateOf("")
+    var city by mutableStateOf("")
+    var country by mutableStateOf("")
 }

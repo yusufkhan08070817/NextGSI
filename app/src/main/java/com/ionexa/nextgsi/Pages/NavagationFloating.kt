@@ -39,7 +39,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.ionexa.nextgsi.R
-import com.ionexa.nextgsi.SingleTon.Navagation
+import com.ionexa.nextgsi.SingleTon.Navigation
 
 @Composable
 fun NaviGatationWithFloatingActionButton(
@@ -140,10 +140,10 @@ fun NaviGatationWithFloatingActionButton(
                             .height(naveHight - 20.dp),
                     ) {
 
-                        IconButton(onClick = { ButtonThree();Navagation.position=3}, modifier = Modifier.padding(10.dp)) {
+                        IconButton(onClick = { ButtonThree();Navigation.position=3}, modifier = Modifier.padding(10.dp)) {
 
                             Image(painter = painterResource(id =NormalIconList[2] ),  contentDescription = "Search",
-                                colorFilter = ColorFilter.tint(if (Navagation.position==3) Color.White else NormalIconColor) ,
+                                colorFilter = ColorFilter.tint(if (Navigation.position==3) Color.White else NormalIconColor) ,
                                 modifier = Modifier
                                     .width(NormalButtonSize)
                                     .height(NormalButtonSize),
@@ -153,9 +153,9 @@ fun NaviGatationWithFloatingActionButton(
 
 
                         }
-                        IconButton(onClick = { ButtonFour() ;Navagation.position=4}, modifier = Modifier.padding(10.dp)) {
+                        IconButton(onClick = { ButtonFour() ;Navigation.position=4}, modifier = Modifier.padding(10.dp)) {
                             Image(painter = painterResource(id =NormalIconList[3] ),  contentDescription = "Search",
-                                colorFilter = ColorFilter.tint(if (Navagation.position==4) Color.White else NormalIconColor) ,
+                                colorFilter = ColorFilter.tint(if (Navigation.position==4) Color.White else NormalIconColor) ,
                                 modifier = Modifier
                                     .width(NormalButtonSize)
                                     .height(NormalButtonSize),
@@ -174,10 +174,10 @@ fun NaviGatationWithFloatingActionButton(
                             .height(naveHight - 20.dp),
                     ) {
 
-                        IconButton(onClick = { ButtonOne();Navagation.position=1 }, modifier = Modifier.padding(10.dp)) {
+                        IconButton(onClick = { ButtonOne();Navigation.position=1 }, modifier = Modifier.padding(10.dp)) {
 
                             Image(painter = painterResource(id =NormalIconList[0] ),  contentDescription = "Search",
-                                colorFilter = ColorFilter.tint(if (Navagation.position==1) Color.White else NormalIconColor) ,
+                                colorFilter = ColorFilter.tint(if (Navigation.position==1) Color.White else NormalIconColor) ,
                                 modifier = Modifier
                                     .width(NormalButtonSize)
                                     .height(NormalButtonSize),
@@ -185,10 +185,10 @@ fun NaviGatationWithFloatingActionButton(
                             )
 
                         }
-                        IconButton(onClick = { ButtonTwo();Navagation.position=2 }, modifier = Modifier.padding(10.dp)) {
+                        IconButton(onClick = { ButtonTwo();Navigation.position=2 }, modifier = Modifier.padding(10.dp)) {
 
                             Image(painter = painterResource(id =NormalIconList[1] ),  contentDescription = "Search",
-                                colorFilter = ColorFilter.tint(if (Navagation.position==2) Color.White else NormalIconColor) ,
+                                colorFilter = ColorFilter.tint(if (Navigation.position==2) Color.White else NormalIconColor) ,
                                 modifier = Modifier
                                     .width(NormalButtonSize)
                                     .height(NormalButtonSize),
@@ -221,11 +221,11 @@ fun NaviGatationWithFloatingActionButton(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    IconButton(onClick = { FloatingButton();Navagation.position=5 }) {
+                    IconButton(onClick = { FloatingButton();Navigation.position=5 }) {
 
 
                         Image(painter = painterResource(id =FLoatingActionButtonIcon ),  contentDescription = "Search",
-                            colorFilter = ColorFilter.tint(if (Navagation.position==5) FolatingButtonIconColor else NormalIconColor) ,
+                            colorFilter = ColorFilter.tint(if (Navigation.position==5) FolatingButtonIconColor else NormalIconColor) ,
                             modifier = Modifier
                                 .width(NormalButtonSize)
                                 .height(NormalButtonSize),

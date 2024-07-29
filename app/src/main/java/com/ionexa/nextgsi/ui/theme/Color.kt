@@ -15,7 +15,7 @@ val Pink40 = Color(0xFFFFFFFF)
 val highlightText=Color(0xFF0386D0)
 val LightBack=Color(0xFFFFFFFF)
 val LightText=Color(0xFF000000)
-val LightlightText=Color(0xFF606060)
+val LightlightText=Color(0xFFB4B4B4)
 
 
 val Standardpurple= Color(0xFF800080) // Standard purple

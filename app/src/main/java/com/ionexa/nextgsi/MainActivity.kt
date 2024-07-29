@@ -2,11 +2,19 @@ package com.ionexa.nextgsi
 
 
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,10 +25,16 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
@@ -30,7 +44,7 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsCompat.Type
 import androidx.core.view.WindowInsetsControllerCompat
-
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -40,25 +54,31 @@ import com.ionexa.nextgsi.DataClass.Order
 import com.ionexa.nextgsi.MVVM.HomeMVVM
 import com.ionexa.nextgsi.MVVM.Loginmvvm
 import com.ionexa.nextgsi.MVVM.MapeKCMVVM
+import com.ionexa.nextgsi.MVVM.ProfileMVVM
 import com.ionexa.nextgsi.Pages.HomePage
 import com.ionexa.nextgsi.Pages.LoginPage
+import com.ionexa.nextgsi.Pages.MapeWithSerchBar
 import com.ionexa.nextgsi.Pages.NaviGatationWithFloatingActionButton
 import com.ionexa.nextgsi.Pages.OrderHistoryScreen
 import com.ionexa.nextgsi.Pages.OrderTrackingscreen
 import com.ionexa.nextgsi.Pages.ProfilePage
 import com.ionexa.nextgsi.Pages.Splashscreen
 import com.ionexa.nextgsi.SingleTon.NaveLabels
+import com.ionexa.nextgsi.SingleTon.Navigation
+import com.ionexa.nextgsi.SingleTon.getSuggestions
 import com.ionexa.nextgsi.ui.theme.Mediumpurple
 import com.ionexa.nextgsi.ui.theme.NextGsiTheme
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     private val LoginViewModel by viewModels<Loginmvvm>()
     private val HomeViewModel by viewModels<HomeMVVM>()
-    private val ProfileViewModel by viewModels<Loginmvvm>()
+    private val ProfileViewModel by viewModels<ProfileMVVM>()
     private val MapeViewModel by viewModels<MapeKCMVVM>()
     private val orderList = mutableListOf<Order>()
     private val locationProvider by lazy { LocationProvider(this) }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -67,16 +87,18 @@ class MainActivity : ComponentActivity() {
         setContent {
             HideSystemUI()
             addLocalData()
+            Navigation.navController= rememberNavController()
 
-            val navcontroller = rememberNavController()
+
             Main(
                 LoginViewModel = LoginViewModel,
                 HomeViewModel = HomeViewModel,
                 ProfileViewModel = ProfileViewModel,
-                navController = navcontroller
+                navController =Navigation.navController
                 ,MapeViewModel = MapeViewModel,
                 locatationprovider = locationProvider
             )
+
 
 
         }
@@ -100,22 +122,27 @@ class MainActivity : ComponentActivity() {
 
 }
 
-// mapestuf
 
 
 
 
 
+
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Main(
     navController: NavHostController,
     LoginViewModel: Loginmvvm,
     HomeViewModel: HomeMVVM,
-    ProfileViewModel: Loginmvvm,
+    ProfileViewModel: ProfileMVVM,
     MapeViewModel: MapeKCMVVM,
     locatationprovider:LocationProvider
 ) {
-    NavHost(navController = navController, startDestination = NaveLabels.Home) {
+    val duratation=500
+    NavHost(navController = navController, startDestination = NaveLabels.SplashScreen,
+        enterTransition ={ fadeIn(tween(durationMillis = duratation)) },
+        exitTransition = { fadeOut(tween(durationMillis = duratation)) }
+        ) {
         composable(NaveLabels.Login) {
             NextGsiTheme {
                 LoginPage(LoginViewModel, navController)
@@ -126,12 +153,17 @@ fun Main(
         }
         composable(NaveLabels.Home) {
             ScreenWithBottomBar(navController) { innerPadding ->
-                HomePage(modifier = Modifier.padding(innerPadding), navController, HomeViewModel, locatationprovider = locatationprovider, MapeViewModel = MapeViewModel)
+                HomePage(modifier = Modifier.padding(innerPadding), navController, HomeViewModel, locationProvider  = locatationprovider, mapViewModel = MapeViewModel)
             }
         }
         composable(NaveLabels.Profile) {
             ScreenWithBottomBar(navController) { innerPadding ->
-                ProfilePage(modifier = Modifier.padding(innerPadding), navController)
+                ProfilePage(modifier = Modifier.padding(innerPadding), navController,ProfileViewModel= ProfileViewModel)
+            }
+        }
+        composable(NaveLabels.SerchWithLocatation) {
+            ScreenWithBottomBar(navController) { innerPadding ->
+                MapeWithSerchBar(mapeKCMVVM = MapeViewModel)
             }
         }
         composable(NaveLabels.Tracking) {
