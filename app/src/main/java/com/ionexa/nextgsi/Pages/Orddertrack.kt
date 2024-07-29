@@ -24,33 +24,42 @@ import com.ionexa.nextgsi.SingleTon.Locatation
 import com.ionexa.nextgsi.SingleTon.NaveLabels
 
 @Composable
-fun OrderTrackingscreen(modifier: Modifier=Modifier,imageUrl: List<String>, color: Color = Color.White,MapeViewModel: MapeKCMVVM,navController: NavController) {
+fun OrderTrackingscreen(
+    modifier: Modifier = Modifier,
+    imageUrl: List<String>,
+    color: Color = Color.White,
+    MapeViewModel: MapeKCMVVM,
+    navController: NavController
+) {
     val context = LocalContext.current
     val latitude by rememberUpdatedState(Locatation.latitude)
     val longitude by rememberUpdatedState(Locatation.longitude)
-   Column(modifier = Modifier.fillMaxSize(1f).padding(top = 35.dp)) {
-       ItemList(imageUrl = listOf(
+    Column(modifier = Modifier
+        .fillMaxSize(1f)
+        .padding(top = 35.dp)) {
+        ItemList(
+            imageUrl = listOf(
 
-           "https://plus.unsplash.com/premium_photo-1683865776032-07bf70b0add1?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-           "https://plus.unsplash.com/premium_photo-1683865776032-07bf70b0add1?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-           "https://plus.unsplash.com/premium_photo-1683865776032-07bf70b0add1?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-           "https://plus.unsplash.com/premium_photo-1683865776032-07bf70b0add1?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                "https://plus.unsplash.com/premium_photo-1683865776032-07bf70b0add1?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                "https://plus.unsplash.com/premium_photo-1683865776032-07bf70b0add1?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                "https://plus.unsplash.com/premium_photo-1683865776032-07bf70b0add1?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                "https://plus.unsplash.com/premium_photo-1683865776032-07bf70b0add1?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
 
-       ))
-       MapeComp(
-           Modifier
-               .fillMaxWidth(1f)
-               .fillMaxHeight(0.6f),MapeViewModel,context)
+                )
+        )
+        MapeComp(
+            Modifier
+                .fillMaxWidth(1f)
+                .fillMaxHeight(0.6f), MapeViewModel, context
+        )
 
-   }
-
+    }
 
 
     // Update the displayed text when location changes
 
 
     // Display the latitude and longitude
-
 
 
 }

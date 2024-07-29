@@ -81,6 +81,11 @@ class MapeKCMVVM : ViewModel() {
         yourlongitude = longitude
 
     }
+    var yourcurrentLocatationString by mutableStateOf("")
+        private set
+    fun updateyourcurrentLocatationString(value:String){
+        yourcurrentLocatationString=value
+    }
 
 }
 // LocationScreen(locationProvider,MapeViewModel)

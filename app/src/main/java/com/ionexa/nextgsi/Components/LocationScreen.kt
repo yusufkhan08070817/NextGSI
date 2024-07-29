@@ -20,6 +20,9 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import com.ionexa.nextgsi.Classes.LocationProvider
 import com.ionexa.nextgsi.MVVM.MapeKCMVVM
+import com.ionexa.nextgsi.SingleTon.getLocationName
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 @Composable
 fun LocationScreen(locationProvider: LocationProvider, Mapekcmvm: MapeKCMVVM) {
@@ -31,14 +34,14 @@ fun LocationScreen(locationProvider: LocationProvider, Mapekcmvm: MapeKCMVVM) {
 
     var allPermissionsGranted by remember { mutableStateOf(checkPermissions(permissions, context)) }
     var isLocationEnabled by rememberLocationEnabledState(context)
-
+    val coroutineScope = rememberCoroutineScope()
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions()
     ) { permissionsMap ->
         allPermissionsGranted = permissionsMap.values.all { it }
         if (allPermissionsGranted && isLocationEnabled) {
             Log.d("LocationScreen", "All permissions granted and location enabled")
-            fetchLocation(locationProvider, Mapekcmvm)
+            fetchLocation(locationProvider, Mapekcmvm,coroutineScope)
         } else if (!allPermissionsGranted) {
             Log.d("LocationScreen", "Permissions denied: ${permissionsMap.filterValues { !it }}")
         }
@@ -57,7 +60,7 @@ fun LocationScreen(locationProvider: LocationProvider, Mapekcmvm: MapeKCMVVM) {
         if (isLocationEnabled) {
             // Delay added to allow time for location settings to apply
             kotlinx.coroutines.delay(2000) // 2 seconds delay
-            fetchLocation(locationProvider, Mapekcmvm)
+            fetchLocation(locationProvider, Mapekcmvm,coroutineScope)
         }
     }
 
@@ -96,10 +99,14 @@ private fun isLocationEnabled(context: Context): Boolean {
     return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
 }
 
-private fun fetchLocation(locationProvider: LocationProvider, Mapekcmvm: MapeKCMVVM) {
+private fun fetchLocation(locationProvider: LocationProvider, mapekcmvm: MapeKCMVVM, coroutineScope: CoroutineScope) {
     locationProvider.getLastLocation { loc ->
         loc?.let {
-            Mapekcmvm.updateYourLocatation(it.latitude, it.longitude)
+            mapekcmvm.updateYourLocatation(it.latitude, it.longitude)
+            coroutineScope.launch {
+                val locName = getLocationName(it.latitude.toString(), it.longitude.toString())
+                mapekcmvm.updateyourcurrentLocatationString(locName)
+            }
         }
     }
 }

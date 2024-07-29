@@ -8,4 +8,6 @@ const val Cart = "Cart"
     const val Tracking = "Tracking"
     const val product = "product"
     const val SplashScreen="SplashScreen"
+    const val SerchWithLocatation="SerchWithLocatation"
+
 }
