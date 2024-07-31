@@ -41,6 +41,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.ionexa.nextgsi.R
+import com.ionexa.nextgsi.ui.theme.IndigoHeading
+import com.ionexa.nextgsi.ui.theme.SlateBlue
 
 @Composable
 fun RectangleWithCurve(modifier: Modifier = Modifier,editable:()->Unit) {
@@ -52,7 +54,7 @@ fun RectangleWithCurve(modifier: Modifier = Modifier,editable:()->Unit) {
         Canvas(modifier = Modifier
             .fillMaxWidth(1f)
             .height(200.dp)) {
-            val brush = Brush.linearGradient(listOf(Color(0xFF0a2a63), Color(0xFF0382cb)))
+            val brush = Brush.linearGradient(listOf(IndigoHeading, SlateBlue))
 
             val path: Path = Path().apply {
                 drawCircle(brush, radius = size.width/1.4f, center = Offset(size.width/2,size.height/38f))
@@ -93,44 +95,4 @@ fun RectangleWithCurve(modifier: Modifier = Modifier,editable:()->Unit) {
         }
     }
 
-}
-
-@Composable
-fun HeamBurger(hemState:()->Unit,state:Boolean) {
-
-    AnimatedVisibility(visible = state, enter = slideInHorizontally()+fadeIn(), exit = slideOutHorizontally()+ fadeOut()) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth(0.9f)
-                .fillMaxHeight(1f)
-        ) {
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth(0.9f)
-                    .fillMaxHeight(1f),
-                colors = CardDefaults.cardColors(containerColor = Color.White)
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(0.9f)
-                        .padding(top = 20.dp), horizontalArrangement = Arrangement.Absolute.Right
-                ) {
-
-                    IconButton(onClick = { hemState() }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.cross),
-                            contentDescription = "HeamBurger",
-                            modifier = Modifier
-                                .padding(10.dp)
-                                .width(80.dp)
-                                .height(80.dp)
-                        )
-
-                    }
-
-                }
-            }
-
-        }
-    }
 }

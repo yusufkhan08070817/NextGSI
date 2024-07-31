@@ -53,7 +53,7 @@ fun LoginPage( LoginViewModel: Loginmvvm,navController: NavController) {
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .fillMaxWidth()
-                .offset(50.dp, (-10).dp)
+                .offset(50.dp, (0).dp)
                 .rotate(-10f),
             contentScale = ContentScale.Crop, colorFilter = ColorFilter.tint(Standardpurple)
         )
@@ -63,7 +63,7 @@ fun LoginPage( LoginViewModel: Loginmvvm,navController: NavController) {
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .fillMaxWidth()
-                .offset(0.dp, (-10).dp),
+                .offset(0.dp, (0).dp),
             contentScale = ContentScale.Crop, colorFilter = ColorFilter.tint(DarkOrchidwebcolor)
         )
 

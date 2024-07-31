@@ -1,5 +1,8 @@
 package com.ionexa.nextgsi.Components
 
+import android.os.Build
+import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -59,7 +62,17 @@ import com.ionexa.nextgsi.R
 import kotlinx.coroutines.delay
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.ImeAction
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.google.accompanist.pager.*
@@ -67,11 +80,32 @@ import kotlinx.coroutines.delay
 
 import com.google.accompanist.pager.*
 import com.ionexa.nextgsi.DataClass.Productdata
+import com.ionexa.nextgsi.DataClass.Search_dataList
+import com.ionexa.nextgsi.MVVM.HomeMVVM
+import com.ionexa.nextgsi.SingleTon.Locatation
+import com.ionexa.nextgsi.SingleTon.NaveLabels
+import com.ionexa.nextgsi.SingleTon.Navigation
+import com.ionexa.nextgsi.ui.theme.Black
+import com.ionexa.nextgsi.ui.theme.Indigo
+import com.ionexa.nextgsi.ui.theme.LightlightText
+import com.ionexa.nextgsi.ui.theme.SlateBlue
+import java.time.LocalDate
+import java.time.ZoneId
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Serchbar(modifier: Modifier = Modifier,text:String,setstring:(String)->Unit, filter: () -> Unit) {
+fun Serchbar(
+    modifier: Modifier = Modifier,
+    text: String,
+    setstring: (String) -> Unit,
+    setfoucs: (Boolean) -> Unit,
+    getfocus: Boolean,
+    filter: () -> Unit
+) {
+
+
+    val focusManager = LocalFocusManager.current
     Column(
         modifier = modifier
             .fillMaxWidth(1f)
@@ -89,61 +123,73 @@ fun Serchbar(modifier: Modifier = Modifier,text:String,setstring:(String)->Unit,
                     1f
                 )
             ) {
-                TextField(value = text,
-                    onValueChange = {setstring(it)},
-                    modifier = modifier.fillMaxWidth(1f),
+                TextField(
+                    value = text,
+                    onValueChange = { setstring(it) },
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .onFocusChanged { focusState ->
+                            setfoucs(focusState.isFocused)
+                        },
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            focusManager.clearFocus()
+                        }
+                    ),
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        imeAction = ImeAction.Done
+                    ),
                     colors = TextFieldDefaults.textFieldColors(
                         containerColor = Color.White,
                         cursorColor = Color.Black,
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,
-
-                        ),
+                    ),
                     leadingIcon = {
                         IconButton(onClick = { }) {
-                            Icon(imageVector = Icons.Default.Search, contentDescription = "serch")
+                            Icon(imageVector = Icons.Default.Search, contentDescription = "search")
                         }
                     },
                     trailingIcon = {
-                        IconButton(onClick = { filter() }) {
+                        IconButton(onClick = {
+                            if (getfocus) {
+                                filter()
+                            }
+                        }, modifier = Modifier.padding(5.dp)) {
                             Image(
                                 painter = painterResource(id = R.drawable.filter),
                                 modifier = Modifier.padding(5.dp),
                                 contentDescription = "filter",
-                                contentScale = ContentScale.Inside
+                                contentScale = ContentScale.Inside,
+                                colorFilter = ColorFilter.tint(if (!getfocus) LightlightText else Black)
                             )
                         }
-                    })
+                    }
+                )
             }
         }
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun FilterDialog(
     modifier: Modifier = Modifier,
 
     Dialogstate: Boolean,
     setDialogstate: (Boolean) -> Unit,
-    setlocationvalue: (String) -> Unit,
-    setpricevalue: (String) -> Unit,
+    setlocationvalue: (Int) -> Unit,
+    setpricevalue: (Int) -> Unit,
     setDatevalue: (String) -> Unit,
-    setAvailabilityvalue: (String) -> Unit
+    setAvailabilityvalue: (Boolean) -> Unit,
+    setFreeDelivery: (Boolean) -> Unit,
+    homeMVVM: HomeMVVM
 ) {
-    var nearme by remember { mutableStateOf(false) }
-    var SameState by remember { mutableStateOf(false) }
-    var anyState by remember { mutableStateOf(false) }
 
-    var price100_1k by remember { mutableStateOf(false) }
-    var price1k_10k by remember { mutableStateOf(false) }
-    var price10k_100k by remember { mutableStateOf(false) }
-
-
-    var available by remember { mutableStateOf(false) }
-    var unavailable by remember { mutableStateOf(false) }
-    var upcoming by remember { mutableStateOf(false) }
-
-    Dialog(onDismissRequest = { }, properties = DialogProperties(usePlatformDefaultWidth = false)) {
+var locatationset by remember {
+    mutableStateOf("")
+}
+    Dialog(onDismissRequest = { }, properties = DialogProperties(usePlatformDefaultWidth = Dialogstate)) {
         Card(
             modifier = Modifier.padding(10.dp),
             elevation = CardDefaults.elevatedCardElevation(10.dp),
@@ -160,7 +206,7 @@ fun FilterDialog(
             ) {
                 Text(text = "Filter")
                 Spacer(modifier = modifier.height(20.dp))
-                Text(text = "Location")
+                Text(text = "Location : ${locatationset}")
                 Card(
                     modifier = Modifier
                         .height(1.dp)
@@ -172,9 +218,23 @@ fun FilterDialog(
                 Row(
                     horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth(1f)
                 ) {
-                    Check(true, "near me") {}
-                    Check(true, "Same state") {}
-                    Check(true, "any state") {}
+                    Check(homeMVVM.nearMe, "near me") {
+                        homeMVVM.updateNearMe(it)
+                        setlocationvalue(0)
+                        locatationset=Locatation.city
+                    }
+                    Check(homeMVVM.sameState, "Same state") {
+                        homeMVVM.updateSameState(it)
+                        setlocationvalue(1)
+                            Locatation.state
+                    }
+                    IconButton(onClick = { Navigation.navController.navigate(NaveLabels.SerchWithLocatation);setlocationvalue(2) }) {
+                        Icon(
+                            imageVector = Icons.Default.LocationOn,
+                            contentDescription = "locatation",
+                            tint = Indigo
+                        )
+                    }
 
                 }
                 Spacer(modifier = modifier.height(10.dp))
@@ -191,32 +251,23 @@ fun FilterDialog(
                     horizontalArrangement = Arrangement.SpaceAround,
                     modifier = Modifier.fillMaxWidth(1f)
                 ) {
-                    Check(true, "near me") {}
-                    Check(true, "Same state") {}
-                    Check(true, "any state") {}
+                    Check(homeMVVM.lowPrice, "50-1k") {
+                        homeMVVM.updateLowPrice(it)
+                        setpricevalue(0);Log.e("price","$50")}
+                    Check(homeMVVM.midPrice, "1k-10k") {
+                        homeMVVM.updateMidPrice(it)
+                        setpricevalue(1);Log.e("price","$10k")}
+                    Check(homeMVVM.highPrice, "10k-100k") {
+                        homeMVVM.updateHighPrice(it)
+                        setpricevalue(2);Log.e("price","$100k")}
 
                 }
                 Spacer(modifier = modifier.height(10.dp))
                 Text(text = "Date")
-                MyDatePicker()
-                Card(
-                    modifier = Modifier
-                        .height(1.dp)
-                        .fillMaxWidth(1f),
-                    elevation = CardDefaults.elevatedCardElevation(10.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color.Transparent)
-                ) {}
-                Spacer(modifier = modifier.height(10.dp))
-                Row(
-                    horizontalArrangement = Arrangement.SpaceAround,
-                    modifier = Modifier.fillMaxWidth(1f)
-                ) {
-                    Check(true, "near me") {}
-                    Check(true, "Same state") {}
-                    Check(true, "any state") {}
+                MyDatePicker(updatechossingDate = {it->
+                    setDatevalue(it.toString())
 
-                }
-                Spacer(modifier = modifier.height(10.dp))
+                })
                 Text(text = "Availability")
                 Card(
                     modifier = Modifier
@@ -226,13 +277,43 @@ fun FilterDialog(
                     colors = CardDefaults.cardColors(containerColor = Color.Transparent)
                 ) {}
                 Spacer(modifier = modifier.height(10.dp))
+
                 Row(
                     horizontalArrangement = Arrangement.SpaceAround,
                     modifier = Modifier.fillMaxWidth(1f)
                 ) {
-                    Check(true, "near me") {}
-                    Check(true, "Same state") {}
-                    Check(true, "any state") {}
+                    Check(homeMVVM.available, "Acailable") {
+                        homeMVVM.updateAvailable(it)
+                        setAvailabilityvalue(true)}
+                    Check(homeMVVM.unavailable, "Comming soon") {
+                        homeMVVM.updateUnavailable(it)
+                        setAvailabilityvalue(false)}
+
+
+                }
+                Spacer(modifier = modifier.height(10.dp))
+                Text(text = "Delivery")
+                Card(
+                    modifier = Modifier
+                        .height(1.dp)
+                        .fillMaxWidth(1f),
+                    elevation = CardDefaults.elevatedCardElevation(10.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color.Transparent)
+                ) {}
+                Spacer(modifier = modifier.height(10.dp))
+
+                Row(
+                    horizontalArrangement = Arrangement.SpaceAround,
+                    modifier = Modifier.fillMaxWidth(1f)
+                ) {
+                    Check(homeMVVM.freeDelivery, "free Delivery") {
+                        homeMVVM.updateFreeDelivery(it)
+                        setFreeDelivery(true)}
+                    Check(homeMVVM.paid, "Payed Delivery") {
+                        homeMVVM.updatePaid(it)
+                        setFreeDelivery(false)}
+
+
 
                 }
                 Spacer(modifier = modifier.height(10.dp))
@@ -240,13 +321,21 @@ fun FilterDialog(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier
                         .fillMaxWidth(1f)
-                        .padding(20.dp, 50.dp, 20.dp, 10.dp)
+                        .padding(10.dp, 10.dp, 10.dp, 10.dp)
                 ) {
-                    Button(onClick = { setDialogstate(false)}, colors = ButtonDefaults.buttonColors(Color(0xFF0386D0))) {
+                    Button(
+                        onClick = { setDialogstate(false) }, colors = ButtonDefaults.buttonColors(
+                            Indigo
+                        )
+                    ) {
 
                         Text(text = "cancel")
                     }
-                    Button(onClick = { setDialogstate(false)}, colors = ButtonDefaults.buttonColors(Color(0xFF0386D0))) {
+                    Button(
+                        onClick = { setDialogstate(false) }, colors = ButtonDefaults.buttonColors(
+                            Indigo
+                        )
+                    ) {
 
                         Text(text = "submit")
                     }
@@ -261,45 +350,58 @@ fun FilterDialog(
 
 @Composable
 fun Check(value: Boolean, text: String, setvalue: (Boolean) -> Unit) {
-    var va by remember { mutableStateOf(false) }
+
     Row(verticalAlignment = Alignment.CenterVertically) {
         Checkbox(
-            checked = va,
-            onCheckedChange = { va=it },
+            checked = value,
+            onCheckedChange = { setvalue(it) },
             colors = CheckboxDefaults.colors(
-                checkedColor = Color(0xFF65C6FC),  // Customize the color when checked
-                uncheckedColor = Color(0xFF0386D0),       // Customize the color when unchecked
+                checkedColor = Indigo,  // Customize the color when checked
+                uncheckedColor = SlateBlue,       // Customize the color when unchecked
                 checkmarkColor = Color.White       // Customize the checkmark color
             )
         )
         Text(text = text)
     }
 }
+
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyDatePicker() {
-    val dateState = rememberDatePickerState()
+fun MyDatePicker(updatechossingDate:(LocalDate)->Unit) {
+    val currentDate = LocalDate.now()
+    val currentDateMillis = currentDate.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
+    val dateState = rememberDatePickerState(initialSelectedDateMillis = currentDateMillis)
+    var chosenDate by remember { mutableStateOf(currentDate) }
+
     var clicked by remember {
         mutableStateOf(false)
     }
-    IconButton(onClick = { clicked=!clicked }) {
-        Icon(imageVector = Icons.Filled.DateRange, contentDescription ="date", tint = Color(0xFF0386D0) )
+
+    IconButton(onClick = { clicked = !clicked }) {
+        Icon(imageVector = Icons.Filled.DateRange, contentDescription = "date", tint = Indigo)
     }
     if (clicked)
         Dialog(onDismissRequest = { clicked }) {
-            Card (colors = CardDefaults.cardColors(
-                containerColor = Color.White
-            )){
+            Card(
+                colors = CardDefaults.cardColors(
+                    containerColor = Color.White
+                )
+            ) {
                 Column(Modifier.fillMaxWidth(1f)) {
                     DatePicker(
                         state = dateState
                     )
-                    Row (Modifier.fillMaxWidth(1f), horizontalArrangement = Arrangement.SpaceAround){
-                        TextButton(onClick = { clicked=false}) {
+                    Row(
+                        Modifier.fillMaxWidth(1f),
+                        horizontalArrangement = Arrangement.SpaceAround
+                    ) {
+                        TextButton(onClick = { clicked = false }) {
                             Text(text = "Cancle")
                         }
-                        TextButton(onClick = { clicked=false}) {
+                        TextButton(onClick = { clicked = false }) {
                             Text(text = "Submit")
+                            updatechossingDate(chosenDate)
                         }
                     }
                 }
@@ -418,7 +520,7 @@ fun ImageCarouselCard(images: List<String>) {
 }
 
 @Composable
-fun ProductList(modifier: Modifier = Modifier,List:List<Productdata>) {
+fun ProductList(modifier: Modifier = Modifier, List: List<Productdata>) {
 
 
 }
@@ -431,4 +533,26 @@ fun ProductCard(modifier: Modifier = Modifier) {
         }
     }
 
+}
+
+@Composable
+fun IteamSearch(ShowData: Search_dataList) {
+    Card (modifier = Modifier
+        .fillMaxWidth(1f)
+        .height(80.dp)
+        .padding(10.dp), colors = CardDefaults.cardColors(Color.White), elevation = CardDefaults.elevatedCardElevation(5.dp)){
+        Row( verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxSize(1f)) {
+            AsyncImage(
+                model = ShowData.image,
+                contentDescription = "Product IMage",
+                modifier = Modifier
+                    .width(60.dp)
+                    .height(40.dp)
+                    .padding(start = 20.dp)
+                    .shadow(shape = CircleShape, elevation = 5.dp),
+                contentScale = ContentScale.Crop
+            )
+            Text(text = "${ShowData.name} and price ${ShowData.price} loc ${ShowData.Locatation} ",Modifier.padding(start = 50.dp))
+        }
+    }
 }

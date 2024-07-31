@@ -15,6 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.NextGsi"
         tools:targetApi="31">
+
         <activity
             android:name=".OrderHistoryActivity"
             android:exported="true"

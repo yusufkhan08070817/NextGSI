@@ -7,6 +7,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -44,14 +45,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.ionexa.nextgsi.Components.HeamBurger
+
 import com.ionexa.nextgsi.Components.RectangleWithCurve
+import com.ionexa.nextgsi.MVVM.ProfileMVVM
 import com.ionexa.nextgsi.R
 import com.ionexa.nextgsi.R.*
+import com.ionexa.nextgsi.ui.theme.DarkSlateBlue
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfilePage(modifier: Modifier = Modifier, naveController: NavController) {
+fun ProfilePage(modifier: Modifier = Modifier, naveController: NavController,ProfileViewModel:ProfileMVVM) {
     var eidtable by remember { mutableStateOf(true) }
     var menueState by remember { mutableStateOf(false) }
     Box(modifier = modifier.fillMaxSize(1f)) {
@@ -61,7 +64,7 @@ fun ProfilePage(modifier: Modifier = Modifier, naveController: NavController) {
             }
             Row(Modifier.fillMaxWidth(1f), horizontalArrangement = Arrangement.Center) {
                 TextField(
-                    value = "Name", onValueChange = {}, enabled = true, readOnly = eidtable,
+                    value = ProfileViewModel.name, onValueChange = {ProfileViewModel.updatname(it)}, enabled = true, readOnly = eidtable,
                     leadingIcon = {
                         IconButton(onClick = { /*TODO*/ }) {
                             Icon(imageVector = Icons.Default.Person, contentDescription = "email")
@@ -77,7 +80,7 @@ fun ProfilePage(modifier: Modifier = Modifier, naveController: NavController) {
             }
             Row(Modifier.fillMaxWidth(1f), horizontalArrangement = Arrangement.Center) {
                 TextField(
-                    value = "Address", onValueChange = {}, enabled = true, readOnly = eidtable,
+                    value = ProfileViewModel.address, onValueChange = {ProfileViewModel.updateaddress(it)}, enabled = true, readOnly = eidtable,
                     leadingIcon = {
                         IconButton(onClick = { /*TODO*/ }) {
                             Icon(imageVector = Icons.Default.Place, contentDescription = "email")
@@ -93,7 +96,7 @@ fun ProfilePage(modifier: Modifier = Modifier, naveController: NavController) {
             }
             Row(Modifier.fillMaxWidth(1f), horizontalArrangement = Arrangement.Center) {
                 TextField(
-                    value = "Phone", onValueChange = {}, enabled = true, readOnly = eidtable,
+                    value = ProfileViewModel.phone, onValueChange = {ProfileViewModel.updatephone(it)}, enabled = true, readOnly = eidtable,
                     leadingIcon = {
                         IconButton(onClick = { /*TODO*/ }) {
                             Icon(imageVector = Icons.Default.Phone, contentDescription = "email")
@@ -109,7 +112,7 @@ fun ProfilePage(modifier: Modifier = Modifier, naveController: NavController) {
             }
             Row(Modifier.fillMaxWidth(1f), horizontalArrangement = Arrangement.Center) {
                 TextField(
-                    value = "password", onValueChange = {}, enabled = true, readOnly = eidtable,
+                    value = ProfileViewModel.password, onValueChange = {ProfileViewModel.updatepassword(it)}, enabled = true, readOnly = eidtable,
                     leadingIcon = {
                         IconButton(onClick = { /*TODO*/ }) {
                             Icon(imageVector = Icons.Default.Lock, contentDescription = "email")
@@ -125,7 +128,7 @@ fun ProfilePage(modifier: Modifier = Modifier, naveController: NavController) {
             }
             Row(Modifier.fillMaxWidth(1f), horizontalArrangement = Arrangement.Center) {
                 TextField(
-                    value = "Email", onValueChange = {}, enabled = true, readOnly = eidtable,
+                    value = ProfileViewModel.email, onValueChange = {ProfileViewModel.updateemail(it)}, enabled = true, readOnly = eidtable,
                     leadingIcon = {
                         IconButton(onClick = { /*TODO*/ }) {
                             Icon(imageVector = Icons.Default.Email, contentDescription = "email")
@@ -147,13 +150,13 @@ fun ProfilePage(modifier: Modifier = Modifier, naveController: NavController) {
                 ) {
                     Button(
                         onClick = { eidtable = true },
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0386D0))
+                        colors = ButtonDefaults.buttonColors(containerColor = DarkSlateBlue)
                     ) {
                         Text(text = "Cancle")
                     }
                     Button(
                         onClick = { eidtable = true },
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0386D0))
+                        colors = ButtonDefaults.buttonColors(containerColor = DarkSlateBlue)
                     ) {
                         Text(text = "Save")
                     }

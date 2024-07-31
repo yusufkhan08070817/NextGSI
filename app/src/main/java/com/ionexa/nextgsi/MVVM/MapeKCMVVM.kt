@@ -81,5 +81,37 @@ class MapeKCMVVM : ViewModel() {
         yourlongitude = longitude
 
     }
+    var yourcurrentLocatationString by mutableStateOf("")
+        private set
+    fun updateyourcurrentLocatationString(value:String){
+        yourcurrentLocatationString=value
+    }
 
 }
+// LocationScreen(locationProvider,MapeViewModel)
+/*
+   val latitude by rememberUpdatedState(Locatation.latitude)
+            val longitude by rememberUpdatedState(Locatation.longitude)
+
+            // Update the displayed text when location changes
+            LaunchedEffect(latitude, longitude) {
+                // This will recompose when latitude or longitude changes
+                Toast.makeText(this@MainActivity, "Latitude: $latitude, Longitude: $longitude" , Toast.LENGTH_SHORT).show()
+            }
+
+            // Display the latitude and longitude
+
+         Column {
+
+             MapeComp(
+                 Modifier
+                     .fillMaxWidth(1f)
+                     .fillMaxHeight(1f),MapeViewModel,this@MainActivity)
+         }
+            Button(onClick = {  MapeViewModel.updateLocataionString("Lund");
+                MapeViewModel.searchLocation() }, modifier = Modifier.offset(100.dp,100.dp)) {
+
+            }
+           Text(text = "Latitude: $latitude, Longitude: $longitude", modifier = Modifier.offset(10.dp,200.dp))
+         }
+ */
