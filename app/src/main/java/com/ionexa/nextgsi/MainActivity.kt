@@ -43,6 +43,7 @@ import com.ionexa.nextgsi.MVVM.Loginmvvm
 import com.ionexa.nextgsi.MVVM.MapeKCMVVM
 import com.ionexa.nextgsi.Pages.HomePage
 import com.ionexa.nextgsi.Pages.LoginPage
+import com.ionexa.nextgsi.Pages.ProductDetailScreen
 
 import com.ionexa.nextgsi.Pages.ProfilePage
 
@@ -128,7 +129,9 @@ fun Main(
         composable(NaveLabels.Profile) {
             ProfilePage(modifier = Modifier, navcontroller)
         }
-
+        composable(NaveLabels.product){
+            ProductDetailScreen()
+        }
     }
 }
 
