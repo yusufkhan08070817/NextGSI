@@ -81,13 +81,14 @@ import com.ionexa.nextgsi.MVVM.MapeKCMVVM
 import com.ionexa.nextgsi.R
 import com.ionexa.nextgsi.SingleTon.Locatation
 import com.ionexa.nextgsi.SingleTon.NaveLabels
+import com.ionexa.nextgsi.SingleTon.Navigation
 import com.ionexa.nextgsi.ui.theme.Mediumpurple
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 
 fun HomePage(
     modifier: Modifier = Modifier,
-    navController: NavController,
+
     homeViewModel: HomeMVVM,
     locationProvider: LocationProvider,
     mapViewModel: MapeKCMVVM,
@@ -184,7 +185,9 @@ fun HomePage(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     items(filteredItems) { item ->
-                        IteamSearch(ShowData = item)
+                        IteamSearch(ShowData = item){
+                            Navigation.navController.navigate(NaveLabels.product)
+                        }
                     }
                 }
             }

@@ -29,9 +29,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
+import com.google.firebase.auth.FirebaseAuth
 import com.ionexa.nextgsi.Classes.LocationProvider
 import com.ionexa.nextgsi.DataClass.GoogleUserData
 import com.ionexa.nextgsi.DataClass.Order
+import com.ionexa.nextgsi.FIreBase.FirebaseAuthManager
 import com.ionexa.nextgsi.FIreBase.FirebaseGoogleAuth
 import com.ionexa.nextgsi.MVVM.*
 import com.ionexa.nextgsi.Pages.*
@@ -54,7 +56,10 @@ class MainActivity : ComponentActivity() {
             oneTapClient = com.google.android.gms.auth.api.identity.Identity.getSignInClient(applicationContext)
         )
     }
-
+    companion object {
+         val FBAuth: FirebaseAuth = FirebaseAuth.getInstance()
+    }
+val FBauthManager= FirebaseAuthManager()
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,6 +77,7 @@ NaveLabels.DefaultLoag=NaveLabels.Home
             {
                 NaveLabels.DefaultLoag=NaveLabels.SplashScreen
             }
+
             Main(
                 loginViewModel = LoginViewModel,
                 homeViewModel = HomeViewModel,
@@ -81,7 +87,7 @@ NaveLabels.DefaultLoag=NaveLabels.Home
                 locationProvider = locationProvider,
                 orderList = orderList,
                 signInMVVM = SignInMVVM,
-                googleAuthUiClient = googleAuthUiClient
+                googleAuthUiClient = googleAuthUiClient,FBauthManager=FBauthManager
             )
         }
     }
@@ -124,7 +130,7 @@ fun Main(
     locationProvider: LocationProvider,
     orderList: MutableList<Order>,
     signInMVVM: SignInMVVM,
-    googleAuthUiClient: FirebaseGoogleAuth
+    googleAuthUiClient: FirebaseGoogleAuth,FBauthManager:FirebaseAuthManager
 ) {
     val coroutineScope = rememberCoroutineScope()
     val duration = 300
@@ -150,7 +156,7 @@ fun Main(
     ) {
         composable(NaveLabels.Login) {
             NextGsiTheme {
-                LoginPage(loginViewModel, navController, state) {
+                LoginPage(loginViewModel,FBauthManager=FBauthManager, navController, state) {
                     (context as? ComponentActivity)?.lifecycleScope?.launch {
                         val signInIntentSender = googleAuthUiClient.signinwithgoogle()
                         launcher.launch(
@@ -169,7 +175,6 @@ fun Main(
             ScreenWithBottomBar(navController) { innerPadding ->
                 HomePage(
                     modifier = Modifier.padding(innerPadding),
-                    navController = navController,
                     homeViewModel = homeViewModel,
                     locationProvider = locationProvider,
                     mapViewModel = mapeViewModel
@@ -197,6 +202,9 @@ fun Main(
             ScreenWithBottomBar(navController) { innerPadding ->
                 MapeWithSerchBar(mapeKCMVVM = mapeViewModel)
             }
+        }
+        composable(NaveLabels.OTPVerificatation) {
+            OtpVerification()
         }
         composable(NaveLabels.Cart) {
             ScreenWithBottomBar(navController) { innerPadding ->

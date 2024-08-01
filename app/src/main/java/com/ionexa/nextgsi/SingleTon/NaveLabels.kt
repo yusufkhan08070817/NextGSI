@@ -12,7 +12,7 @@ const val Cart = "Cart"
     const val SerchWithLocatation="SerchWithLocatation"
     const val AccountPravicy="AccountPravicy"
     const val AboutUs="AboutUs"
-
+const val OTPVerificatation="OTPVerificatation"
     var  DefaultLoag="SplashScreen"
 
 }

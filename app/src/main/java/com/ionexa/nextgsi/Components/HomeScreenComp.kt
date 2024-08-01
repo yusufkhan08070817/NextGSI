@@ -6,6 +6,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.collectIsDraggedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -536,11 +537,13 @@ fun ProductCard(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun IteamSearch(ShowData: Search_dataList) {
+fun IteamSearch(ShowData: Search_dataList,clickbutton:()->Unit) {
     Card (modifier = Modifier
         .fillMaxWidth(1f)
         .height(80.dp)
-        .padding(10.dp), colors = CardDefaults.cardColors(Color.White), elevation = CardDefaults.elevatedCardElevation(5.dp)){
+        .padding(10.dp)
+        .clickable { clickbutton() },
+        colors = CardDefaults.cardColors(Color.White), elevation = CardDefaults.elevatedCardElevation(5.dp)){
         Row( verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxSize(1f)) {
             AsyncImage(
                 model = ShowData.image,

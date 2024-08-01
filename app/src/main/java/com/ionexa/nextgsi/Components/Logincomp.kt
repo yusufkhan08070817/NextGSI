@@ -360,7 +360,7 @@ fun LogWithGoogleFacebookApple(
 ) {
     var height = 40.dp
     var width = 40.dp
-    Text(text = "or", modifier = Modifier.fillMaxWidth(1f), textAlign = TextAlign.Center)
+    Text(text = "or With", modifier = Modifier.fillMaxWidth(1f), textAlign = TextAlign.Center)
     Column(
         modifier = Modifier
             .fillMaxWidth(1f)
@@ -376,20 +376,7 @@ fun LogWithGoogleFacebookApple(
                     .width(width)
                     .padding(5.dp)
                     .clickable { GoogleAuth() })
-            Image(painter = painterResource(id = R.drawable.apple),
-                contentDescription = "Login With Google",
-                modifier = Modifier
-                    .height(height)
-                    .width(width)
-                    .padding(5.dp)
-                    .clickable { AppleAuth() })
-            Image(painter = painterResource(id = R.drawable.facebook),
-                contentDescription = "Login With Google",
-                modifier = Modifier
-                    .height(height)
-                    .width(width)
-                    .padding(5.dp)
-                    .clickable { FaceBookAuth() })
+
 
 
         }
