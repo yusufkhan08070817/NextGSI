@@ -10,5 +10,9 @@ const val Cart = "Cart"
     const val product = "product"
     const val SplashScreen="SplashScreen"
     const val SerchWithLocatation="SerchWithLocatation"
+    const val AccountPravicy="AccountPravicy"
+    const val AboutUs="AboutUs"
+
+    var  DefaultLoag="SplashScreen"
 
 }

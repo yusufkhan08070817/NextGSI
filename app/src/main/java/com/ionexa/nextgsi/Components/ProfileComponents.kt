@@ -45,7 +45,7 @@ import com.ionexa.nextgsi.ui.theme.IndigoHeading
 import com.ionexa.nextgsi.ui.theme.SlateBlue
 
 @Composable
-fun RectangleWithCurve(modifier: Modifier = Modifier,editable:()->Unit) {
+fun RectangleWithCurve(modifier: Modifier = Modifier,profileimageurl:String,editable:()->Unit) {
     Box(modifier = Modifier
         .fillMaxWidth(1f)
         .height(300.dp))
@@ -73,7 +73,7 @@ fun RectangleWithCurve(modifier: Modifier = Modifier,editable:()->Unit) {
                 colors = CardDefaults.cardColors(containerColor = Color.White), elevation = CardDefaults.elevatedCardElevation(2.dp), shape = CircleShape
             ) {
                 AsyncImage(
-                    model = "https://static.vecteezy.com/system/resources/previews/002/002/403/large_2x/man-with-beard-avatar-character-isolated-icon-free-vector.jpg",
+                    model = profileimageurl,
                     contentDescription =null
                     , modifier = Modifier
                         .clip(shape = CircleShape)
