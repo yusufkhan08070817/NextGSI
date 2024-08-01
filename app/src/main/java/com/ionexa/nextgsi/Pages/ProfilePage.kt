@@ -36,9 +36,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -47,24 +50,48 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 
 import com.ionexa.nextgsi.Components.RectangleWithCurve
+import com.ionexa.nextgsi.DataClass.GoogleUserData
+
 import com.ionexa.nextgsi.MVVM.ProfileMVVM
 import com.ionexa.nextgsi.R
 import com.ionexa.nextgsi.R.*
 import com.ionexa.nextgsi.ui.theme.DarkSlateBlue
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfilePage(modifier: Modifier = Modifier, naveController: NavController,ProfileViewModel:ProfileMVVM) {
+fun ProfilePage(
+    modifier: Modifier = Modifier,
+    googleUserData: GoogleUserData? = null,
+    naveController: NavController,
+    ProfileViewModel: ProfileMVVM,
+    LogOutPRofile: () -> Unit
+) {
     var eidtable by remember { mutableStateOf(true) }
     var menueState by remember { mutableStateOf(false) }
+
+    LaunchedEffect(true) {
+        ProfileViewModel.updateprofileImageUrl(
+            googleUserData?.profilePictureUrl
+                ?: "https://static.vecteezy.com/system/resources/previews/002/002/403/large_2x/man-with-beard-avatar-character-isolated-icon-free-vector.jpg"
+        )
+        ProfileViewModel.updatname(googleUserData?.userName ?: "Name")
+        ProfileViewModel.updateemail(googleUserData?.userId ?: "Email")
+    }
     Box(modifier = modifier.fillMaxSize(1f)) {
         Column(modifier = modifier.fillMaxSize(1f)) {
-            RectangleWithCurve(Modifier.fillMaxWidth(1f)) {
+            RectangleWithCurve(
+                Modifier.fillMaxWidth(1f),
+                profileimageurl = ProfileViewModel.profileImageUrl
+            ) {
                 eidtable = false
             }
             Row(Modifier.fillMaxWidth(1f), horizontalArrangement = Arrangement.Center) {
                 TextField(
-                    value = ProfileViewModel.name, onValueChange = {ProfileViewModel.updatname(it)}, enabled = true, readOnly = eidtable,
+                    value = ProfileViewModel.name,
+                    onValueChange = { ProfileViewModel.updatname(it) },
+                    enabled = true,
+                    readOnly = eidtable,
                     leadingIcon = {
                         IconButton(onClick = { /*TODO*/ }) {
                             Icon(imageVector = Icons.Default.Person, contentDescription = "email")
@@ -80,7 +107,10 @@ fun ProfilePage(modifier: Modifier = Modifier, naveController: NavController,Pro
             }
             Row(Modifier.fillMaxWidth(1f), horizontalArrangement = Arrangement.Center) {
                 TextField(
-                    value = ProfileViewModel.address, onValueChange = {ProfileViewModel.updateaddress(it)}, enabled = true, readOnly = eidtable,
+                    value = ProfileViewModel.address,
+                    onValueChange = { ProfileViewModel.updateaddress(it) },
+                    enabled = true,
+                    readOnly = eidtable,
                     leadingIcon = {
                         IconButton(onClick = { /*TODO*/ }) {
                             Icon(imageVector = Icons.Default.Place, contentDescription = "email")
@@ -96,7 +126,10 @@ fun ProfilePage(modifier: Modifier = Modifier, naveController: NavController,Pro
             }
             Row(Modifier.fillMaxWidth(1f), horizontalArrangement = Arrangement.Center) {
                 TextField(
-                    value = ProfileViewModel.phone, onValueChange = {ProfileViewModel.updatephone(it)}, enabled = true, readOnly = eidtable,
+                    value = ProfileViewModel.phone,
+                    onValueChange = { ProfileViewModel.updatephone(it) },
+                    enabled = true,
+                    readOnly = eidtable,
                     leadingIcon = {
                         IconButton(onClick = { /*TODO*/ }) {
                             Icon(imageVector = Icons.Default.Phone, contentDescription = "email")
@@ -112,7 +145,10 @@ fun ProfilePage(modifier: Modifier = Modifier, naveController: NavController,Pro
             }
             Row(Modifier.fillMaxWidth(1f), horizontalArrangement = Arrangement.Center) {
                 TextField(
-                    value = ProfileViewModel.password, onValueChange = {ProfileViewModel.updatepassword(it)}, enabled = true, readOnly = eidtable,
+                    value = ProfileViewModel.password,
+                    onValueChange = { ProfileViewModel.updatepassword(it) },
+                    enabled = true,
+                    readOnly = eidtable,
                     leadingIcon = {
                         IconButton(onClick = { /*TODO*/ }) {
                             Icon(imageVector = Icons.Default.Lock, contentDescription = "email")
@@ -128,7 +164,10 @@ fun ProfilePage(modifier: Modifier = Modifier, naveController: NavController,Pro
             }
             Row(Modifier.fillMaxWidth(1f), horizontalArrangement = Arrangement.Center) {
                 TextField(
-                    value = ProfileViewModel.email, onValueChange = {ProfileViewModel.updateemail(it)}, enabled = true, readOnly = eidtable,
+                    value = ProfileViewModel.email,
+                    onValueChange = { ProfileViewModel.updateemail(it) },
+                    enabled = true,
+                    readOnly = eidtable,
                     leadingIcon = {
                         IconButton(onClick = { /*TODO*/ }) {
                             Icon(imageVector = Icons.Default.Email, contentDescription = "email")
@@ -162,10 +201,19 @@ fun ProfilePage(modifier: Modifier = Modifier, naveController: NavController,Pro
                     }
                 }
         }// background
-        AnimatedVisibility(visible = !menueState, enter = slideInHorizontally(), exit = slideOutHorizontally()) {
-            Card(modifier = Modifier
-                .width(50.dp)
-                .height(50.dp).offset(10.dp,40.dp), colors = CardDefaults.cardColors(containerColor = Color.White), elevation = CardDefaults.elevatedCardElevation(10.dp))
+        AnimatedVisibility(
+            visible = !menueState,
+            enter = slideInHorizontally(),
+            exit = slideOutHorizontally()
+        ) {
+            Card(
+                modifier = Modifier
+                    .width(50.dp)
+                    .height(50.dp)
+                    .offset(10.dp, 40.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White),
+                elevation = CardDefaults.elevatedCardElevation(10.dp)
+            )
             {
 
                 IconButton(onClick = { menueState = true }) {
@@ -181,8 +229,10 @@ fun ProfilePage(modifier: Modifier = Modifier, naveController: NavController,Pro
                 }
             }
         }
-        HeamBurger(state =  menueState, hemState = {
-            menueState=false
+        HeamBurger(state = menueState, hemState = {
+            menueState = false
+        }, logout = {
+            LogOutPRofile()
         })
     }
 }

@@ -8,6 +8,8 @@ import androidx.lifecycle.ViewModel
 class ProfileMVVM:ViewModel() {
     var email by mutableStateOf("Email")
         private set
+    var profileImageUrl by mutableStateOf("https://static.vecteezy.com/system/resources/previews/002/002/403/large_2x/man-with-beard-avatar-character-isolated-icon-free-vector.jpg")
+        private set
     var password by mutableStateOf("Password")
         private set
     var address by mutableStateOf("Address")
@@ -19,6 +21,10 @@ class ProfileMVVM:ViewModel() {
     fun updateemail(value:String)
     {
         email=value
+    }
+    fun updateprofileImageUrl(value:String)
+    {
+        profileImageUrl=value
     }
     fun updatname(value:String)
     {

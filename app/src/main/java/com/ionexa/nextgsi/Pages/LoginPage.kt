@@ -1,6 +1,7 @@
 package com.ionexa.nextgsi.Pages
 
 
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -17,12 +18,14 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -36,6 +39,7 @@ import com.ionexa.nextgsi.Components.Logn_Register
 import com.ionexa.nextgsi.Components.Password
 import com.ionexa.nextgsi.Components.Register
 import com.ionexa.nextgsi.Components.RememberAndForgot
+import com.ionexa.nextgsi.DataClass.SignInState
 import com.ionexa.nextgsi.MVVM.Loginmvvm
 import com.ionexa.nextgsi.R
 import com.ionexa.nextgsi.SingleTon.NaveLabels
@@ -43,7 +47,21 @@ import com.ionexa.nextgsi.ui.theme.DarkOrchidwebcolor
 import com.ionexa.nextgsi.ui.theme.Standardpurple
 
 @Composable
-fun LoginPage( LoginViewModel: Loginmvvm,navController: NavController) {
+fun LoginPage( LoginViewModel: Loginmvvm,navController: NavController,state: SignInState,onGoogleSignInClick: () -> Unit) {
+
+    val context = LocalContext.current
+    LaunchedEffect(key1 = state.signInError)  {
+        state.signInError?.let { error ->
+            Toast.makeText(context, error, Toast.LENGTH_LONG).show()
+        }
+
+
+    }
+    LaunchedEffect(key1 = state.isSignSuccessfull) {
+        if (state.isSignSuccessfull) {
+            navController.navigate(NaveLabels.Home)
+        }
+    }
 
     val scrollState = rememberScrollState()
     Box(modifier = Modifier.fillMaxSize()) {
@@ -174,6 +192,7 @@ fun LoginPage( LoginViewModel: Loginmvvm,navController: NavController) {
                 })
             LogWithGoogleFacebookApple(GoogleAuth = {
                 // Handle Google login
+                onGoogleSignInClick()
                 println("Google login clicked")
             }, FaceBookAuth = {
                 // Handle Facebook login

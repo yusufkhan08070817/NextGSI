@@ -64,6 +64,8 @@ dependencies {
     implementation(libs.androidx.constraintlayout.compose)
     implementation(libs.firebase.auth)
     implementation(libs.material)
+    implementation(libs.play.services.auth)
+    implementation(libs.androidx.runtime.livedata)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -81,8 +83,8 @@ dependencies {
     implementation (libs.retrofit)
     implementation (libs.converter.gson)
     implementation (libs.kotlinx.coroutines.android)
-
-
+    implementation (libs.androidx.lifecycle.runtime.ktx.v261)
+implementation (libs.androidx.lifecycle.runtime.compose)
 
 
 }

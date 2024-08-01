@@ -10,23 +10,29 @@ junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 kotlinxCoroutinesAndroid = "1.5.1"
+lifecycleRuntimeCompose = "2.8.4"
 lifecycleRuntimeKtx = "2.8.3"
 activityCompose = "1.9.0"
 composeBom = "2024.04.01"
 constraintlayoutCompose = "1.0.1"
 googleGmsGoogleServices = "4.4.2"
 firebaseAuth = "23.0.0"
+lifecycleRuntimeKtxVersion = "2.6.1"
 lottieCompose = "5.2.0"
 navigationCompose = "2.7.7"
 material = "1.12.0"
 playServicesLocation = "21.0.0"
 retrofit = "2.9.0"
 webkit = "1.11.0"
+playServicesAuth = "21.2.0"
+runtimeLivedata = "1.6.8"
 
 [libraries]
 accompanist-pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanistPager" }
 accompanist-webview = { module = "com.google.accompanist:accompanist-webview", version.ref = "accompanistWebview" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycleRuntimeCompose" }
+androidx-lifecycle-runtime-ktx-v261 = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtxVersion" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 androidx-webkit = { module = "androidx.webkit:webkit", version.ref = "webkit" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
@@ -51,6 +57,8 @@ lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "playServicesAuth" }
+androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "runtimeLivedata" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
