@@ -37,7 +37,7 @@ fun LoadingScreen(modifier: Modifier = Modifier) {
             ) {
                 CircularProgressIndicator()
                 Text(
-                    text = "Verify your email ID",
+                    text = "Verify your email ID : Check your mail",
                     fontSize = 18.sp,
                     color = androidx.compose.ui.graphics.Color.Black,
                     modifier = Modifier.padding(top = 16.dp)

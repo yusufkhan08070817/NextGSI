@@ -76,6 +76,11 @@ fun OtpVerification(
         viewModel.startPhoneNumberVerification(activity)
 
     }
+    LaunchedEffect(viewModel.status.value) {
+        if (viewModel.status.value){
+            com.ionexa.nextgsi.SingleTon.Navigation.navController.navigate(NaveLabels.Home)
+        }
+    }
    Column {
        Column(
            modifier = Modifier
