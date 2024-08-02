@@ -1,5 +1,6 @@
 package com.ionexa.nextgsi.Pages
 
+import android.app.Activity
 import android.os.CountDownTimer
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -42,11 +43,19 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.Navigation
+import com.ionexa.nextgsi.MVVM.OtpVerificationViewModel
+import com.ionexa.nextgsi.SingleTon.NaveLabels
 import com.ionexa.nextgsi.ui.theme.RebeccaPurpleHilghtText
 
 
 @Composable
-fun OtpVerification(modifier: Modifier = Modifier) {
+fun OtpVerification(
+    modifier: Modifier = Modifier,
+    activity: Activity,
+    viewModel: OtpVerificationViewModel = viewModel()
+) {
     var otpText1 by remember { mutableStateOf("") }
     var otpText2 by remember { mutableStateOf("") }
     var otpText3 by remember { mutableStateOf("") }
@@ -63,8 +72,33 @@ fun OtpVerification(modifier: Modifier = Modifier) {
 
     val focusManager = LocalFocusManager.current
     val context = LocalContext.current
+    LaunchedEffect(Unit) {
+        viewModel.startPhoneNumberVerification(activity)
 
-
+    }
+   Column {
+       Column(
+           modifier = Modifier
+               .fillMaxWidth(1f)
+               .fillMaxHeight(0.1f)
+               .background(RebeccaPurpleHilghtText),
+           verticalArrangement = Arrangement.Bottom,
+           horizontalAlignment = Alignment.CenterHorizontally
+       ) {
+           Text(
+               text = "Phone Number Verification :${viewModel.phoneNumber.value} ",
+               modifier = Modifier.padding(10.dp),
+               color = Color.White,
+               fontSize = 15.sp
+           )
+       }
+       Card(
+           modifier
+               .fillMaxWidth(1f)
+               .padding(10.dp)) {
+           Text(text = viewModel.verificationState.value)
+       }
+   }
     Box(
         modifier = Modifier
             .fillMaxSize(1f)
@@ -75,28 +109,39 @@ fun OtpVerification(modifier: Modifier = Modifier) {
             modifier = Modifier
                 .fillMaxWidth(1f)
                 .fillMaxHeight(0.4f)
-                .padding(10.dp), colors = CardDefaults.cardColors(containerColor = Color.White), elevation = CardDefaults.elevatedCardElevation(12.dp)
+                .padding(10.dp),
+            colors = CardDefaults.cardColors(containerColor = Color.White),
+            elevation = CardDefaults.elevatedCardElevation(12.dp)
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth(1f)
                     .padding(10.dp)
             ) {
-                Text(text = "Verify your phone number",style = MaterialTheme.typography.headlineLarge .copy(
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = RebeccaPurpleHilghtText
-                ))
-                Text(text = "Don't share your OTP with others",style = MaterialTheme.typography.labelSmall.copy(
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Normal,
-                    color = Color.Gray
-                ))
+
+                Text(
+                    text = "Verify your phone number",
+                    style = MaterialTheme.typography.headlineLarge.copy(
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = RebeccaPurpleHilghtText
+                    )
+                )
+                Text(
+                    text = "Don't share your OTP with others",
+                    style = MaterialTheme.typography.labelSmall.copy(
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Normal,
+                        color = Color.Gray
+                    )
+                )
             }
             TimerScreen()
-            Box(modifier = Modifier
-                .fillMaxWidth(1f)
-                .fillMaxHeight(0.5f), contentAlignment = Alignment.Center) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(1f)
+                    .fillMaxHeight(0.5f), contentAlignment = Alignment.Center
+            ) {
                 Row() {
                     OtpTextField(
                         value = otpText1,
@@ -158,19 +203,35 @@ fun OtpVerification(modifier: Modifier = Modifier) {
                     .fillMaxWidth(1f)
                     .fillMaxHeight(0.2f)
             )
-          Row(Modifier.fillMaxWidth(1f), verticalAlignment = Alignment.CenterVertically,horizontalArrangement =Arrangement.Center) {
-              Row(modifier = Modifier.fillMaxWidth(0.7f), verticalAlignment = Alignment.CenterVertically,horizontalArrangement =Arrangement.SpaceAround) {
-                  Button(onClick = { /*TODO*/ }) {
-                      Text(text = "Resend")
-                  }
-                  Button(onClick = { /*TODO*/ }) {
-                      Text(text = "Verify")
-                  }
-              }
-          }
+            Row(
+                Modifier.fillMaxWidth(1f),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(0.7f),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceAround
+                ) {
+                    Button(onClick = { /*TODO*/ }) {
+                        Text(text = "Resend")
+                    }
+                    Button(onClick = {
+                        viewModel.otpCode.value =
+                            otpText1 + otpText2 + otpText3 + otpText4 + otpText5 + otpText6
+                        viewModel.verifyPhoneNumberWithCode()
+                        if (viewModel.status.value){
+                            com.ionexa.nextgsi.SingleTon.Navigation.navController.navigate(NaveLabels.Home)
+                        }
+                    }) {
+                        Text(text = "Verify")
+                    }
+                }
+            }
         }
     }
 }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OtpTextField(
@@ -185,7 +246,8 @@ fun OtpTextField(
             .width(50.dp)
             .padding(5.dp)
             .border(3.dp, color = Color.White)
-            .border(5.dp, color = RebeccaPurpleHilghtText), colors = CardDefaults.cardColors(containerColor = Color.White)
+            .border(5.dp, color = RebeccaPurpleHilghtText),
+        colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
         TextField(
             value = value,
@@ -202,6 +264,7 @@ fun OtpTextField(
         )
     }
 }
+
 @Composable
 fun TimerScreen() {
     val context = LocalContext.current
@@ -215,14 +278,15 @@ fun TimerScreen() {
     }
 
     Box(
-        modifier = Modifier.fillMaxWidth(0.2f)
+        modifier = Modifier
+            .fillMaxWidth(0.2f)
             .background(MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.Center
     ) {
         Text(
             text = timerValue.value,
 
-        )
+            )
     }
 }
 

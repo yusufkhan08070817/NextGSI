@@ -50,6 +50,7 @@ class MainActivity : ComponentActivity() {
     private val orderList = mutableListOf<Order>()
     private val locationProvider by lazy { LocationProvider(this) }
     private val SignInMVVM by viewModels<SignInMVVM>()
+    private val OTP by viewModels<OtpVerificationViewModel>()
     private val googleAuthUiClient by lazy {
         FirebaseGoogleAuth(
             context = applicationContext,
@@ -77,6 +78,7 @@ NaveLabels.DefaultLoag=NaveLabels.Home
             {
                 NaveLabels.DefaultLoag=NaveLabels.SplashScreen
             }
+           /*  AuthScreen(activity = this) */
 
             Main(
                 loginViewModel = LoginViewModel,
@@ -87,7 +89,7 @@ NaveLabels.DefaultLoag=NaveLabels.Home
                 locationProvider = locationProvider,
                 orderList = orderList,
                 signInMVVM = SignInMVVM,
-                googleAuthUiClient = googleAuthUiClient,FBauthManager=FBauthManager
+                googleAuthUiClient = googleAuthUiClient,FBauthManager=FBauthManager, OTP = OTP, activity = this
             )
         }
     }
@@ -130,7 +132,9 @@ fun Main(
     locationProvider: LocationProvider,
     orderList: MutableList<Order>,
     signInMVVM: SignInMVVM,
-    googleAuthUiClient: FirebaseGoogleAuth,FBauthManager:FirebaseAuthManager
+    googleAuthUiClient: FirebaseGoogleAuth,FBauthManager:FirebaseAuthManager,
+    OTP: OtpVerificationViewModel,
+    activity: MainActivity
 ) {
     val coroutineScope = rememberCoroutineScope()
     val duration = 300
@@ -156,7 +160,7 @@ fun Main(
     ) {
         composable(NaveLabels.Login) {
             NextGsiTheme {
-                LoginPage(loginViewModel,FBauthManager=FBauthManager, navController, state) {
+                LoginPage(loginViewModel,FBauthManager=FBauthManager, navController =  navController, state =  state, OTP =OTP) {
                     (context as? ComponentActivity)?.lifecycleScope?.launch {
                         val signInIntentSender = googleAuthUiClient.signinwithgoogle()
                         launcher.launch(
@@ -204,7 +208,7 @@ fun Main(
             }
         }
         composable(NaveLabels.OTPVerificatation) {
-            OtpVerification()
+            OtpVerification(activity = activity, viewModel = OTP)
         }
         composable(NaveLabels.Cart) {
             ScreenWithBottomBar(navController) { innerPadding ->

@@ -33,6 +33,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.ionexa.nextgsi.Components.ButtonWithCutCornerShape
 import com.ionexa.nextgsi.Components.Combined
@@ -48,6 +49,7 @@ import com.ionexa.nextgsi.Components.RememberAndForgot
 import com.ionexa.nextgsi.DataClass.SignInState
 import com.ionexa.nextgsi.FIreBase.FirebaseAuthManager
 import com.ionexa.nextgsi.MVVM.Loginmvvm
+import com.ionexa.nextgsi.MVVM.OtpVerificationViewModel
 import com.ionexa.nextgsi.R
 import com.ionexa.nextgsi.SingleTon.NaveLabels
 import com.ionexa.nextgsi.ui.theme.DarkOrchidwebcolor
@@ -60,8 +62,10 @@ fun LoginPage(
     FBauthManager: FirebaseAuthManager,
     navController: NavController,
     state: SignInState,
-    onGoogleSignInClick: () -> Unit
-) {
+    OTP: OtpVerificationViewModel,
+    onGoogleSignInClick: () -> Unit,
+
+    ) {
     var loadingScreen by remember { mutableStateOf(false) }
     val context = LocalContext.current
     LaunchedEffect(key1 = state.signInError) {
@@ -102,6 +106,9 @@ fun LoginPage(
 
     val scrollState = rememberScrollState()
     Box(modifier = Modifier.fillMaxSize()) {
+        AnimatedVisibility(visible = loadingScreen) {
+            LoadingScreen()
+        }
         Image(
             painter = painterResource(id = R.drawable.curve),
             contentDescription = null,
@@ -110,7 +117,8 @@ fun LoginPage(
                 .fillMaxWidth()
                 .offset(50.dp, (0).dp)
                 .rotate(-10f),
-            contentScale = ContentScale.Crop, colorFilter = ColorFilter.tint(Standardpurple)
+            contentScale = ContentScale.Crop,
+            colorFilter = ColorFilter.tint(Standardpurple)
         )
         Image(
             painter = painterResource(id = R.drawable.curve2),
@@ -119,7 +127,8 @@ fun LoginPage(
                 .align(Alignment.BottomCenter)
                 .fillMaxWidth()
                 .offset(0.dp, (0).dp),
-            contentScale = ContentScale.Crop, colorFilter = ColorFilter.tint(DarkOrchidwebcolor)
+            contentScale = ContentScale.Crop,
+            colorFilter = ColorFilter.tint(DarkOrchidwebcolor)
         )
 
         Column(
@@ -140,8 +149,7 @@ fun LoginPage(
                     }
                     Spacer(modifier = Modifier.height(30.dp))
                     Password(
-                        Password = LoginViewModel.password,
-                        error = LoginViewModel.passworderror
+                        Password = LoginViewModel.password, error = LoginViewModel.passworderror
                     ) {
                         LoginViewModel.setpassword(it)
                     }
@@ -171,8 +179,7 @@ fun LoginPage(
                     }
                     Spacer(modifier = Modifier.height(10.dp))
                     Password(
-                        Password = LoginViewModel.password,
-                        error = LoginViewModel.passworderror
+                        Password = LoginViewModel.password, error = LoginViewModel.passworderror
                     ) {
                         LoginViewModel.setpassword(it)
                     }
@@ -180,7 +187,8 @@ fun LoginPage(
                     Row(
                         modifier = Modifier
                             .padding()
-                            .fillMaxWidth(1f), horizontalArrangement = Arrangement.Center
+                            .fillMaxWidth(1f),
+                        horizontalArrangement = Arrangement.Center
                     ) {
                         Dropdownroll()
                     }
@@ -193,9 +201,7 @@ fun LoginPage(
 
             }
 
-            AnimatedVisibility(visible = loadingScreen) {
-                LoadingScreen()
-            }
+
             Spacer(modifier = Modifier.height(10.dp))
             ButtonWithCutCornerShape(LoginViewModel.email,
                 LoginViewModel.password,
@@ -213,17 +219,15 @@ fun LoginPage(
                     } else {
                         LoginViewModel.onpassworderror(true)
                     }
-                  FBauthManager.signInWithEmail(
-                      email=email,
-                      password=password, onComplete = {
-                          status, user, error ->
-                          if (status) {
-                              navController.navigate(NaveLabels.Home)
-                          } else {
-                              Toast.makeText(context, error, Toast.LENGTH_LONG).show()
-                          }
-                      }
-                  )
+                    FBauthManager.signInWithEmail(email = email,
+                        password = password,
+                        onComplete = { status, user, error ->
+                            if (status) {
+                                navController.navigate(NaveLabels.Home)
+                            } else {
+                                Toast.makeText(context, error, Toast.LENGTH_LONG).show()
+                            }
+                        })
 
 
                 },
@@ -240,28 +244,29 @@ fun LoginPage(
                     } else {
                         LoginViewModel.onpassworderror(false)
                     }
-                    FBauthManager.createAccountWithEmail(
-                        email = email,
+                    if (LoginViewModel.name.isEmpty()) return@ButtonWithCutCornerShape
+                    if (LoginViewModel.phone.isEmpty()) return@ButtonWithCutCornerShape
+                    else OTP.phoneNumber.value = "+91" + LoginViewModel.phone
+                    if (LoginViewModel.address.isEmpty()) return@ButtonWithCutCornerShape
+                    FBauthManager.createAccountWithEmail(email = email,
                         password = password,
                         stateloader = {
-loadingScreen=it
-                        }
-                    )
-                    { status, user, error ->
+                            loadingScreen = it
+                        }) { status, user, error ->
                         if (status) {
-                            FBauthManager.checkEmailVerification(
-                                user=FBauthManager.getCurrentUser(),
+                            FBauthManager.checkEmailVerification(user = FBauthManager.getCurrentUser(),
                                 stateloader = {
                                     loadingScreen = it
-                                }, onComplete = {
-                                    status, user, error ->
+                                },
+                                onComplete = { status, user, error ->
                                     if (status) {
-                                        navController.navigate(NaveLabels.Home)
+                                        OTP.phoneNumber.value = "+91" + LoginViewModel.phone
+                                        navController.navigate(NaveLabels.OTPVerificatation)
                                     } else {
-                                        Toast.makeText(context, error, Toast.LENGTH_LONG).show()}
+                                        Toast.makeText(context, error, Toast.LENGTH_LONG).show()
+                                    }
 
-                                }
-                            )
+                                })
                             navController.navigate(NaveLabels.OTPVerificatation)
                         } else {
                             Toast.makeText(context, error, Toast.LENGTH_LONG).show()
