@@ -41,7 +41,7 @@ var status= mutableStateOf(false)
     fun startPhoneNumberVerification(activity: Activity) {
         val options = PhoneAuthOptions.newBuilder(auth)
             .setPhoneNumber(phoneNumber.value)
-            .setTimeout(180L, TimeUnit.SECONDS)
+            .setTimeout(120L, TimeUnit.SECONDS)
             .setActivity(activity)
             .setCallbacks(callbacks)
             .build()

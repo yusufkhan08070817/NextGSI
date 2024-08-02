@@ -106,9 +106,7 @@ fun LoginPage(
 
     val scrollState = rememberScrollState()
     Box(modifier = Modifier.fillMaxSize()) {
-        AnimatedVisibility(visible = loadingScreen) {
-            LoadingScreen()
-        }
+
         Image(
             painter = painterResource(id = R.drawable.curve),
             contentDescription = null,
@@ -287,6 +285,9 @@ fun LoginPage(
                 println("Apple login clicked")
             })
 
+        }
+        AnimatedVisibility(visible = loadingScreen) {
+            LoadingScreen()
         }
     }
 }
