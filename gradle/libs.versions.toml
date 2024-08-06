@@ -22,6 +22,7 @@ material = "1.12.0"
 playServicesLocation = "21.0.0"
 retrofit = "2.9.0"
 webkit = "1.11.0"
+benchmarkCommon = "1.2.4"
 
 [libraries]
 accompanist-pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanistPager" }
@@ -51,6 +52,7 @@ lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+androidx-benchmark-common = { group = "androidx.benchmark", name = "benchmark-common", version.ref = "benchmarkCommon" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

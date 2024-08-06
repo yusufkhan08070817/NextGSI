@@ -43,9 +43,9 @@ import com.ionexa.nextgsi.SingleTon.Navigation
 
 @Composable
 fun NaviGatationWithFloatingActionButton(
-    naveHight: Dp = 120.dp,
-    NormalButtonSize: Dp = 40.dp,
-    FloatingActionButtonIconSize: Dp = 70.dp,
+    naveHight: Dp = 90.dp,
+    NormalButtonSize: Dp = 25.dp,
+    FloatingActionButtonIconSize: Dp = 50.dp,
     NormalIconList: List<Int> = listOf(
         R.drawable.home,R.drawable.cart,R.drawable.fave,R.drawable.user
     ),
@@ -88,7 +88,8 @@ fun NaviGatationWithFloatingActionButton(
                 ) {
 
                     val oneThirdOfWidth = size.width / 3
-                    val arcHeight = naveHight.toPx()
+                    val h=115.dp
+                    val arcHeight = h.toPx()
 
                     // Create the path for the outer rectangle
                     val path = Path().apply {
@@ -102,10 +103,10 @@ fun NaviGatationWithFloatingActionButton(
 
                         // Create a hole for the arch
                         val arcRect = Rect(
-                            left = (size.width / 2f) - (size.width / 8),
+                            left = (size.width / 2f) - (size.width / 9),
                             top = -arcHeight / 3.2f,
-                            right = size.width / 2f + (size.width / 8),
-                            bottom = arcHeight / 3.2f
+                            right = size.width / 2f + (size.width / 9),
+                            bottom = arcHeight /3.2f
                         )
 
 
