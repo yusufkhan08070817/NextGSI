@@ -4,6 +4,7 @@ import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.widget.ProgressBar
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -14,13 +15,16 @@ import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.ProgressBarRangeInfo
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.WindowInsetsCompat
@@ -31,8 +35,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
 import com.google.firebase.auth.FirebaseAuth
 import com.ionexa.nextgsi.Classes.LocationProvider
-import com.ionexa.nextgsi.DataClass.GoogleUserData
+import com.ionexa.nextgsi.Components.FilePicker
 import com.ionexa.nextgsi.DataClass.Order
+import com.ionexa.nextgsi.FIreBase.FireBaseStorage
 import com.ionexa.nextgsi.FIreBase.FirebaseAuthManager
 import com.ionexa.nextgsi.FIreBase.FirebaseGoogleAuth
 import com.ionexa.nextgsi.MVVM.*
@@ -54,18 +59,24 @@ class MainActivity : ComponentActivity() {
     private val googleAuthUiClient by lazy {
         FirebaseGoogleAuth(
             context = applicationContext,
-            oneTapClient = com.google.android.gms.auth.api.identity.Identity.getSignInClient(applicationContext)
+            oneTapClient = com.google.android.gms.auth.api.identity.Identity.getSignInClient(
+                applicationContext
+            )
         )
     }
+
     companion object {
-         val FBAuth: FirebaseAuth = FirebaseAuth.getInstance()
+        val FBAuth: FirebaseAuth = FirebaseAuth.getInstance()
     }
-val FBauthManager= FirebaseAuthManager()
+
+    val FBauthManager = FirebaseAuthManager()
+val fbsb=FireBaseStorage()
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            var corutinescope = rememberCoroutineScope()
             HideSystemUI()
             addLocalData()
             Navigation.navController = rememberNavController()
@@ -73,13 +84,38 @@ val FBauthManager= FirebaseAuthManager()
             val currentUser = authViewModel.currentUser.observeAsState()
 
             if (currentUser.value != null) {
-NaveLabels.DefaultLoag=NaveLabels.Home
-            }else
-            {
-                NaveLabels.DefaultLoag=NaveLabels.SplashScreen
+                NaveLabels.DefaultLoag = NaveLabels.Home
+            } else {
+                NaveLabels.DefaultLoag = NaveLabels.SplashScreen
+            }/*  AuthScreen(activity = this) */
+            var pick by remember {
+                mutableStateOf(false)
             }
-           /*  AuthScreen(activity = this) */
+            var range by remember {
+                mutableStateOf(0.0)
+            }
+          Column {
+              Spacer(modifier = Modifier.height(30.dp))
+              Button(onClick = {pick=true ; }) {
+                  Text(text = "pick")
+              }
+              if (pick) {
+                  FilePicker() {uris->
+                      corutinescope.launch {
+                          fbsb.uploadMultipleImages(uris,"images/myimages/yusuf",onProgress = {
+                              range=it
+                          },onSuccess = {},onFailure = {})
+                      }
+                      pick=false
 
+                  }
+              }
+              LinearProgressIndicator(
+                  progress = { range.toFloat() },
+                  modifier = Modifier.fillMaxWidth(),
+              )
+          }
+           /*
             Main(
                 loginViewModel = LoginViewModel,
                 homeViewModel = HomeViewModel,
@@ -89,10 +125,15 @@ NaveLabels.DefaultLoag=NaveLabels.Home
                 locationProvider = locationProvider,
                 orderList = orderList,
                 signInMVVM = SignInMVVM,
-                googleAuthUiClient = googleAuthUiClient,FBauthManager=FBauthManager, OTP = OTP, activity = this
+                googleAuthUiClient = googleAuthUiClient,
+                FBauthManager = FBauthManager,
+                OTP = OTP,
+                activity = this
             )
+           * */
         }
     }
+
     private fun addLocalData() {
         val orders = listOf(
             Order("https://i.imgur.com/tGbaZCY.jpg", "Item 1", "Details of Item 1", "₹100"),
@@ -113,14 +154,6 @@ NaveLabels.DefaultLoag=NaveLabels.Home
 }
 
 
-
-
-
-
-
-
-
-
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Main(
@@ -132,7 +165,8 @@ fun Main(
     locationProvider: LocationProvider,
     orderList: MutableList<Order>,
     signInMVVM: SignInMVVM,
-    googleAuthUiClient: FirebaseGoogleAuth,FBauthManager:FirebaseAuthManager,
+    googleAuthUiClient: FirebaseGoogleAuth,
+    FBauthManager: FirebaseAuthManager,
     OTP: OtpVerificationViewModel,
     activity: MainActivity
 ) {
@@ -146,21 +180,25 @@ fun Main(
         if (result.resultCode == RESULT_OK) {
             val intent = result.data ?: return@rememberLauncherForActivityResult
             (context as? ComponentActivity)?.lifecycleScope?.launch {
-                val signInResult = googleAuthUiClient.getSignInResultFromIntebt (intent)
+                val signInResult = googleAuthUiClient.getSignInResultFromIntebt(intent)
                 signInMVVM.onSignInResult(signInResult)
             }
         }
     }
 
-    NavHost(
-        navController = navController,
+    NavHost(navController = navController,
         startDestination = NaveLabels.DefaultLoag,
         enterTransition = { fadeIn(tween(durationMillis = duration)) },
-        exitTransition = { fadeOut(tween(durationMillis = duration)) }
-    ) {
+        exitTransition = { fadeOut(tween(durationMillis = duration)) }) {
         composable(NaveLabels.Login) {
             NextGsiTheme {
-                LoginPage(loginViewModel,FBauthManager=FBauthManager, navController =  navController, state =  state, OTP =OTP) {
+                LoginPage(
+                    loginViewModel,
+                    FBauthManager = FBauthManager,
+                    navController = navController,
+                    state = state,
+                    OTP = OTP
+                ) {
                     (context as? ComponentActivity)?.lifecycleScope?.launch {
                         val signInIntentSender = googleAuthUiClient.signinwithgoogle()
                         launcher.launch(
@@ -187,10 +225,10 @@ fun Main(
         }
         composable(NaveLabels.Profile) {
             ScreenWithBottomBar(navController) { innerPadding ->
-                ProfilePage(
-                    modifier = Modifier.padding(innerPadding),
+                ProfilePage(modifier = Modifier.padding(innerPadding),
                     naveController = navController,
-                    ProfileViewModel = profileViewModel, googleUserData = googleAuthUiClient.getSignedInUser(),
+                    ProfileViewModel = profileViewModel,
+                    googleUserData = googleAuthUiClient.getSignedInUser(),
                     LogOutPRofile = {
                         coroutineScope.launch {
                             googleAuthUiClient.signOut();
@@ -198,8 +236,7 @@ fun Main(
                         }
 
 
-                    }
-                )
+                    })
             }
         }
         composable(NaveLabels.SerchWithLocatation) {
@@ -218,6 +255,7 @@ fun Main(
         composable(NaveLabels.CartHistory) {
             ScreenWithBottomBar(navController) { innerPadding ->
                 OrderHistoryScreen(orderList = orderList)
+                
             }
         }
         composable(NaveLabels.AboutUs) {
@@ -241,12 +279,9 @@ fun Main(
                     modifier = Modifier
                         .padding(innerPadding)
                         .fillMaxSize()
-                        .padding(top = 30.dp, start = 10.dp, end = 10.dp),
-                    imageUrl = listOf(
+                        .padding(top = 30.dp, start = 10.dp, end = 10.dp), imageUrl = listOf(
                         "https://plus.unsplash.com/premium_photo-1683865776032-07bf70b0add1?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                    ),
-                    MapeViewModel = mapeViewModel,
-                    navController = navController
+                    ), MapeViewModel = mapeViewModel, navController = navController
                 )
             }
         }
@@ -255,8 +290,7 @@ fun Main(
 
 @Composable
 fun ScreenWithBottomBar(
-    navController: NavHostController,
-    content: @Composable (PaddingValues) -> Unit
+    navController: NavHostController, content: @Composable (PaddingValues) -> Unit
 ) {
     Box {
         Column {
@@ -268,14 +302,12 @@ fun ScreenWithBottomBar(
                 .fillMaxWidth()
                 .fillMaxHeight(), verticalAlignment = Alignment.Bottom
         ) {
-            NaviGatationWithFloatingActionButton(
-                NaveContainerColor = Mediumpurple,
+            NaviGatationWithFloatingActionButton(NaveContainerColor = Mediumpurple,
                 FloatingActionButtonIconSize = 50.dp,
                 ButtonFour = { navController.navigate(NaveLabels.Profile) },
                 ButtonOne = { navController.navigate(NaveLabels.Home) },
                 ButtonTwo = { navController.navigate(NaveLabels.Cart) },
-                FloatingButton = { navController.navigate(NaveLabels.Tracking) }
-            )
+                FloatingButton = { navController.navigate(NaveLabels.Tracking) })
         }
     }
 }
