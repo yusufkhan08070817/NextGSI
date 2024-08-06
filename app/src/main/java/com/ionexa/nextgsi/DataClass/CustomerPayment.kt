@@ -13,5 +13,5 @@ data class CustomerPayment(
     val expiryDate: String,
     val cvv: Int,
     val billingAddress: String,
-    val createdAt: Date
+    val createdAt: String
 )
