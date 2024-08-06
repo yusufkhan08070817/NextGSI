@@ -67,6 +67,9 @@ dependencies {
     implementation(libs.material)
     implementation(libs.play.services.auth)
     implementation(libs.androidx.runtime.livedata)
+    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.storage.ktx)
+    implementation(libs.firebase.storage)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -92,5 +95,7 @@ implementation (libs.androidx.lifecycle.runtime.compose)
     // Add the dependency for the Firebase Authentication library
     // When using the BoM, you don't specify versions in Firebase library dependencies
     implementation(libs.google.firebase.auth)
+    implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
+
 
 }
