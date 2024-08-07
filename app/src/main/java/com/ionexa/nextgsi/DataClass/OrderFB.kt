@@ -7,7 +7,7 @@ import java.util.Date
 data class OrderFB(
     val id: Int,
     val sellerId: Int,
-    val orderDate: Date,
+    val orderDate: String,
     val customerId: Int,
     val productId: List<Int>,
     val quantity: Int,

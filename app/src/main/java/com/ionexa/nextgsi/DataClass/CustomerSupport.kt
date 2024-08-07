@@ -10,5 +10,5 @@ data class CustomerSupport(
     val ticketId: Int,
     val issueDescription: String,
     val status: String,
-    val createdAt: Date
+    val createdAt: String
 )

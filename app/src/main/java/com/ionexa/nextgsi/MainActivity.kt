@@ -87,35 +87,8 @@ val fbsb=FireBaseStorage()
                 NaveLabels.DefaultLoag = NaveLabels.Home
             } else {
                 NaveLabels.DefaultLoag = NaveLabels.SplashScreen
-            }/*  AuthScreen(activity = this) */
-            var pick by remember {
-                mutableStateOf(false)
             }
-            var range by remember {
-                mutableStateOf(0.0)
-            }
-          Column {
-              Spacer(modifier = Modifier.height(30.dp))
-              Button(onClick = {pick=true ; }) {
-                  Text(text = "pick")
-              }
-              if (pick) {
-                  FilePicker() {uris->
-                      corutinescope.launch {
-                          fbsb.uploadMultipleImages(uris,"images/myimages/yusuf",onProgress = {
-                              range=it
-                          },onSuccess = {},onFailure = {})
-                      }
-                      pick=false
 
-                  }
-              }
-              LinearProgressIndicator(
-                  progress = { range.toFloat() },
-                  modifier = Modifier.fillMaxWidth(),
-              )
-          }
-           /*
             Main(
                 loginViewModel = LoginViewModel,
                 homeViewModel = HomeViewModel,
@@ -130,6 +103,9 @@ val fbsb=FireBaseStorage()
                 OTP = OTP,
                 activity = this
             )
+
+           /*
+
            * */
         }
     }

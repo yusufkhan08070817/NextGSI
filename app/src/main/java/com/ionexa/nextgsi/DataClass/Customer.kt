@@ -14,5 +14,5 @@ data class Customer(
     val username: String,
     val password: String,
     val role: String,
-    val createdAt: Date
+    val createdAt: String
 )
