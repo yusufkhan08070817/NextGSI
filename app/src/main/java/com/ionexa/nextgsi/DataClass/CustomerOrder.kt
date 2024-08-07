@@ -7,7 +7,7 @@ import java.util.Date
 data class CustomerOrder(
     val id: Int,
     val customerId: Int,
-    val orderDate: Date,
+    val orderDate: String,
     val productId: List<Int>,
     val quantity: Int,
     val totalPrice: Float,
