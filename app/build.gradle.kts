@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.google.gms.google.services)
+    id("org.jetbrains.kotlin.plugin.parcelize") version "1.5.31"
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.5.31" // Add this line
 }
 
 android {
@@ -51,7 +53,7 @@ android {
 }
 
 dependencies {
-    implementation ("com.squareup.picasso:picasso:2.8")
+    implementation (libs.picasso)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -64,7 +66,6 @@ dependencies {
     implementation(libs.androidx.constraintlayout.compose)
     implementation(libs.firebase.auth)
     implementation(libs.material)
-    implementation(libs.androidx.benchmark.common)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -72,18 +73,19 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-// this is my cordinates  21.153293, 81.315949
+
     implementation(libs.coil.compose)
-    implementation (libs.lottie.compose)
-    implementation (libs.accompanist.pager)
+    implementation(libs.lottie.compose)
+    implementation(libs.accompanist.pager)
     implementation(libs.androidx.navigation.compose)
-    implementation (libs.androidx.webkit)
-    implementation (libs.play.services.location)
-    implementation (libs.retrofit)
-    implementation (libs.converter.gson)
-    implementation (libs.kotlinx.coroutines.android)
-
-
-
-
+    implementation(libs.androidx.webkit)
+    implementation(libs.play.services.location)
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.androidx.lifecycle.runtime.ktx.v261)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.auth.ktx)
+    implementation (libs.kotlinx.serialization.json)
 }

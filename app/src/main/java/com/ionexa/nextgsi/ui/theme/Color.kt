@@ -36,7 +36,7 @@ val DarkOrchid =Color(0xFF7D26CD) // DarkOrchid button
 val DarkOrchidwebcolor=Color(0xFF9932CC) // DarkOrchid (web color)
 
 //light color
-
+val litestpurple=Color(0xFFF5F5FF)
 val Lavender=Color(0xFFE6E6FA) // Lavender
 val Thistle=Color(0xFFD8BFD8) // Thistle
 val Plum=Color(0xFFEEAEEE) // Plum

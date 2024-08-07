@@ -29,7 +29,8 @@ fun LocationScreen(locationProvider: LocationProvider, Mapekcmvm: MapeKCMVVM) {
     val context = LocalContext.current
     val permissions = arrayOf(
         android.Manifest.permission.ACCESS_FINE_LOCATION,
-        android.Manifest.permission.ACCESS_COARSE_LOCATION
+        android.Manifest.permission.ACCESS_COARSE_LOCATION,
+        android.Manifest.permission.READ_EXTERNAL_STORAGE
     )
 
     var allPermissionsGranted by remember { mutableStateOf(checkPermissions(permissions, context)) }
