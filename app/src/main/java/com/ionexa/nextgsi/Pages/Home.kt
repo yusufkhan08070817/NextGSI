@@ -341,7 +341,7 @@ fun HomePage(
                             )
 
                         }
-                        /** Product's name */
+
                         Text(
                             modifier = Modifier,
                             text = "Title",
