@@ -53,7 +53,8 @@ android {
 }
 
 dependencies {
-    implementation (libs.picasso)
+    implementation("com.squareup.picasso:picasso:2.71828")
+
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -66,12 +67,10 @@ dependencies {
     implementation(libs.androidx.constraintlayout.compose)
     implementation(libs.firebase.auth)
     implementation(libs.material)
+    implementation(libs.firebase.firestore.ktx)
+    implementation(libs.firebase.storage.ktx)
     implementation(libs.play.services.auth)
     implementation(libs.androidx.runtime.livedata)
-    implementation(libs.firebase.firestore)
-    implementation(libs.firebase.storage.ktx)
-    implementation(libs.firebase.storage)
-
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -89,10 +88,19 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.kotlinx.coroutines.android)
-    implementation(libs.androidx.lifecycle.runtime.ktx.v261)
-    implementation(libs.androidx.lifecycle.runtime.compose)
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.auth.ktx)
-    implementation (libs.kotlinx.serialization.json)
+    // AndroidX Lifecycle Runtime KTX
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.4")
+
+    // AndroidX Lifecycle Runtime Compose
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.4")
+
+    // Firebase BOM (Bill of Materials)
+    implementation(platform("com.google.firebase:firebase-bom:33.1.2"))
+
+    // Firebase Auth KTX
+    implementation("com.google.firebase:firebase-auth-ktx")
+
+    // Kotlinx Serialization JSON
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
     implementation ("org.jetbrains.kotlin:kotlin-reflect:1.9.22")
 }

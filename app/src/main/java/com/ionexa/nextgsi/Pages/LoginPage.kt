@@ -58,7 +58,7 @@ import com.ionexa.nextgsi.ui.theme.DarkOrchidwebcolor
 import com.ionexa.nextgsi.ui.theme.Standardpurple
 import kotlinx.coroutines.delay
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 @Composable
 fun LoginPage(
     LoginViewModel: Loginmvvm,
@@ -246,14 +246,14 @@ fun LoginPage(
                 },
                 authSignUp = { email, password ->
                     if (email.isEmpty()) {
-                       // LoginViewModel.onemailerror(true)
+                        // LoginViewModel.onemailerror(true)
                         Toast.makeText(context, "Email is empty", Toast.LENGTH_SHORT).show()
                         return@ButtonWithCutCornerShape
                     } else {
                         LoginViewModel.onemailerror(false)
                     }
                     if (password.isEmpty()) {
-                     //   LoginViewModel.onpassworderror(true)
+                        //   LoginViewModel.onpassworderror(true)
                         Toast.makeText(context, "Password is empty", Toast.LENGTH_SHORT).show()
                         return@ButtonWithCutCornerShape
                     } else {
@@ -322,4 +322,3 @@ fun LoginPage(
         }
     }
 }
-
