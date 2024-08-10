@@ -139,7 +139,7 @@ class MainActivity : ComponentActivity() {
 }
 
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 @Composable
 fun Main(
     navController: NavHostController,
@@ -230,7 +230,7 @@ fun Main(
             }
         }
         composable(NaveLabels.OTPVerificatation) {
-            OtpVerification(activity = activity, viewModel = OTP)
+            OtpVerification(activity = activity, viewModel = OTP,loginViewModel = loginViewModel)
         }
         composable(NaveLabels.Cart) {
             ScreenWithBottomBar(navController) { innerPadding ->

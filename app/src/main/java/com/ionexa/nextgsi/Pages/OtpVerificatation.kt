@@ -1,8 +1,10 @@
 package com.ionexa.nextgsi.Pages
 
 import android.app.Activity
+import android.os.Build
 import android.os.CountDownTimer
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -47,20 +49,25 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.Navigation
 import com.ionexa.nextgsi.DataClass.Customer
+import com.ionexa.nextgsi.FBFireBase.FSDB
 import com.ionexa.nextgsi.FBFireBase.FireBaseStoreDBMyClass
+import com.ionexa.nextgsi.MVVM.Loginmvvm
 import com.ionexa.nextgsi.MVVM.OtpVerificationViewModel
 
 
 import com.ionexa.nextgsi.SingleTon.NaveLabels
 import com.ionexa.nextgsi.SingleTon.Routes
+import com.ionexa.nextgsi.SingleTon.common
 import com.ionexa.nextgsi.ui.theme.RebeccaPurpleHilghtText
 import kotlinx.coroutines.launch
+import java.util.UUID
 
 
 @Composable
 fun OtpVerification(
     modifier: Modifier = Modifier,
     activity: Activity,
+    loginViewModel: Loginmvvm,
     viewModel: OtpVerificationViewModel = viewModel()
 ) {
     var otpText1 by remember { mutableStateOf("") }
@@ -79,14 +86,35 @@ fun OtpVerification(
 
     val focusManager = LocalFocusManager.current
     val context = LocalContext.current
-    val fbcorutinscope= rememberCoroutineScope()
+    val fbcorutinscope = rememberCoroutineScope()
+    val fsdb = FSDB()
     LaunchedEffect(Unit) {
         viewModel.startPhoneNumberVerification(activity)
 
     }
     LaunchedEffect(viewModel.status.value) {
         if (viewModel.status.value) {
-            com.ionexa.nextgsi.SingleTon.Navigation.navController.navigate(NaveLabels.Home)
+            val customerdata = Customer(
+                id = viewModel.setdata.value.id,
+                name = loginViewModel.name,
+                email = loginViewModel.email,
+                phone = loginViewModel.phone,
+                password = loginViewModel.password,
+                role = loginViewModel.roll,
+                address = loginViewModel.address,
+                profilePic = common.defaultpic,
+                username = loginViewModel.name,
+                createdAt = common.getCurrentDateTime()
+            )
+
+            val customerhashmap = fsdb.run { customerdata.toHashMap() }
+            fsdb.uploadDataToFireStoreDB(customerhashmap, "users", customerdata.id, onsuccess = {
+                com.ionexa.nextgsi.SingleTon.Navigation.navController.navigate(NaveLabels.Home)
+            })
+            {
+                Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+            }
+
         }
     }
     Column {
@@ -220,23 +248,7 @@ fun OtpVerification(
                         viewModel.otpCode.value =
                             otpText1 + otpText2 + otpText3 + otpText4 + otpText5 + otpText6
                         viewModel.verifyPhoneNumberWithCode()
-                        if (viewModel.status.value) {
-                            fbcorutinscope.launch {
-                                val id=viewModel.setdata.value.id
-val fb=FireBaseStoreDBMyClass();
-    fb.createDocument(Routes.customerprofileRoutes(id),viewModel.setdata.value, onSuccess = {
-        Toast.makeText(context, "Data Added", Toast.LENGTH_SHORT).show()
-        com.ionexa.nextgsi.SingleTon.Navigation.navController.navigate(
-            NaveLabels.Home
-        )
-    }, onFailure = {
-        Toast.makeText(context, "Data Not Added", Toast.LENGTH_SHORT).show()
-    })
-                            }
 
-
-
-                        }
                     }) {
                         Text(text = "Verify")
                     }

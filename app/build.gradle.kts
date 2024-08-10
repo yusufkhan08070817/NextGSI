@@ -94,5 +94,5 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth.ktx)
     implementation (libs.kotlinx.serialization.json)
-    implementation (libs.kotlin.reflect)
+    implementation ("org.jetbrains.kotlin:kotlin-reflect:1.9.22")
 }

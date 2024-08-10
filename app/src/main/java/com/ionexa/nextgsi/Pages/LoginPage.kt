@@ -53,6 +53,7 @@ import com.ionexa.nextgsi.MVVM.OtpVerificationViewModel
 import com.ionexa.nextgsi.R
 import com.ionexa.nextgsi.SingleTon.NaveLabels
 import com.ionexa.nextgsi.SingleTon.common
+import com.ionexa.nextgsi.SingleTon.common.replaceSpecialChars
 import com.ionexa.nextgsi.ui.theme.DarkOrchidwebcolor
 import com.ionexa.nextgsi.ui.theme.Standardpurple
 import kotlinx.coroutines.delay
@@ -322,9 +323,3 @@ fun LoginPage(
     }
 }
 
-fun replaceSpecialChars(email: String): String {
-    // Define a regex pattern for special characters except '.' and '@'
-    val specialCharsPattern = "[^a-zA-Z0-9]".toRegex()
-    // Replace all special characters with "yk"
-    return email.replace(specialCharsPattern, "")
-}

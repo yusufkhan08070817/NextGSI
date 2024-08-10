@@ -17,12 +17,12 @@ class FSDB {
         return map
     }
 
-    fun uploadDataToFireStoreDB( data:HashMap<String,Any>,collectionName:String,documentName:String,onsuccess:(log:String)->Unit,onfailure:(log:String)->Unit){
+    fun uploadDataToFireStoreDB( data:HashMap<String,Any?>,collectionName:String,documentName:String,onsuccess:(log:String)->Unit,onfailure:(log:String)->Unit){
         db.collection(collectionName).document(documentName)
             .set(data)
-            .addOnSuccessListener { documentReference ->
-                Log.d(common.FBDBTAG, "DocumentSnapshot added with ID: ${documentReference}")
-                onsuccess(documentReference.toString())
+            .addOnSuccessListener {
+                Log.d(common.FBDBTAG, "DocumentSnapshot added with ID: ")
+                onsuccess("successs")
             }
             .addOnFailureListener { e ->
                 Log.w(common.FBDBTAG, "Error adding document", e)
