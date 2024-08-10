@@ -66,20 +66,24 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.unit.IntOffset
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.google.accompanist.pager.*
-import kotlinx.coroutines.delay
 
-import com.google.accompanist.pager.*
 import com.ionexa.nextgsi.DataClass.Productdata
 import com.ionexa.nextgsi.DataClass.Search_dataList
 import com.ionexa.nextgsi.MVVM.HomeMVVM
@@ -92,6 +96,7 @@ import com.ionexa.nextgsi.ui.theme.LightlightText
 import com.ionexa.nextgsi.ui.theme.SlateBlue
 import java.time.LocalDate
 import java.time.ZoneId
+import kotlin.math.roundToInt
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -110,12 +115,13 @@ fun Serchbar(
     Column(
         modifier = modifier
             .fillMaxWidth(1f)
-            .padding(0.dp, 20.dp, 0.dp, 0.dp)
+            .height(58.dp)
+            .padding(0.dp, 0.dp, 0.dp, 0.dp)
     ) {
         Card(
             elevation = CardDefaults.elevatedCardElevation(10.dp),
             modifier = Modifier
-                .padding(15.dp)
+                .padding(14.dp, 12.dp, 14.dp, 0.dp)
                 .fillMaxWidth(1f),
             colors = CardDefaults.cardColors(containerColor = Color.White)
         ) {
@@ -527,6 +533,42 @@ fun ProductList(modifier: Modifier = Modifier, List: List<Productdata>) {
 }
 
 @Composable
+fun DrawableButton(
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    backgroundColor: Color = Color.LightGray,
+    iconTint: Color = Color.Unspecified,
+    onButtonClicked: () -> Unit,
+    painter: Painter,
+    shape: Shape = MaterialTheme.shapes.medium,
+    iconSize: Dp = 36.dp,
+    elevation: Dp = 0.dp,
+    paddingValue: PaddingValues = PaddingValues(4.dp),
+) {
+    Box(
+        modifier = modifier
+            .shadow(elevation = elevation, shape = shape)
+            .clip(shape)
+            .background(backgroundColor)
+            .clickable(
+                onClick = {
+                    if (enabled) onButtonClicked()
+                }
+            )
+            .padding(paddingValues = paddingValue)
+    ) {
+        Icon(
+            modifier = Modifier
+                .align(Alignment.Center)
+                .size(iconSize),
+            painter = painter,
+            contentDescription = "icon next",
+            tint = iconTint,
+        )
+    }
+}
+
+@Composable
 fun ProductCard(modifier: Modifier = Modifier) {
     Card {
         Column {
@@ -537,13 +579,11 @@ fun ProductCard(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun IteamSearch(ShowData: Search_dataList,clickbutton:()->Unit) {
+fun IteamSearch(ShowData: Search_dataList) {
     Card (modifier = Modifier
         .fillMaxWidth(1f)
         .height(80.dp)
-        .padding(10.dp)
-        .clickable { clickbutton() },
-        colors = CardDefaults.cardColors(Color.White), elevation = CardDefaults.elevatedCardElevation(5.dp)){
+        .padding(10.dp), colors = CardDefaults.cardColors(Color.White), elevation = CardDefaults.elevatedCardElevation(5.dp)){
         Row( verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxSize(1f)) {
             AsyncImage(
                 model = ShowData.image,
@@ -559,3 +599,4 @@ fun IteamSearch(ShowData: Search_dataList,clickbutton:()->Unit) {
         }
     }
 }
+

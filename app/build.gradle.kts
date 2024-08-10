@@ -66,12 +66,6 @@ dependencies {
     implementation(libs.androidx.constraintlayout.compose)
     implementation(libs.firebase.auth)
     implementation(libs.material)
-    implementation(libs.play.services.auth)
-    implementation(libs.androidx.runtime.livedata)
-    implementation(libs.firebase.firestore)
-    implementation(libs.firebase.storage.ktx)
-    implementation(libs.firebase.storage)
-
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
