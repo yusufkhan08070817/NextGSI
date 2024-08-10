@@ -1,13 +1,11 @@
-package com.ionexa.nextgsi.FIreBase
+package com.ionexa.nextgsi.FBFireBase
 
 
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import com.google.android.gms.auth.api.Auth
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.ionexa.nextgsi.MainActivity
 import com.ionexa.nextgsi.MainActivity.Companion.FBAuth
 
 class FirebaseAuthManager {

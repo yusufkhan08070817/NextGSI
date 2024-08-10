@@ -2,7 +2,7 @@ package com.ionexa.nextgsi.DataClass
 
 import kotlinx.serialization.Serializable
 
-@Serializable
+
 data class Analytics(
     val id: Int,
     val sellerId: Int,

@@ -66,7 +66,7 @@ import com.ionexa.nextgsi.MVVM.HomeMVVM
 import com.ionexa.nextgsi.MVVM.MapeKCMVVM
 import com.ionexa.nextgsi.SingleTon.Locatation
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 @Composable
 
 fun HomePage(

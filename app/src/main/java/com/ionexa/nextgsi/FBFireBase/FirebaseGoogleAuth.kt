@@ -1,14 +1,12 @@
-package com.ionexa.nextgsi.FIreBase
+package com.ionexa.nextgsi.FBFireBase
 
 import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
-import com.google.android.gms.auth.api.identity.BeginSignInResult
 import com.google.android.gms.auth.api.identity.SignInClient
-import com.google.firebase.auth.FirebaseAuth
+
 import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.auth.auth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.ionexa.nextgsi.DataClass.GoogleSignINResult
