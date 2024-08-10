@@ -32,6 +32,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,9 +46,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.Navigation
+import com.ionexa.nextgsi.DataClass.Customer
+import com.ionexa.nextgsi.FBFireBase.FireBaseStoreDBMyClass
 import com.ionexa.nextgsi.MVVM.OtpVerificationViewModel
+
+
 import com.ionexa.nextgsi.SingleTon.NaveLabels
+import com.ionexa.nextgsi.SingleTon.Routes
 import com.ionexa.nextgsi.ui.theme.RebeccaPurpleHilghtText
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -72,43 +79,44 @@ fun OtpVerification(
 
     val focusManager = LocalFocusManager.current
     val context = LocalContext.current
+    val fbcorutinscope= rememberCoroutineScope()
     LaunchedEffect(Unit) {
         viewModel.startPhoneNumberVerification(activity)
 
     }
     LaunchedEffect(viewModel.status.value) {
-        if (viewModel.status.value){
+        if (viewModel.status.value) {
             com.ionexa.nextgsi.SingleTon.Navigation.navController.navigate(NaveLabels.Home)
         }
     }
-   Column {
-       Column(
-           modifier = Modifier
-               .fillMaxWidth(1f)
-               .fillMaxHeight(0.1f)
-               .background(RebeccaPurpleHilghtText),
-           verticalArrangement = Arrangement.Bottom,
-           horizontalAlignment = Alignment.CenterHorizontally
-       ) {
-           Text(
-               text = "Phone Number Verification :${viewModel.phoneNumber.value} ",
-               modifier = Modifier.padding(10.dp),
-               color = Color.White,
-               fontSize = 15.sp
-           )
-       }
-       Card(
-           modifier
-               .fillMaxWidth(1f)
-               .padding(10.dp)) {
-           Text(text = viewModel.verificationState.value)
-       }
-   }
+    Column {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth(1f)
+                .fillMaxHeight(0.1f)
+                .background(RebeccaPurpleHilghtText),
+            verticalArrangement = Arrangement.Bottom,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "Phone Number Verification :${viewModel.phoneNumber.value} ",
+                modifier = Modifier.padding(10.dp),
+                color = Color.White,
+                fontSize = 15.sp
+            )
+        }
+        Card(
+            modifier
+                .fillMaxWidth(1f)
+                .padding(10.dp)
+        ) {
+            Text(text = viewModel.verificationState.value)
+        }
+    }
     Box(
         modifier = Modifier
             .fillMaxSize(1f)
-            .padding(10.dp),
-        contentAlignment = Alignment.Center
+            .padding(10.dp), contentAlignment = Alignment.Center
     ) {
         Card(
             modifier = Modifier
@@ -135,9 +143,7 @@ fun OtpVerification(
                 Text(
                     text = "Don't share your OTP with others",
                     style = MaterialTheme.typography.labelSmall.copy(
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Normal,
-                        color = Color.Gray
+                        fontSize = 16.sp, fontWeight = FontWeight.Normal, color = Color.Gray
                     )
                 )
             }
@@ -145,60 +151,49 @@ fun OtpVerification(
             Box(
                 modifier = Modifier
                     .fillMaxWidth(1f)
-                    .fillMaxHeight(0.5f), contentAlignment = Alignment.Center
+                    .fillMaxHeight(0.5f),
+                contentAlignment = Alignment.Center
             ) {
                 Row() {
                     OtpTextField(
-                        value = otpText1,
-                        onValueChange = {
+                        value = otpText1, onValueChange = {
                             otpText1 = it
                             if (otpText1.length == 1) focusRequester2.requestFocus()
-                        },
-                        focusRequester = focusRequester1
+                        }, focusRequester = focusRequester1
                     )
                     OtpTextField(
-                        value = otpText2,
-                        onValueChange = {
+                        value = otpText2, onValueChange = {
                             otpText2 = it
                             if (otpText2.length == 1) focusRequester3.requestFocus()
                             else if (otpText2.isEmpty()) focusRequester1.requestFocus()
-                        },
-                        focusRequester = focusRequester2
+                        }, focusRequester = focusRequester2
                     )
                     OtpTextField(
-                        value = otpText3,
-                        onValueChange = {
+                        value = otpText3, onValueChange = {
                             otpText3 = it
                             if (otpText3.length == 1) focusRequester4.requestFocus()
                             else if (otpText3.isEmpty()) focusRequester2.requestFocus()
-                        },
-                        focusRequester = focusRequester3
+                        }, focusRequester = focusRequester3
                     )
                     OtpTextField(
-                        value = otpText4,
-                        onValueChange = {
+                        value = otpText4, onValueChange = {
                             otpText4 = it
                             if (otpText4.length == 1) focusRequester5.requestFocus()
                             else if (otpText4.isEmpty()) focusRequester3.requestFocus()
-                        },
-                        focusRequester = focusRequester4
+                        }, focusRequester = focusRequester4
                     )
                     OtpTextField(
-                        value = otpText5,
-                        onValueChange = {
+                        value = otpText5, onValueChange = {
                             otpText5 = it
                             if (otpText5.length == 1) focusRequester6.requestFocus()
                             else if (otpText5.isEmpty()) focusRequester4.requestFocus()
-                        },
-                        focusRequester = focusRequester5
+                        }, focusRequester = focusRequester5
                     )
                     OtpTextField(
-                        value = otpText6,
-                        onValueChange = {
+                        value = otpText6, onValueChange = {
                             otpText6 = it
                             if (otpText6.isEmpty()) focusRequester5.requestFocus()
-                        },
-                        focusRequester = focusRequester6
+                        }, focusRequester = focusRequester6
                     )
                 }
 
@@ -225,8 +220,22 @@ fun OtpVerification(
                         viewModel.otpCode.value =
                             otpText1 + otpText2 + otpText3 + otpText4 + otpText5 + otpText6
                         viewModel.verifyPhoneNumberWithCode()
-                        if (viewModel.status.value){
-                            com.ionexa.nextgsi.SingleTon.Navigation.navController.navigate(NaveLabels.Home)
+                        if (viewModel.status.value) {
+                            fbcorutinscope.launch {
+                                val id=viewModel.setdata.value.id
+val fb=FireBaseStoreDBMyClass();
+    fb.createDocument(Routes.customerprofileRoutes(id),viewModel.setdata.value, onSuccess = {
+        Toast.makeText(context, "Data Added", Toast.LENGTH_SHORT).show()
+        com.ionexa.nextgsi.SingleTon.Navigation.navController.navigate(
+            NaveLabels.Home
+        )
+    }, onFailure = {
+        Toast.makeText(context, "Data Not Added", Toast.LENGTH_SHORT).show()
+    })
+                            }
+
+
+
                         }
                     }) {
                         Text(text = "Verify")
@@ -314,3 +323,4 @@ fun createCountDownTimer(
         }
     }
 }
+

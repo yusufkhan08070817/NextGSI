@@ -7,6 +7,7 @@ import com.google.firebase.FirebaseException
 import com.google.firebase.auth.*
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.ionexa.nextgsi.DataClass.Customer
 import java.util.concurrent.TimeUnit
 
 class OtpVerificationViewModel : ViewModel() {
@@ -15,6 +16,11 @@ class OtpVerificationViewModel : ViewModel() {
     val otpCode = mutableStateOf("")
     val verificationId = mutableStateOf("")
     val verificationState = mutableStateOf("")
+    var setdata = mutableStateOf<Customer>(Customer("","","","","","","","","",""))
+        private set
+    fun updatesetdata(newStatus: Customer) {
+        setdata.value = newStatus
+    }
 var status= mutableStateOf(false)
     private set
    fun updateStatus(newStatus: Boolean) {

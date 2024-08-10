@@ -1,7 +1,6 @@
-package com.ionexa.nextgsi.FIreBase
+package com.ionexa.nextgsi.FBFireBase
 
 import android.net.Uri
-import androidx.compose.ui.platform.LocalContext
 import com.google.firebase.storage.FirebaseStorage
 import com.ionexa.nextgsi.DataClass.SelectedFile
 import kotlinx.coroutines.CoroutineScope

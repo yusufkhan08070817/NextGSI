@@ -4,7 +4,8 @@ import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
-import android.widget.ProgressBar
+import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -15,16 +16,13 @@ import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.semantics.ProgressBarRangeInfo
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.WindowInsetsCompat
@@ -33,16 +31,22 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
+import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.ionexa.nextgsi.Classes.LocationProvider
-import com.ionexa.nextgsi.Components.FilePicker
+import com.ionexa.nextgsi.DataClass.Customer
 import com.ionexa.nextgsi.DataClass.Order
-import com.ionexa.nextgsi.FIreBase.FireBaseStorage
-import com.ionexa.nextgsi.FIreBase.FirebaseAuthManager
-import com.ionexa.nextgsi.FIreBase.FirebaseGoogleAuth
+import com.ionexa.nextgsi.FBFireBase.FSDB
+import com.ionexa.nextgsi.FBFireBase.FireBaseStorage
+import com.ionexa.nextgsi.FBFireBase.FireBaseStoreDBMyClass
+import com.ionexa.nextgsi.FBFireBase.FirebaseAuthManager
+import com.ionexa.nextgsi.FBFireBase.FirebaseGoogleAuth
+
+
 import com.ionexa.nextgsi.MVVM.*
 import com.ionexa.nextgsi.Pages.*
 import com.ionexa.nextgsi.SingleTon.*
+import com.ionexa.nextgsi.SingleTon.common.db
 import com.ionexa.nextgsi.ui.theme.Mediumpurple
 import com.ionexa.nextgsi.ui.theme.NextGsiTheme
 import kotlinx.coroutines.launch
@@ -67,10 +71,13 @@ class MainActivity : ComponentActivity() {
 
     companion object {
         val FBAuth: FirebaseAuth = FirebaseAuth.getInstance()
+        val FBauthManager = FirebaseAuthManager()
+        val fbsb = FireBaseStorage()
+        val FireBaseStorage = FireBaseStorage()
+
     }
 
-    val FBauthManager = FirebaseAuthManager()
-val fbsb=FireBaseStorage()
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -104,9 +111,11 @@ val fbsb=FireBaseStorage()
                 activity = this
             )
 
-           /*
 
-           * */
+            /*
+
+
+                         */
         }
     }
 
@@ -231,7 +240,7 @@ fun Main(
         composable(NaveLabels.CartHistory) {
             ScreenWithBottomBar(navController) { innerPadding ->
                 OrderHistoryScreen(orderList = orderList)
-                
+
             }
         }
         composable(NaveLabels.AboutUs) {

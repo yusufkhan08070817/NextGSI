@@ -5,7 +5,7 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
-class FirestoreDatabase {
+class FBstoreDB {
 
     val firestore: FirebaseFirestore by lazy {
         FirebaseFirestore.getInstance()

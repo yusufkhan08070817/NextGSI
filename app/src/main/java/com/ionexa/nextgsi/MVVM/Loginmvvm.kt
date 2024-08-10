@@ -63,6 +63,11 @@ class Loginmvvm : ViewModel() {
     fun onemailerror(state: Boolean) {
         emailerror = state
     }
+    var roll by mutableStateOf("")
+        private set
+    fun updateroll(newroll: String) {
+        roll=newroll
+    }
 
 
 }

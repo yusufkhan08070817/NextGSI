@@ -466,17 +466,18 @@ fun Register(
 
 
 @Composable
-fun Dropdownroll() {
+fun Dropdownroll(selection:(String)->Unit) {
     var selectedOption by remember { mutableStateOf("Select account type") }
     var expanded by remember { mutableStateOf(false) }
 
     Row(modifier = Modifier.padding(), horizontalArrangement = Arrangement.Absolute.Right) {
         DropdownButton(
-            options = listOf("customer", "Admin"),
+            options = listOf("Customer", "Seller"),
             selectedOption = selectedOption,
             onOptionSelected = { option ->
                 selectedOption = option
                 expanded = false
+                selection(selectedOption)
             },
             expanded = expanded,
             onExpandChange = { expanded = it }

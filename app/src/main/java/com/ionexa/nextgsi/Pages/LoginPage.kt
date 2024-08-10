@@ -1,8 +1,10 @@
 package com.ionexa.nextgsi.Pages
 
 
+import android.os.Build
 import android.util.Log
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -17,7 +19,6 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -27,13 +28,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.ionexa.nextgsi.Components.ButtonWithCutCornerShape
 import com.ionexa.nextgsi.Components.Combined
@@ -46,16 +45,19 @@ import com.ionexa.nextgsi.Components.Logn_Register
 import com.ionexa.nextgsi.Components.Password
 import com.ionexa.nextgsi.Components.Register
 import com.ionexa.nextgsi.Components.RememberAndForgot
+import com.ionexa.nextgsi.DataClass.Customer
 import com.ionexa.nextgsi.DataClass.SignInState
-import com.ionexa.nextgsi.FIreBase.FirebaseAuthManager
+import com.ionexa.nextgsi.FBFireBase.FirebaseAuthManager
 import com.ionexa.nextgsi.MVVM.Loginmvvm
 import com.ionexa.nextgsi.MVVM.OtpVerificationViewModel
 import com.ionexa.nextgsi.R
 import com.ionexa.nextgsi.SingleTon.NaveLabels
+import com.ionexa.nextgsi.SingleTon.common
 import com.ionexa.nextgsi.ui.theme.DarkOrchidwebcolor
 import com.ionexa.nextgsi.ui.theme.Standardpurple
 import kotlinx.coroutines.delay
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun LoginPage(
     LoginViewModel: Loginmvvm,
@@ -91,6 +93,20 @@ fun LoginPage(
                     val isEmailVerified = FBauthManager.getCurrentUser()?.isEmailVerified == true
                     if (isEmailVerified) {
                         // Navigate to the next screen if email is verified
+                        OTP.updatesetdata(
+                            Customer(
+                                username = LoginViewModel.name,
+                                name = LoginViewModel.name,
+                                phone = LoginViewModel.phone,
+                                email = LoginViewModel.email,
+                                address = LoginViewModel.address,
+                                password = LoginViewModel.password,
+                                role = LoginViewModel.roll,
+                                createdAt = common.getCurrentDateTime(),
+                                profilePic = common.defaultpic,
+                                id = replaceSpecialChars(LoginViewModel.email)
+                            )
+                        )
                         navController.navigate(NaveLabels.OTPVerificatation)
                         Log.e("TAG", "Email verified")
                         return@addOnCompleteListener
@@ -188,16 +204,14 @@ fun LoginPage(
                             .fillMaxWidth(1f),
                         horizontalArrangement = Arrangement.Center
                     ) {
-                        Dropdownroll()
+                        Dropdownroll() {
+                            LoginViewModel.updateroll(it)
+                        }
                     }
                     Spacer(modifier = Modifier.height(10.dp))
                 }
             }
-            if (LoginViewModel.LoginAndRigister) {
 
-            } else {
-
-            }
 
 
             Spacer(modifier = Modifier.height(10.dp))
@@ -231,19 +245,35 @@ fun LoginPage(
                 },
                 authSignUp = { email, password ->
                     if (email.isEmpty()) {
-                        LoginViewModel.onemailerror(true)
+                       // LoginViewModel.onemailerror(true)
+                        Toast.makeText(context, "Email is empty", Toast.LENGTH_SHORT).show()
                         return@ButtonWithCutCornerShape
                     } else {
                         LoginViewModel.onemailerror(false)
                     }
                     if (password.isEmpty()) {
-                        LoginViewModel.onpassworderror(true)
+                     //   LoginViewModel.onpassworderror(true)
+                        Toast.makeText(context, "Password is empty", Toast.LENGTH_SHORT).show()
                         return@ButtonWithCutCornerShape
                     } else {
                         LoginViewModel.onpassworderror(false)
                     }
-                    if (LoginViewModel.name.isEmpty()) return@ButtonWithCutCornerShape
-                    if (LoginViewModel.phone.isEmpty()) return@ButtonWithCutCornerShape
+                    if (LoginViewModel.name.isEmpty()){
+
+                        return@ButtonWithCutCornerShape
+                    }
+                    if (LoginViewModel.phone.isEmpty()) {
+                        Toast.makeText(context, "Name is empty", Toast.LENGTH_SHORT).show()
+                        return@ButtonWithCutCornerShape
+                    }
+                    if (LoginViewModel.address.isEmpty()) {
+                        Toast.makeText(context, "Address is empty", Toast.LENGTH_SHORT).show()
+                        return@ButtonWithCutCornerShape
+                    }
+                    if (LoginViewModel.roll=="Select account type"||LoginViewModel.roll=="") {
+                        Toast.makeText(context, "Role is empty", Toast.LENGTH_SHORT).show()
+                        return@ButtonWithCutCornerShape
+                    }
                     else OTP.phoneNumber.value = "+91" + LoginViewModel.phone
                     if (LoginViewModel.address.isEmpty()) return@ButtonWithCutCornerShape
                     FBauthManager.createAccountWithEmail(email = email,
@@ -290,4 +320,11 @@ fun LoginPage(
             LoadingScreen()
         }
     }
+}
+
+fun replaceSpecialChars(email: String): String {
+    // Define a regex pattern for special characters except '.' and '@'
+    val specialCharsPattern = "[^a-zA-Z0-9]".toRegex()
+    // Replace all special characters with "yk"
+    return email.replace(specialCharsPattern, "")
 }

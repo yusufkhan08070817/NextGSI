@@ -2,7 +2,7 @@ package com.ionexa.nextgsi.DataClass
 
 import kotlinx.serialization.Serializable
 
-@Serializable
+
 data class ProductTypeId(
     val productid: Int,
     val name: String,

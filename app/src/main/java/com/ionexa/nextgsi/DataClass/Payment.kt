@@ -2,7 +2,7 @@ package com.ionexa.nextgsi.DataClass
 
 import kotlinx.serialization.Serializable
 
-@Serializable
+
 data class Payment(
     val id: Int,
     val sellerId: Int,
