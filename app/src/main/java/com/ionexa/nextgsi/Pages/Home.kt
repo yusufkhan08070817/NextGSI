@@ -6,6 +6,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -117,7 +118,7 @@ fun HomePage(
     )
 
 
-    Column(modifier.fillMaxSize()
+    Column(modifier.fillMaxWidth().fillMaxHeight(0.9f)
     ) {
 
         val customPurple200 = Color(0xFFBB86FC)

@@ -95,16 +95,16 @@ fun OtpVerification(
     LaunchedEffect(viewModel.status.value) {
         if (viewModel.status.value) {
             val customerdata = Customer(
-                id = viewModel.setdata.value.id,
-                name = loginViewModel.name,
-                email = loginViewModel.email,
-                phone = loginViewModel.phone,
-                password = loginViewModel.password,
-                role = loginViewModel.roll,
-                address = loginViewModel.address,
-                profilePic = common.defaultpic,
-                username = loginViewModel.name,
-                createdAt = common.getCurrentDateTime()
+                id = viewModel.setdata.value.id.lowercase(),
+                name = loginViewModel.name.lowercase(),
+                email = common.encodeToBase64(loginViewModel.email.lowercase()),
+                phone = loginViewModel.phone.lowercase(),
+                password = common.encodeToBase64(loginViewModel.password.lowercase()),
+                role = loginViewModel.roll.lowercase(),
+                address = loginViewModel.address.lowercase(),
+                profilePic = common.encodeToBase64(common.defaultpic.lowercase()),
+                username = loginViewModel.name.lowercase(),
+                createdAt = common.getCurrentDateTime().lowercase()
             )
 
             val customerhashmap = fsdb.run { customerdata.toHashMap() }

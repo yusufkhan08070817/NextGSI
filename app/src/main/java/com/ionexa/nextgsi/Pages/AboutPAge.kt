@@ -43,19 +43,20 @@ fun AboutUs(modifier: Modifier = Modifier) {
         }
         Text(
             text = """
-            An About Us page is an integral piece of content to have on your website.
-
-            Every single successful business has one, no matter their industry or what they sell.
-
-            After all, every brand has a story – and your About Us page helps you tell yours.
-
-            That’s important because, these days, story and connection matter more than ever to customers.
-
-            In a Demand Gen survey, 55% of B2B buyers said content that tells a strong, resonating story is what would make them most likely to talk to sales.
-
-            Because your About Us page is one of the first places customers will look to find out about your business and story, it’s a foundational page that deserves time and attention to get right.
-
-            Let’s talk about it, including how to write an About Us page.
+           NEXT is at the forefront of the Q-commerce revolution, transforming the way people
+           experience e-commerce. Our mission is to elevate the convenience of online shopping by
+           reducing delivery times from days to minutes, bringing the future of retail to your doorstep.
+           As a pioneering Q-commerce startup, we leverage cutting-edge technology, including
+           artificial intelligence (AI), and a highly eFicient logistics network to meet the growing
+           demand for instant gratification. Our AI-driven platform optimizes inventory management,
+           personalizes customer experiences, and ensures that whatever you need is just a few
+           clicks away.
+           Founded on the principles of speed, reliability, and customer satisfaction, NEXT is
+           redefining the standards of online shopping. We are dedicated to creating a shopping
+           experience that is not only fast but also sustainable and tailored to the needs of our
+           customers.
+           Join us as we lead the charge in the Q-commerce space, transforming the way the world
+           shops, one instant delivery at a time.
         """.trimIndent(),
             modifier
                 .fillMaxWidth(1f)

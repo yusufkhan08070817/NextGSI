@@ -18,6 +18,32 @@ class ProfileMVVM:ViewModel() {
         private set
     var name by mutableStateOf("Name")
         private set
+    var role by mutableStateOf("Role")
+        private set
+    var id by mutableStateOf("Id")
+        private set
+    var username by mutableStateOf("Username")
+        private set
+    var createdAt by mutableStateOf("CreatedAt")
+        private set
+    fun updatecreatedAt(value:String)
+    {
+        createdAt=value
+
+    }
+    fun updateusername(value:String)
+    {
+        username=value
+
+    }
+    fun updateid(value:String)
+    {
+        id=value
+    }
+fun updaterole(value:String)
+{
+    role=value
+}
     fun updateemail(value:String)
     {
         email=value
