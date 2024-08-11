@@ -25,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.core.app.ActivityCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -34,6 +35,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.messaging.FirebaseMessaging
 import com.ionexa.nextgsi.Classes.LocationProvider
 import com.ionexa.nextgsi.DataClass.Customer
 import com.ionexa.nextgsi.DataClass.Order
@@ -92,11 +94,28 @@ class MainActivity : ComponentActivity() {
             val currentUser = authViewModel.currentUser.observeAsState()
 
             if (currentUser.value != null) {
+           common.myid.value=common.replaceSpecialChars(currentUser.value!!.email?:" lund")
                 NaveLabels.DefaultLoag = NaveLabels.Home
             } else {
                 NaveLabels.DefaultLoag = NaveLabels.SplashScreen
             }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(android.Manifest.permission.POST_NOTIFICATIONS),
+                    1
+                )
+            }
 
+            // Fetch the user token
+            FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val token = task.result
+                    // Send this token to your server or store it for future use
+                    println("User Token: $token")
+                    Log.e("userToken", token)
+                }
+            }
             Main(
                 loginViewModel = LoginViewModel,
                 homeViewModel = HomeViewModel,

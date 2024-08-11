@@ -8,6 +8,8 @@ import androidx.compose.animation.slideIn
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,6 +21,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Card
@@ -37,15 +40,17 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.ionexa.nextgsi.R
 import com.ionexa.nextgsi.ui.theme.IndigoHeading
+import com.ionexa.nextgsi.ui.theme.Plum
 import com.ionexa.nextgsi.ui.theme.SlateBlue
 
 @Composable
-fun RectangleWithCurve(modifier: Modifier = Modifier,profileimageurl:String,editable:()->Unit) {
+fun RectangleWithCurve(modifier: Modifier = Modifier,profileimageurl:String,iseidtable:Boolean,onclick:()->Unit,editable:()->Unit) {
     Box(modifier = Modifier
         .fillMaxWidth(1f)
         .height(300.dp))
@@ -66,20 +71,25 @@ fun RectangleWithCurve(modifier: Modifier = Modifier,profileimageurl:String,edit
         Column(modifier = Modifier
             .fillMaxWidth(1f)
             .height(330.dp)
+            .clickable { onclick() }
             , horizontalAlignment = Alignment.CenterHorizontally,verticalArrangement = Arrangement.Bottom) {
             Card(modifier= Modifier
                 .fillMaxWidth(0.4f)
-                .fillMaxHeight(0.48f),
-                colors = CardDefaults.cardColors(containerColor = Color.White), elevation = CardDefaults.elevatedCardElevation(2.dp), shape = CircleShape
+                .fillMaxHeight(0.48f), onClick = { onclick()},
+                colors = CardDefaults.cardColors(containerColor = if(iseidtable) Color.White else Plum), elevation = CardDefaults.elevatedCardElevation(2.dp), shape = CircleShape
             ) {
-                AsyncImage(
-                    model = profileimageurl,
-                    contentDescription =null
-                    , modifier = Modifier
-                        .clip(shape = CircleShape)
-                        .fillMaxSize(1f)
+               Card ( modifier = Modifier
+                   .fillMaxSize(1f).padding(5.dp), shape = CircleShape, colors = CardDefaults.cardColors(containerColor =  if(iseidtable) Color.White else Plum)){
+                   AsyncImage(
+                       model = profileimageurl,
+                       contentDescription =null,
+                       contentScale = ContentScale.Fit,
+                       modifier = Modifier
+                           .clip(shape = CircleShape)
+                           .fillMaxSize(1f)
 
-                )
+                   )
+               }
             }
         }
         Row(modifier = Modifier

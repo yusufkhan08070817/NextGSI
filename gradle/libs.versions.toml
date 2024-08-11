@@ -27,6 +27,7 @@ firebaseFirestoreKtx = "25.0.0"
 firebaseStorageKtx = "21.0.0"
 playServicesAuth = "21.2.0"
 runtimeLivedata = "1.6.8"
+firebaseMessaging = "24.0.0"
 
 [libraries]
 accompanist-pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanistPager" }
@@ -61,6 +62,7 @@ firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-fires
 firebase-storage-ktx = { group = "com.google.firebase", name = "firebase-storage-ktx", version.ref = "firebaseStorageKtx" }
 play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "playServicesAuth" }
 androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "runtimeLivedata" }
+firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging", version.ref = "firebaseMessaging" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
