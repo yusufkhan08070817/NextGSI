@@ -44,10 +44,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 import com.ionexa.nextgsi.Components.FilePicker
 import com.ionexa.nextgsi.Components.RectangleWithCurve
 import com.ionexa.nextgsi.DataClass.Customer
 import com.ionexa.nextgsi.DataClass.GoogleUserData
+import com.ionexa.nextgsi.DataClass.PersonalDetails
 import com.ionexa.nextgsi.FBFireBase.FSDB
 import com.ionexa.nextgsi.FBFireBase.FireBaseStorage
 import com.ionexa.nextgsi.MVVM.ProfileMVVM
@@ -74,7 +77,7 @@ fun ProfilePage(
     var menueState by remember { mutableStateOf(false) }
     val fsdb = FSDB()
     val coroutineScope = rememberCoroutineScope()
-
+    var fbauth = common.replaceSpecialChars(Firebase.auth.currentUser!!.email ?: "")
     LaunchedEffect(true) {
         ProfileViewModel.updateprofileImageUrl(
             googleUserData?.profilePictureUrl
@@ -88,28 +91,40 @@ fun ProfilePage(
     LaunchedEffect(true) {
         Toast.makeText(
             context,
-            "${if (common.myid.value.isEmpty()) "null" else common.myid.value.toString()}",
+            "${if (common.myid.value.isEmpty()) fbauth else common.myid.value.toString()}",
             Toast.LENGTH_SHORT
         ).show()
-        fsdb.getDataFromFireStoreDB("users", common.myid.value, onSuccess = {
+        fsdb.getDataFromFireStoreDB("users",
+            "${if (common.myid.value.isEmpty()) fbauth else common.myid.value.toString()}",
+            onSuccess = {
 
-            Log.e("TAG", "ProfilePage: $it")
-            if (it != null) {
+                Log.e("TAG", "ProfilePage: $it")
 
-                var rawdata = fsdb.hashMapToDataClass(it, Customer::class)
-                profiledata = rawdata ?: Customer("", "", "", "", "", "", "", "", "", "")
-                ProfileViewModel.updatname(profiledata.name)
-                ProfileViewModel.updateemail(common.decodeFromBase64(profiledata.email))
-                ProfileViewModel.updatephone(profiledata.phone)
-                ProfileViewModel.updateaddress(profiledata.address)
-                ProfileViewModel.updateprofileImageUrl(common.decodeFromBase64(profiledata.profilePic))
-                ProfileViewModel.updatepassword(common.decodeFromBase64(profiledata.password))
-                ProfileViewModel.updaterole(profiledata.role)
-                ProfileViewModel.updateusername(profiledata.username)
-                ProfileViewModel.updatecreatedAt(profiledata.createdAt)
-                ProfileViewModel.updateid(profiledata.id)
-            }
-        }) {
+                if (it != null) {
+
+                    ;
+                    var rawdataProfile = fsdb.hashMapToDataClass(
+                        it["personel_info"] as HashMap<String, Any>, Customer::class
+                    )
+                    Log.e("TAG lund", "ProfilePage email: ${rawdataProfile!!.email}")
+
+                    profiledata = rawdataProfile ?: Customer("", "", "", "", "", "", "", "", "", "")
+                    ProfileViewModel.updatname(profiledata.name)
+                    ProfileViewModel.updateemail(common.decodeFromBase64(profiledata.email))
+                    ProfileViewModel.updatephone(profiledata.phone)
+                    ProfileViewModel.updateaddress(profiledata.address)
+                    ProfileViewModel.updateprofileImageUrl(common.decodeFromBase64(profiledata.profilePic))
+                    ProfileViewModel.updatepassword(common.decodeFromBase64(profiledata.password))
+                    ProfileViewModel.updaterole(profiledata.role)
+                    ProfileViewModel.updateusername(profiledata.username)
+                    ProfileViewModel.updatecreatedAt(profiledata.createdAt)
+                    ProfileViewModel.updateid(profiledata.id)
+
+                } else {
+                    Toast.makeText(context, "null data", Toast.LENGTH_SHORT).show()
+                }
+
+            }) {
             Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
         }
     }
@@ -117,14 +132,18 @@ fun ProfilePage(
     if (onclickimage && !eidtable) {
 
         FilePicker {
-            Toast.makeText(context," ${it[0].uri}",Toast.LENGTH_LONG).show()
+            Toast.makeText(context, " ${it[0].uri}", Toast.LENGTH_LONG).show()
 
             coroutineScope.launch {
-                storage.uploadSingleImage(imageUri = it[0].uri, path = "users", onProgress = {}, onFailure = {
-                    Log.e("FBERROR",it.message.toString())
-                }, onSuccess = {
-                    ProfileViewModel.updateprofileImageUrl(it)
-                })
+                storage.uploadSingleImage(imageUri = it[0].uri,
+                    path = "users",
+                    onProgress = {},
+                    onFailure = {
+                        Log.e("FBERROR", it.message.toString())
+                    },
+                    onSuccess = {
+                        ProfileViewModel.updateprofileImageUrl(it)
+                    })
             }
             if (it.isNotEmpty()) {
                 onclickimage = false
@@ -248,47 +267,43 @@ fun ProfilePage(
                         eidtable = true
 
                         coroutineScope.launch {
-                            Toast.makeText(
-                                context,
-                                "${if (common.myid.value.isEmpty()) "null" else common.myid.value.toString()}",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                            fsdb.getDataFromFireStoreDB("users", common.myid.value, onSuccess = {
 
-                                Log.e("TAG", "ProfilePage: $it")
-                                if (it != null) {
+                            fsdb.getDataFromFireStoreDB("users",
+                                "${if (common.myid.value.isEmpty()) fbauth else common.myid.value.toString()}",
+                                onSuccess = {
 
-                                    var rawdata = fsdb.hashMapToDataClass(it, Customer::class)
-                                    profiledata = rawdata ?: Customer(
-                                        "", "", "", "", "", "", "", "", "", ""
-                                    )
-                                    ProfileViewModel.updatname(profiledata.name)
-                                    ProfileViewModel.updateemail(
-                                        common.decodeFromBase64(
-                                            profiledata.email
+                                    Log.e("TAG", "ProfilePage: $it")
+
+                                    if (it != null) {
+
+                                        ;
+                                        var rawdataProfile = fsdb.hashMapToDataClass(
+                                            it["personel_info"] as HashMap<String, Any>, Customer::class
                                         )
-                                    )
-                                    ProfileViewModel.updatephone(profiledata.phone)
-                                    ProfileViewModel.updateaddress(profiledata.address)
-                                    ProfileViewModel.updateprofileImageUrl(
-                                        common.decodeFromBase64(
-                                            profiledata.profilePic
-                                        )
-                                    )
-                                    ProfileViewModel.updatepassword(
-                                        common.decodeFromBase64(
-                                            profiledata.password
-                                        )
-                                    )
-                                    ProfileViewModel.updaterole(profiledata.role)
-                                    ProfileViewModel.updateusername(profiledata.username)
-                                    ProfileViewModel.updatecreatedAt(profiledata.createdAt)
-                                    ProfileViewModel.updateid(profiledata.id)
-                                }
-                            }) {
+                                        Log.e("TAG lund", "ProfilePage email: ${rawdataProfile!!.email}")
+
+                                        profiledata = rawdataProfile ?: Customer("", "", "", "", "", "", "", "", "", "")
+                                        ProfileViewModel.updatname(profiledata.name)
+                                        ProfileViewModel.updateemail(common.decodeFromBase64(profiledata.email))
+                                        ProfileViewModel.updatephone(profiledata.phone)
+                                        ProfileViewModel.updateaddress(profiledata.address)
+                                        ProfileViewModel.updateprofileImageUrl(common.decodeFromBase64(profiledata.profilePic))
+                                        ProfileViewModel.updatepassword(common.decodeFromBase64(profiledata.password))
+                                        ProfileViewModel.updaterole(profiledata.role)
+                                        ProfileViewModel.updateusername(profiledata.username)
+                                        ProfileViewModel.updatecreatedAt(profiledata.createdAt)
+                                        ProfileViewModel.updateid(profiledata.id)
+
+                                    } else {
+                                        Toast.makeText(context, "null data", Toast.LENGTH_SHORT).show()
+                                    }
+
+                                }) {
                                 Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
                             }
                         }
+
+
                     }, colors = ButtonDefaults.buttonColors(containerColor = DarkSlateBlue)
                 ) {
                     Text(text = "Cancle")
@@ -311,9 +326,12 @@ fun ProfilePage(
                                 username = profiledata.username
                             )
                             val customerhashmap = fsdb.run { updateCustomer.toHashMap() }
-                            fsdb.updateDataInFireStoreDB("users",
+                            val uploadhashmap= hashMapOf<String,Any?>()
+                            uploadhashmap.put("personel_info",customerhashmap)
+                            fsdb.updateDataInFireStoreDB(
+                                "users",
                                 common.myid.value,
-                                updates = customerhashmap,
+                                updates = uploadhashmap,
                                 onSuccess = {
                                     Toast.makeText(context, "Updated", Toast.LENGTH_SHORT).show()
                                 }) {
