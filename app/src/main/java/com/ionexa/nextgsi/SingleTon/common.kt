@@ -18,10 +18,11 @@ import java.util.Date
 object common {
 
     val db = Firebase.firestore
-    const val defaultpic="https://static.vecteezy.com/system/resources/previews/002/002/403/large_2x/man-with-beard-avatar-character-isolated-icon-free-vector.jpg"
-val FBDBTAG="FBDBTages"
+    const val defaultpic =
+        "https://static.vecteezy.com/system/resources/previews/002/002/403/large_2x/man-with-beard-avatar-character-isolated-icon-free-vector.jpg"
+    val FBDBTAG = "FBDBTages"
 
-var myid =  mutableStateOf("")
+    var myid = mutableStateOf("")
     fun getCurrentDateTime(): String {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // Use LocalDateTime for API 26 (Oreo) and above
@@ -35,17 +36,19 @@ var myid =  mutableStateOf("")
             formatter.format(currentDateTime)
         }
     }
+
     fun replaceSpecialChars(email: String): String {
         // Define a regex pattern for special characters except '.' and '@'
         val specialCharsPattern = "[^a-zA-Z0-9]".toRegex()
         // Replace all special characters with "yk"
         return email.replace(specialCharsPattern, "")
     }
+
     fun encodeToBase64(input: String): String {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             Base64.getEncoder().encodeToString(input.toByteArray())
         } else {
-           ""
+            ""
         }
     }
 
@@ -53,7 +56,7 @@ var myid =  mutableStateOf("")
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             String(Base64.getDecoder().decode(encoded))
         } else {
-           ""
+            ""
         }
     }
 }

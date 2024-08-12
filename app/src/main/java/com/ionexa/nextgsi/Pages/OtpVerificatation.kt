@@ -108,7 +108,9 @@ fun OtpVerification(
             )
 
             val customerhashmap = fsdb.run { customerdata.toHashMap() }
-            fsdb.uploadDataToFireStoreDB(customerhashmap, "users", customerdata.id, onsuccess = {
+            val uploadhashmap= hashMapOf<String,Any?>()
+            uploadhashmap.put("personel_info",customerhashmap)
+            fsdb.uploadDataToFireStoreDB(uploadhashmap, "users", customerdata.id, onsuccess = {
                 com.ionexa.nextgsi.SingleTon.Navigation.navController.navigate(NaveLabels.Home)
             })
             {
