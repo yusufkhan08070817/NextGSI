@@ -66,6 +66,8 @@ import com.ionexa.nextgsi.DataClass.Search_dataList
 import com.ionexa.nextgsi.MVVM.HomeMVVM
 import com.ionexa.nextgsi.MVVM.MapeKCMVVM
 import com.ionexa.nextgsi.SingleTon.Locatation
+import com.ionexa.nextgsi.SingleTon.common
+
 
 
 @Composable
@@ -118,242 +120,122 @@ fun HomePage(
     )
 
 
-    Column(modifier.fillMaxWidth().fillMaxHeight(0.9f)
-    ) {
 
-        val customPurple200 = Color(0xFFBB86FC)
-        Column(modifier = Modifier
-            .fillMaxWidth()
-            .height(380.dp)
-            .shadow(
-                elevation = 12.dp,
-                shape = RoundedCornerShape(
-                    bottomStart = 20.dp,
-                    bottomEnd = 20.dp
-                ),
-                clip = true
-            )
-            .background(customPurple200, shape = RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp, topStart = 0.dp, topEnd = 0.dp))
-        ) {
+        MainHomeList(modifier = Modifier.fillMaxWidth(1f), data = createDummyData()){
 
-
-            Text(
-                text = "Delivering to:",
-                fontWeight = FontWeight.Bold,
-                fontSize = 16.sp,
-                color = Color.White,
-                modifier = Modifier
-                        .padding(start = 16.dp, top = 45.dp, end = 16.dp, bottom = 0.dp)
-            )
-            Text(
-                text = "B/78, Kalanagar Society, New Delhi",
-                fontWeight = FontWeight.Normal,
-                fontSize = 18.sp,
-                color = Color.White,
-                modifier = Modifier
-                    .padding(start = 16.dp, top = 5.dp, end = 16.dp, bottom = 0.dp)
-            )
-
-            // Search bar
-            Serchbar(
-                text = homeViewModel.serchtext,
-                setstring = { setstr -> homeViewModel.serserchtext(setstr) },
-                setfoucs = { lund -> homeViewModel.updateisFocuse(lund) },
-                getfocus = homeViewModel.isFocused
+            Column(modifier.fillMaxWidth().fillMaxHeight(0.9f)
             ) {
-                homeViewModel.setfilter(true)
-            }
 
-            // Filter dialog
-            AnimatedVisibility(visible = homeViewModel.isFocused) {
-                if (homeViewModel.filter) {
-                    FilterDialog(
-                        Modifier,
-                        true,
-                        setDialogstate = { it -> homeViewModel.setfilter(it) },
-                        setlocationvalue = { loat ->
-                            filterLocation = when (loat) {
-                                0 -> Locatation.city
-                                1 -> Locatation.state
-                                2 -> Locatation.choosenlocatation
-                                else -> ""
-                            }
-
-                        },
-                        setpricevalue = { price ->
-                            priceRange = when (price) {
-                                0 -> 50..100
-                                1 -> 100..1000
-                                2 -> 1000..10000
-                                else -> 0..100
-                            }
-                            Log.d("price", priceRange.toString())
-                        },
-                        setDatevalue = { choseDate ->
-                            chosenDate = choseDate
-                        },
-                        setAvailabilityvalue = { available = it },
-                        setFreeDelivery = { isFreeDelivery = it },
-                        homeMVVM = homeViewModel
+                val customPurple200 = Color(0xFFBB86FC)
+                Column(modifier = Modifier
+                    .fillMaxWidth()
+                    .height(380.dp)
+                    .shadow(
+                        elevation = 12.dp,
+                        shape = RoundedCornerShape(
+                            bottomStart = 20.dp,
+                            bottomEnd = 20.dp
+                        ),
+                        clip = true
                     )
-                }
-            }
-
-            // Display filtered items
-            AnimatedVisibility(
-                visible = homeViewModel.isFocused
-            ) {
-                Card(
-                    Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight()
-                        .padding(horizontal = 10.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color.White),
-                    elevation = CardDefaults.elevatedCardElevation(0.dp)
+                    .background(customPurple200, shape = RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp, topStart = 0.dp, topEnd = 0.dp))
                 ) {
-                    LazyColumn(
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        items(filteredItems) { item ->
-                            IteamSearch(ShowData = item)
-                        }
-                    }
-                }
-            }
 
-            // Image carousel
-            ImageCarouselCard(images)
-        }
 
-        Text(
-            text = "Categories",
-            fontWeight = FontWeight.Bold,
-            style = MaterialTheme.typography.titleLarge,
-            modifier = Modifier
-                .padding(start = 16.dp, top = 12.dp)
-        )
-
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(4), // 4 items per row
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(10.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
-            items(categories.size) { index ->
-                val category = categories[index]
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .padding(4.dp)
-                        .fillMaxWidth()
-                ) {
-                    AsyncImage(
-                        model = category.second,
-                        contentDescription = category.first,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .size(60.dp)
-                            .clip(RoundedCornerShape(8.dp))
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = category.first,
+                        text = "Delivering to:",
                         fontWeight = FontWeight.Bold,
-                        style = MaterialTheme.typography.bodyMedium,
-                        maxLines = 1
-                    )
-                }
-            }
-        }
-
-        Text(
-            text = "Deals of the Day",
-            fontWeight = FontWeight.Bold,
-            style = MaterialTheme.typography.titleLarge,
-            modifier = Modifier
-                .padding(start = 16.dp, top = 10.dp)
-        )
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2), // Two columns
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(
-                    Color(0xFFFFFFFF),
-                    shape = RoundedCornerShape(topStart = 15.dp, topEnd = 15.dp)
-                )
-                .padding(15.dp),
-            verticalArrangement = Arrangement.spacedBy(5.dp),
-            horizontalArrangement = Arrangement.spacedBy(5.dp)
-        ) {
-            items(7) { index ->
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(3.dp)
-                        .border(
-                            width = 1.dp,
-                            color = Color.Black,
-                            shape = RoundedCornerShape(15.dp)
-                        )
-                ) {
-                    BoxWithConstraints(
+                        fontSize = 16.sp,
+                        color = Color.White,
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .aspectRatio(1f)
-                            .clip(MaterialTheme.shapes.medium)
+                            .padding(start = 16.dp, top = 45.dp, end = 16.dp, bottom = 0.dp)
+                    )
+                    Text(
+                        text = "B/78, Kalanagar Society, New Delhi",
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 18.sp,
+                        color = Color.White,
+                        modifier = Modifier
+                            .padding(start = 16.dp, top = 5.dp, end = 16.dp, bottom = 0.dp)
+                    )
+
+                    // Search bar
+                    Serchbar(
+                        text = homeViewModel.serchtext,
+                        setstring = { setstr -> homeViewModel.serserchtext(setstr) },
+                        setfoucs = { lund -> homeViewModel.updateisFocuse(lund) },
+                        getfocus = homeViewModel.isFocused
                     ) {
-                        Box(
-                            modifier = Modifier
-                                .align(Alignment.BottomCenter)
-                                .fillMaxWidth()
-                                .height(
-                                    this.constraints.maxHeight
-                                        .div(2).dp
-                                )
-                                .clip(MaterialTheme.shapes.medium)
-                                .background(Color.White),
-                        )
-                        AsyncImage(
-                            model = images[0],
-                            contentDescription = null,
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .clip(MaterialTheme.shapes.medium),
-                        )
+                        homeViewModel.setfilter(true)
                     }
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        /** Product's interactions */
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                        ) {
-                            Text(
-                                modifier = Modifier.weight(1f),
-                                text = "$12",
-                                style = MaterialTheme.typography.titleLarge.copy(
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color.Black,
-                                ),
+
+                    // Filter dialog
+                    AnimatedVisibility(visible = homeViewModel.isFocused) {
+                        if (homeViewModel.filter) {
+                            FilterDialog(
+                                Modifier,
+                                true,
+                                setDialogstate = { it -> homeViewModel.setfilter(it) },
+                                setlocationvalue = { loat ->
+                                    filterLocation = when (loat) {
+                                        0 -> Locatation.city
+                                        1 -> Locatation.state
+                                        2 -> Locatation.choosenlocatation
+                                        else -> ""
+                                    }
+
+                                },
+                                setpricevalue = { price ->
+                                    priceRange = when (price) {
+                                        0 -> 50..100
+                                        1 -> 100..1000
+                                        2 -> 1000..10000
+                                        else -> 0..100
+                                    }
+                                    Log.d("price", priceRange.toString())
+                                },
+                                setDatevalue = { choseDate ->
+                                    chosenDate = choseDate
+                                },
+                                setAvailabilityvalue = { available = it },
+                                setFreeDelivery = { isFreeDelivery = it },
+                                homeMVVM = homeViewModel
                             )
-
                         }
-
-                        Text(
-                            modifier = Modifier,
-                            text = "Title",
-                            style = MaterialTheme.typography.headlineSmall,
-                            maxLines = 2,
-                        )
                     }
 
+                    // Display filtered items
+                    AnimatedVisibility(
+                        visible = homeViewModel.isFocused
+                    ) {
+                        Card(
+                            Modifier
+                                .fillMaxWidth()
+                                .wrapContentHeight()
+                                .padding(horizontal = 10.dp),
+                            colors = CardDefaults.cardColors(containerColor = Color.White),
+                            elevation = CardDefaults.elevatedCardElevation(0.dp)
+                        ) {
+                            LazyColumn(
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                items(filteredItems) { item ->
+                                    IteamSearch(ShowData = item)
+                                }
+                            }
+                        }
+                    }
+
+                    // Image carousel
+                    ImageCarouselCard(images)
                 }
+
+
+
             }
-        }
+
+
     }
 }
 
@@ -531,4 +413,69 @@ fun filterItems(
         // Apply all filters
         priceFilter && locationFilter && availabilityFilter && deliveryFilter
     }
+}
+fun createDummyData(): MutableList<MutableList<tempdata>> {
+    return mutableListOf(
+        mutableListOf(
+            tempdata("https://media.istockphoto.com/id/1457979959/photo/snack-junk-fast-food-on-table-in-restaurant-soup-sauce-ornament-grill-hamburger-french-fries.jpg?s=2048x2048&w=is&k=20&c=_AdAtGBXgtZjfJQVbDYS6Eku8m3h05p2E2p0V1uKlUo=", "Title 1"),
+            tempdata("https://media.istockphoto.com/id/1428412216/photo/a-male-chef-pouring-sauce-on-meal.jpg?s=2048x2048&w=is&k=20&c=4kootjYOsFPf6Z-1sxc0d5_kAq6Xu5zJiu-PsVNKkDE=", "Title 2"),
+            tempdata("https://plus.unsplash.com/premium_photo-1670740967011-86730910a2e5?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "Title 3"),
+            tempdata("https://media.istockphoto.com/id/1312283557/photo/classic-thai-food-dishes.jpg?s=2048x2048&w=is&k=20&c=DUmzzaJlEb8lfQQdL85DKJ98CUQnuWABfJq2SWKh9Fk=", "Title 4"),
+            tempdata("https://media.istockphoto.com/id/1428409514/photo/a-male-chef-serving-a-fine-dining-dish-in-a-restaurant.jpg?s=2048x2048&w=is&k=20&c=yWRYRZG38WbZwPwajj9Vl2YKNiRhzIMarmYoFDMronE=", "Title 5"),
+            tempdata("https://media.istockphoto.com/id/1053855542/photo/chopstick-with-nigiri-sushi-piece.jpg?s=2048x2048&w=is&k=20&c=zgXH_6bV-Zto8zh6oGH7xNvpkmZTCenhWktQMzcR4fM=", "Title 6"),
+            tempdata("https://media.istockphoto.com/id/502840530/photo/luxury-restaurant-table-on-sunset.jpg?s=2048x2048&w=is&k=20&c=kXOW1uVoz8nwYsW2bhdn-q8kgwlM2_12s4Zm1UZWpJs=", "Title 7"),
+
+
+            ),
+        mutableListOf(
+            tempdata("https://plus.unsplash.com/premium_photo-1681711647066-ef84575c0d95?q=80&w=2000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "Title 1"),
+            tempdata("https://images.unsplash.com/photo-1560343090-f0409e92791a?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "Title 2"),
+            tempdata("https://images.unsplash.com/photo-1554866585-cd94860890b7?q=80&w=1965&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "Title 3"),
+            tempdata("https://images.unsplash.com/photo-1620916566398-39f1143ab7be?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "Title 4"),
+            tempdata("https://plus.unsplash.com/premium_photo-1674688194029-17dda3aaf779?q=80&w=2080&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "Title 5"),
+            tempdata("https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?q=80&w=1996&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "Title 6"),
+            tempdata("https://images.unsplash.com/photo-1563170351-be82bc888aa4?q=80&w=1936&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "Title 7"),
+        ),
+        mutableListOf(
+            tempdata("https://media.istockphoto.com/id/1457979959/photo/snack-junk-fast-food-on-table-in-restaurant-soup-sauce-ornament-grill-hamburger-french-fries.jpg?s=2048x2048&w=is&k=20&c=_AdAtGBXgtZjfJQVbDYS6Eku8m3h05p2E2p0V1uKlUo=", "Title 1"),
+            tempdata("https://media.istockphoto.com/id/1428412216/photo/a-male-chef-pouring-sauce-on-meal.jpg?s=2048x2048&w=is&k=20&c=4kootjYOsFPf6Z-1sxc0d5_kAq6Xu5zJiu-PsVNKkDE=", "Title 2"),
+            tempdata("https://plus.unsplash.com/premium_photo-1670740967011-86730910a2e5?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "Title 3"),
+            tempdata("https://media.istockphoto.com/id/1312283557/photo/classic-thai-food-dishes.jpg?s=2048x2048&w=is&k=20&c=DUmzzaJlEb8lfQQdL85DKJ98CUQnuWABfJq2SWKh9Fk=", "Title 4"),
+            tempdata("https://media.istockphoto.com/id/1428409514/photo/a-male-chef-serving-a-fine-dining-dish-in-a-restaurant.jpg?s=2048x2048&w=is&k=20&c=yWRYRZG38WbZwPwajj9Vl2YKNiRhzIMarmYoFDMronE=", "Title 5"),
+            tempdata("https://media.istockphoto.com/id/1053855542/photo/chopstick-with-nigiri-sushi-piece.jpg?s=2048x2048&w=is&k=20&c=zgXH_6bV-Zto8zh6oGH7xNvpkmZTCenhWktQMzcR4fM=", "Title 6"),
+            tempdata("https://media.istockphoto.com/id/502840530/photo/luxury-restaurant-table-on-sunset.jpg?s=2048x2048&w=is&k=20&c=kXOW1uVoz8nwYsW2bhdn-q8kgwlM2_12s4Zm1UZWpJs=", "Title 7"),
+
+
+            ),
+        mutableListOf(
+            tempdata("https://plus.unsplash.com/premium_photo-1681711647066-ef84575c0d95?q=80&w=2000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "Title 1"),
+            tempdata("https://images.unsplash.com/photo-1560343090-f0409e92791a?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "Title 2"),
+            tempdata("https://images.unsplash.com/photo-1554866585-cd94860890b7?q=80&w=1965&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "Title 3"),
+            tempdata("https://images.unsplash.com/photo-1620916566398-39f1143ab7be?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "Title 4"),
+            tempdata("https://plus.unsplash.com/premium_photo-1674688194029-17dda3aaf779?q=80&w=2080&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "Title 5"),
+            tempdata("https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?q=80&w=1996&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "Title 6"),
+            tempdata("https://images.unsplash.com/photo-1563170351-be82bc888aa4?q=80&w=1936&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "Title 7"),
+        ),
+        mutableListOf(
+            tempdata("https://media.istockphoto.com/id/1457979959/photo/snack-junk-fast-food-on-table-in-restaurant-soup-sauce-ornament-grill-hamburger-french-fries.jpg?s=2048x2048&w=is&k=20&c=_AdAtGBXgtZjfJQVbDYS6Eku8m3h05p2E2p0V1uKlUo=", "Title 1"),
+            tempdata("https://media.istockphoto.com/id/1428412216/photo/a-male-chef-pouring-sauce-on-meal.jpg?s=2048x2048&w=is&k=20&c=4kootjYOsFPf6Z-1sxc0d5_kAq6Xu5zJiu-PsVNKkDE=", "Title 2"),
+            tempdata("https://plus.unsplash.com/premium_photo-1670740967011-86730910a2e5?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "Title 3"),
+            tempdata("https://media.istockphoto.com/id/1312283557/photo/classic-thai-food-dishes.jpg?s=2048x2048&w=is&k=20&c=DUmzzaJlEb8lfQQdL85DKJ98CUQnuWABfJq2SWKh9Fk=", "Title 4"),
+            tempdata("https://media.istockphoto.com/id/1428409514/photo/a-male-chef-serving-a-fine-dining-dish-in-a-restaurant.jpg?s=2048x2048&w=is&k=20&c=yWRYRZG38WbZwPwajj9Vl2YKNiRhzIMarmYoFDMronE=", "Title 5"),
+            tempdata("https://media.istockphoto.com/id/1053855542/photo/chopstick-with-nigiri-sushi-piece.jpg?s=2048x2048&w=is&k=20&c=zgXH_6bV-Zto8zh6oGH7xNvpkmZTCenhWktQMzcR4fM=", "Title 6"),
+            tempdata("https://media.istockphoto.com/id/502840530/photo/luxury-restaurant-table-on-sunset.jpg?s=2048x2048&w=is&k=20&c=kXOW1uVoz8nwYsW2bhdn-q8kgwlM2_12s4Zm1UZWpJs=", "Title 7"),
+
+
+            ),
+        mutableListOf(
+            tempdata("https://plus.unsplash.com/premium_photo-1681711647066-ef84575c0d95?q=80&w=2000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "Title 1"),
+            tempdata("https://images.unsplash.com/photo-1560343090-f0409e92791a?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "Title 2"),
+            tempdata("https://images.unsplash.com/photo-1554866585-cd94860890b7?q=80&w=1965&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "Title 3"),
+            tempdata("https://images.unsplash.com/photo-1620916566398-39f1143ab7be?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "Title 4"),
+            tempdata("https://plus.unsplash.com/premium_photo-1674688194029-17dda3aaf779?q=80&w=2080&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "Title 5"),
+            tempdata("https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?q=80&w=1996&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "Title 6"),
+            tempdata("https://images.unsplash.com/photo-1563170351-be82bc888aa4?q=80&w=1936&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", "Title 7"),
+        ),
+
+    )
 }

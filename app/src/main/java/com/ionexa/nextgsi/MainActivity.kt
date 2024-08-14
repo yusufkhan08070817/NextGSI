@@ -90,11 +90,12 @@ class MainActivity : ComponentActivity() {
             HideSystemUI()
             addLocalData()
             Navigation.navController = rememberNavController()
+
             val authViewModel: AuthViewModel = viewModel()
             val currentUser = authViewModel.currentUser.observeAsState()
 
             if (currentUser.value != null) {
-           common.myid.value=common.replaceSpecialChars(currentUser.value!!.email?:" lund")
+                common.myid.value=common.replaceSpecialChars(currentUser.value!!.email?:" lund")
                 NaveLabels.DefaultLoag = NaveLabels.Home
             } else {
                 NaveLabels.DefaultLoag = NaveLabels.SplashScreen
@@ -116,6 +117,11 @@ class MainActivity : ComponentActivity() {
                     Log.e("userToken", token)
                 }
             }
+
+           /*
+
+
+            */
             Main(
                 loginViewModel = LoginViewModel,
                 homeViewModel = HomeViewModel,
@@ -130,7 +136,6 @@ class MainActivity : ComponentActivity() {
                 OTP = OTP,
                 activity = this
             )
-
 
             /*
 
@@ -334,3 +339,5 @@ fun HideSystemUI() {
             WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
     }
 }
+
+
