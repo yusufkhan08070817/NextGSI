@@ -1,11 +1,17 @@
 package com.ionexa.nextgsi.FBFireBase
 
 import android.util.Log
+import com.google.gson.Gson
+import com.google.gson.JsonElement
+import com.google.gson.JsonObject
+import com.google.gson.JsonParser
+import com.google.gson.reflect.TypeToken
 
 import com.ionexa.nextgsi.SingleTon.common
 import com.ionexa.nextgsi.SingleTon.common.db
 import kotlinx.coroutines.tasks.await
 import kotlin.reflect.KClass
+import kotlin.reflect.full.createType
 import kotlin.reflect.full.primaryConstructor
 
 class FSDB {
@@ -100,6 +106,124 @@ class FSDB {
         val constructor = dataClass.primaryConstructor ?: return null
         val args = constructor.parameters.associateWith { param ->
             map[param.name]
+        }
+        return constructor.callBy(args)
+    }
+    fun parseJsonToMap(jsonString: String): HashMap<String, Any>? {
+        return try {
+            val gson = Gson()
+            val typeToken = object : TypeToken<HashMap<String, Any>>() {}.type
+            gson.fromJson<HashMap<String, Any>>(jsonString, typeToken)
+        } catch (e: Exception) {
+          Log.e("Json parse error","@:$jsonString")
+            e.printStackTrace()
+            null
+        }
+    }
+    fun convertMapToJson(map: Map<String, Any>): String {
+        val gson = Gson()
+        return gson.toJson(map)
+    }
+    fun parseJsonString(jsonString: String): JsonObject {
+        return try {
+            val jsonElement: JsonElement = JsonParser.parseString(jsonString)
+            if (jsonElement.isJsonObject) {
+                jsonElement.asJsonObject
+            } else {
+                throw IllegalArgumentException("The provided JSON string does not represent a JSON object.")
+            }
+        } catch (e: Exception) {
+            throw IllegalArgumentException("Invalid JSON string provided.", e)
+        }
+    }
+    fun extractKeysFromJsonObject(jsonObject: JsonObject): MutableList<String> {
+        val keyList = mutableListOf<String>()
+        val keys = jsonObject.keySet()
+
+        for (key in keys) {
+            keyList.add(key)
+        }
+
+        return keyList
+    }
+    fun extractJsonStringsFromJsonObject(jsonObject: JsonObject): MutableList<JsonObject> {
+        val jsonList = mutableListOf<JsonObject>()
+        val gson = Gson()
+
+        for ((_, value) in jsonObject.entrySet()) {
+            if (value.isJsonObject) {
+                // Convert JsonObject to a string and add it to the list
+                jsonList.add(parseJsonString(gson.toJson(value.asJsonObject)))
+            }
+        }
+
+        return jsonList
+    }
+    fun extractValuesFromJsonObject(jsonObject: JsonObject): MutableList<JsonObject> {
+        var raw:MutableList<JsonObject> = mutableListOf()
+        val arraykey=extractKeysFromJsonObject(jsonObject)
+        arraykey.map { value->
+            if(jsonObject.get(value).isJsonObject)
+            {
+                raw.add(jsonObject.get(value).asJsonObject)
+            }
+        }
+        return raw
+    }
+
+    fun extractElementValuesFromJsonObject(jsonElement: JsonElement): MutableList<String> {
+        val raw: MutableList<String> = mutableListOf()
+
+        // Check if jsonElement is indeed a JsonObject
+        if (jsonElement.isJsonObject) {
+            val jsonObject = jsonElement.asJsonObject
+            val arrayKey = jsonObject.keySet().toMutableList()
+
+            // Iterate over the keys and extract the string values if they exist
+            arrayKey.map { key ->
+                if (jsonObject.get(key).isJsonPrimitive) {
+                    raw.add(jsonObject.get(key).asString)
+                }
+            }
+        }
+
+        return raw
+    }
+
+
+
+
+    fun <T : Any> hashMapToNestedDataClass(map: Map<String, Any>, dataClass: KClass<T>): T? {
+        val constructor = dataClass.primaryConstructor ?: return null
+        val args = constructor.parameters.associateWith { param ->
+            val value = map[param.name]
+            val paramType = param.type
+
+            when {
+                // If parameter is another data class
+                paramType.classifier is KClass<*> && (paramType.classifier as KClass<*>).isData ->
+                    hashMapToNestedDataClass(value as Map<String, Any>, paramType.classifier as KClass<*>)
+
+                // If parameter is a List
+                paramType.classifier == List::class -> {
+                    val elementType = paramType.arguments[0].type?.classifier as? KClass<*>
+                    (value as? List<*>)?.map { element ->
+                        if (elementType?.isData == true && element is Map<*, *>) {
+                            hashMapToNestedDataClass(element as Map<String, Any>, elementType)
+                        } else {
+                            element
+                        }
+                    }
+                }
+
+                // Handle type mismatches (String to Int, String to Float, etc.)
+                paramType.classifier == Int::class -> (value as? String)?.toIntOrNull() ?: value as? Int
+                paramType.classifier == Float::class -> (value as? String)?.toFloatOrNull() ?: value as? Float
+                paramType.classifier == Boolean::class -> (value as? String)?.toBoolean() ?: value as? Boolean
+
+                // For primitive types, just use the value directly
+                else -> value
+            }
         }
         return constructor.callBy(args)
     }

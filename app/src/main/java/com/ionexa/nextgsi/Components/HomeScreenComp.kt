@@ -83,13 +83,19 @@ import androidx.compose.ui.unit.IntOffset
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.google.accompanist.pager.*
+import com.google.gson.JsonArray
+import com.google.gson.JsonElement
+import com.google.gson.JsonObject
+import com.ionexa.nextgsi.DataClass.ProductTypeId
 
 import com.ionexa.nextgsi.DataClass.Productdata
 import com.ionexa.nextgsi.DataClass.Search_dataList
+import com.ionexa.nextgsi.FBFireBase.FSDB
 import com.ionexa.nextgsi.MVVM.HomeMVVM
 import com.ionexa.nextgsi.SingleTon.Locatation
 import com.ionexa.nextgsi.SingleTon.NaveLabels
 import com.ionexa.nextgsi.SingleTon.Navigation
+import com.ionexa.nextgsi.SingleTon.common
 import com.ionexa.nextgsi.ui.theme.Black
 import com.ionexa.nextgsi.ui.theme.Indigo
 import com.ionexa.nextgsi.ui.theme.LightlightText
@@ -106,7 +112,7 @@ fun Serchbar(
     text: String,
     setstring: (String) -> Unit,
     setfoucs: (Boolean) -> Unit,
-    getfocus: Boolean,
+    getfocus: Boolean,removedata:()->Unit,
     filter: () -> Unit
 ) {
 
@@ -141,6 +147,7 @@ fun Serchbar(
                     keyboardActions = KeyboardActions(
                         onDone = {
                             focusManager.clearFocus()
+                            removedata()
                         }
                     ),
                     keyboardOptions = KeyboardOptions.Default.copy(
@@ -178,7 +185,7 @@ fun Serchbar(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 @Composable
 fun FilterDialog(
     modifier: Modifier = Modifier,
@@ -271,10 +278,12 @@ var locatationset by remember {
                 }
                 Spacer(modifier = modifier.height(10.dp))
                 Text(text = "Date")
-                MyDatePicker(updatechossingDate = {it->
-                    setDatevalue(it.toString())
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    MyDatePicker(updatechossingDate = { it->
+                        setDatevalue(it.toString())
 
-                })
+                    })
+                }
                 Text(text = "Availability")
                 Card(
                     modifier = Modifier
@@ -579,14 +588,18 @@ fun ProductCard(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun IteamSearch(ShowData: Search_dataList) {
+fun IteamSearch(ShowData: ProductTypeId) {
+  //  val fsdb=FSDB()
+
+   // val imagearray =extractJsonArrayFromJsonObject(ShowData["images"],"0")
+
     Card (modifier = Modifier
         .fillMaxWidth(1f)
         .height(80.dp)
         .padding(10.dp), colors = CardDefaults.cardColors(Color.White), elevation = CardDefaults.elevatedCardElevation(5.dp)){
         Row( verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxSize(1f)) {
             AsyncImage(
-                model = ShowData.image,
+                model = "https://media.istockphoto.com/id/1153088551/photo/almond-backgrounds-nut-food-textured-harvesting.jpg?s=2048x2048&w=is&k=20&c=BdqKAOtcNWpFVC7Y2yj6eprbqm1kkU_WCrvKwm3GVFM=",
                 contentDescription = "Product IMage",
                 modifier = Modifier
                     .width(60.dp)
@@ -595,8 +608,19 @@ fun IteamSearch(ShowData: Search_dataList) {
                     .shadow(shape = CircleShape, elevation = 5.dp),
                 contentScale = ContentScale.Crop
             )
-            Text(text = "${ShowData.name} and price ${ShowData.price} loc ${ShowData.Locatation} ",Modifier.padding(start = 50.dp))
+            Text(text =  "${ShowData.name} and price ${ShowData.price} loc ${ShowData.address} ",Modifier.padding(start = 50.dp))
         }
     }
 }
 
+
+fun extractJsonArrayFromJsonObject(jsonElement: JsonElement, key: String): JsonArray? {
+    if (jsonElement.isJsonObject) {
+        val jsonObject = jsonElement.asJsonObject
+        // Check if the key exists and is a JsonArray
+        if (jsonObject.has(key) && jsonObject.get(key).isJsonArray) {
+            return jsonObject.getAsJsonArray(key)
+        }
+    }
+    return null
+}
