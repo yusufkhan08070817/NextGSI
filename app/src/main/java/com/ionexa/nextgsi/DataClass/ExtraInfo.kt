@@ -4,5 +4,5 @@ import kotlinx.serialization.Serializable
 
 
 data class ExtraInfo(
-    val veg_nonveg: String
+    val veg_nonveg: String=""
 )

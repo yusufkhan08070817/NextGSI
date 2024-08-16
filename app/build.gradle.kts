@@ -104,4 +104,5 @@ dependencies {
     // Kotlinx Serialization JSON
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
     implementation ("org.jetbrains.kotlin:kotlin-reflect:1.9.22")
+    implementation("com.google.code.gson:gson:2.10.1")
 }
