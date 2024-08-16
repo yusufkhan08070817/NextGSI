@@ -52,6 +52,9 @@ import com.ionexa.nextgsi.SingleTon.*
 import com.ionexa.nextgsi.SingleTon.common.db
 import com.ionexa.nextgsi.ui.theme.Mediumpurple
 import com.ionexa.nextgsi.ui.theme.NextGsiTheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
@@ -95,7 +98,7 @@ class MainActivity : ComponentActivity() {
             val currentUser = authViewModel.currentUser.observeAsState()
 
             if (currentUser.value != null) {
-                common.myid.value=common.replaceSpecialChars(currentUser.value!!.email?:" lund")
+                common.myid.value=common.replaceSpecialChars(currentUser.value!!.email?:" ")
                 NaveLabels.DefaultLoag = NaveLabels.Home
             } else {
                 NaveLabels.DefaultLoag = NaveLabels.SplashScreen
@@ -117,6 +120,15 @@ class MainActivity : ComponentActivity() {
                     Log.e("userToken", token)
                 }
             }
+
+LaunchedEffect(key1 = MapeViewModel.currentLatitude, key2 =MapeViewModel.currentLongitude ) {
+    CoroutineScope(Dispatchers.IO).launch {
+        delay(1000)
+        val locationName = getLocationName(MapeViewModel.currentLatitude.toString(), MapeViewModel.currentLongitude.toString())
+        // Use the result
+        Log.d("LocationName", locationName)
+    }
+}
 
            /*
 

@@ -74,6 +74,11 @@ import com.ionexa.nextgsi.MVVM.HomeMVVM
 import com.ionexa.nextgsi.MVVM.MapeKCMVVM
 import com.ionexa.nextgsi.SingleTon.Locatation
 import com.ionexa.nextgsi.SingleTon.common
+import com.ionexa.nextgsi.SingleTon.getLocationName
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -92,7 +97,11 @@ fun HomePage(
     var filterLocation by remember { mutableStateOf("") }
     val scrollState = rememberScrollState()
     val fsds = FSDB()
+    var currentlocatation by remember { mutableStateOf("") }
     var serchSchima = remember { mutableStateListOf<ProductTypeId>() }
+LaunchedEffect(key1 = Locatation.gpslocatation ) {
+    currentlocatation=Locatation.gpslocatation
+}
 
     // Fetch and update data
     LaunchedEffect(homeViewModel.serchtext, homeViewModel.isFocused) {
@@ -168,17 +177,20 @@ fun HomePage(
                         shape = RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp),
                         clip = true
                     )
-                    .background(customPurple200, shape = RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp))
+                    .background(
+                        customPurple200,
+                        shape = RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp)
+                    )
             ) {
                 Text(
-                    text = "Delivering to:",
+                    text = "Delivering to: $currentlocatation",
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp,
                     color = Color.White,
                     modifier = Modifier.padding(start = 16.dp, top = 45.dp, end = 16.dp)
                 )
                 Text(
-                    text = "B/78, Kalanagar Society, New Delhi",
+                    text = mapViewModel.locataionString,
                     fontWeight = FontWeight.Normal,
                     fontSize = 18.sp,
                     color = Color.White,

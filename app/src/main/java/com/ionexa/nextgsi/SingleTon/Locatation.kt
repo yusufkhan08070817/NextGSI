@@ -12,4 +12,5 @@ object Locatation {
     var state by mutableStateOf("")
     var city by mutableStateOf("")
     var country by mutableStateOf("")
+    var gpslocatation by mutableStateOf("")
 }
