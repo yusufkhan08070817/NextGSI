@@ -72,7 +72,9 @@ import com.ionexa.nextgsi.DataClass.Search_dataList
 import com.ionexa.nextgsi.FBFireBase.FSDB
 import com.ionexa.nextgsi.MVVM.HomeMVVM
 import com.ionexa.nextgsi.MVVM.MapeKCMVVM
+import com.ionexa.nextgsi.MVVM.ProductpageMvvm
 import com.ionexa.nextgsi.SingleTon.Locatation
+import com.ionexa.nextgsi.SingleTon.NaveLabels
 import com.ionexa.nextgsi.SingleTon.common
 import com.ionexa.nextgsi.SingleTon.getLocationName
 import kotlinx.coroutines.CoroutineScope
@@ -87,6 +89,7 @@ fun HomePage(
     navController: NavController,
     homeViewModel: HomeMVVM,
     locationProvider: LocationProvider,
+    ProductpageMvvm: ProductpageMvvm,
     mapViewModel: MapeKCMVVM,
 ) {
     // Define filter states
@@ -262,7 +265,10 @@ LaunchedEffect(key1 = Locatation.gpslocatation ) {
                         ) {
                             if (serchSchima.isNotEmpty()) {
                                 items(serchSchima) { item ->
-                                    IteamSearch(ShowData = item)
+                                    IteamSearch(ShowData = item){data->
+                                        ProductpageMvvm.updateproduct(data)
+                                        navController.navigate(NaveLabels.product)
+                                    }
                                 }
                             }
                         }

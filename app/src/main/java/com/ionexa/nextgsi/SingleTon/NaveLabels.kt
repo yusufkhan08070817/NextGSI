@@ -14,5 +14,5 @@ const val Cart = "Cart"
     const val AboutUs="AboutUs"
 const val OTPVerificatation="OTPVerificatation"
     var  DefaultLoag="SplashScreen"
-
+const val SellerAddProduct="SellerAddProduct"
 }
