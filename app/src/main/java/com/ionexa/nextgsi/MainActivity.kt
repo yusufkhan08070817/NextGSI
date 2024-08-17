@@ -100,7 +100,7 @@ class MainActivity : ComponentActivity() {
             val currentUser = authViewModel.currentUser.observeAsState()
 
             if (currentUser.value != null) {
-                common.myid.value=common.replaceSpecialChars(currentUser.value!!.email?:" ")
+                common.myid.value=common.replaceSpecialChars(currentUser.value!!.email?:common.replaceSpecialChars(LoginViewModel.email))
                 NaveLabels.DefaultLoag = NaveLabels.Home
             } else {
                 NaveLabels.DefaultLoag = NaveLabels.SplashScreen
@@ -125,7 +125,7 @@ class MainActivity : ComponentActivity() {
 
 LaunchedEffect(key1 = MapeViewModel.currentLatitude, key2 =MapeViewModel.currentLongitude ) {
     CoroutineScope(Dispatchers.IO).launch {
-        delay(1000)
+
         val locationName = getLocationName(MapeViewModel.currentLatitude.toString(), MapeViewModel.currentLongitude.toString())
         // Use the result
         Log.d("LocationName", locationName)
@@ -259,6 +259,7 @@ fun Main(
                     naveController = navController,
                     ProfileViewModel = profileViewModel,
                     googleUserData = googleAuthUiClient.getSignedInUser(),
+                    Loginmmvm = loginViewModel,
                     LogOutPRofile = {
                         coroutineScope.launch {
                             googleAuthUiClient.signOut();

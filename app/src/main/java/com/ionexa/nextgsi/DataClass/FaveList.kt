@@ -6,8 +6,7 @@ import java.util.Date
 
 
 data class FaveList(
-    val id: Int,
-    val customerId: Int,
-    val productId: Int,
-    val createdAt: String
+   val image: String,
+    val name:String,
+
 )

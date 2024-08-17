@@ -12,11 +12,18 @@ import com.ionexa.nextgsi.DataClass.ProductTypeId
 class ProductpageMvvm:ViewModel() {
     var product by mutableStateOf(ProductTypeId())
         private set
+    var intemindex by mutableStateOf<Int?>(null)
+        private set
     fun updateproduct(value:ProductTypeId)
     {
         product=value
 
     }
+    fun updateindex(value:Int)
+    {
+        intemindex=value
+    }
+
 
 
 }
