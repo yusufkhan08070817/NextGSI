@@ -53,6 +53,7 @@ import com.ionexa.nextgsi.DataClass.GoogleUserData
 import com.ionexa.nextgsi.DataClass.PersonalDetails
 import com.ionexa.nextgsi.FBFireBase.FSDB
 import com.ionexa.nextgsi.FBFireBase.FireBaseStorage
+import com.ionexa.nextgsi.MVVM.Loginmvvm
 import com.ionexa.nextgsi.MVVM.ProfileMVVM
 import com.ionexa.nextgsi.R
 import com.ionexa.nextgsi.SingleTon.common
@@ -67,6 +68,7 @@ fun ProfilePage(
     googleUserData: GoogleUserData? = null,
     naveController: NavController,
     ProfileViewModel: ProfileMVVM,
+    Loginmmvm: Loginmvvm,
     LogOutPRofile: () -> Unit
 ) {
     val storage = FireBaseStorage()
@@ -77,7 +79,7 @@ fun ProfilePage(
     var menueState by remember { mutableStateOf(false) }
     val fsdb = FSDB()
     val coroutineScope = rememberCoroutineScope()
-    var fbauth = common.replaceSpecialChars(Firebase.auth.currentUser!!.email ?: "")
+    var fbauth = common.replaceSpecialChars(Firebase.auth.currentUser!!.email ?: common.replaceSpecialChars(Loginmmvm.email))
     LaunchedEffect(true) {
         ProfileViewModel.updateprofileImageUrl(
             googleUserData?.profilePictureUrl
@@ -92,6 +94,11 @@ fun ProfilePage(
         Toast.makeText(
             context,
             "${if (common.myid.value.isEmpty()) fbauth else common.myid.value.toString()}",
+            Toast.LENGTH_SHORT
+        ).show()
+        Toast.makeText(
+            context,
+            "email${Loginmmvm.email}",
             Toast.LENGTH_SHORT
         ).show()
         fsdb.getDataFromFireStoreDB("users",

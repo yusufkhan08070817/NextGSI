@@ -264,9 +264,10 @@ LaunchedEffect(key1 = Locatation.gpslocatation ) {
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             if (serchSchima.isNotEmpty()) {
-                                items(serchSchima) { item ->
-                                    IteamSearch(ShowData = item){data->
+                                items(serchSchima.size) { item ->
+                                    IteamSearch(ShowData = serchSchima[item]){data->
                                         ProductpageMvvm.updateproduct(data)
+                                        ProductpageMvvm.updateindex(item)
                                         navController.navigate(NaveLabels.product)
                                     }
                                 }

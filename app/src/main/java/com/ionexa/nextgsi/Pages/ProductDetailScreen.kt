@@ -1,5 +1,6 @@
 package com.ionexa.nextgsi.Pages
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -28,12 +29,18 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.ionexa.nextgsi.Components.AutoSlidingCarousel
+import com.ionexa.nextgsi.DataClass.CartInfo
+import com.ionexa.nextgsi.DataClass.FaveList
 import com.ionexa.nextgsi.DataClass.ProductTypeId
+import com.ionexa.nextgsi.FBFireBase.FSDB
 import com.ionexa.nextgsi.MVVM.ProductpageMvvm
 import com.ionexa.nextgsi.R
+import com.ionexa.nextgsi.SingleTon.Locatation.gpslocatation
 import com.ionexa.nextgsi.SingleTon.Navigation.navController
+import com.ionexa.nextgsi.SingleTon.Routes
 import com.ionexa.nextgsi.SingleTon.common
 import com.ionexa.nextgsi.ui.theme.DarkOrchid
+import kotlinx.coroutines.launch
 
 data class Review(
     val name: String,
@@ -51,13 +58,29 @@ val reviews = listOf(
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun ProductDetailScreen(ProductpageMvvm: ProductpageMvvm) {
-val data=ProductpageMvvm.product
+    val fsds = FSDB()
+    var data = ProductpageMvvm.product
     val context = LocalContext.current
     val productDetail = data.productDetails
     var quantity by remember { mutableStateOf(1) }
     val errorMessage = "Cant load page"
-    val images =data.images
+    val images = data.images
+    val corutineScope = rememberCoroutineScope()
+    var cartdata by remember {
+        mutableStateOf(
+            CartInfo(
+                name = data.name,
+                image = data.images[0],
+                price = data.price,
+                quantity = quantity.toString(),
+                sellerId = data.seller,
+                shippingAddress = gpslocatation,
+                customerId = common.myid.value,
+                productindex = ProductpageMvvm.intemindex
 
+            )
+        )
+    }
     val scrollState = rememberScrollState()
 
     if (false) {
@@ -71,7 +94,8 @@ val data=ProductpageMvvm.product
     } else if (productDetail != null) {
         LazyColumn(
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxWidth(1f)
+                .fillMaxHeight(0.9f)
                 .background(color = Color(0xFFFFFFFF))
         ) {
             item {
@@ -106,7 +130,7 @@ val data=ProductpageMvvm.product
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         IconButton(
-                            onClick = {navController.popBackStack()},
+                            onClick = { navController.popBackStack() },
                             modifier = Modifier
                                 .background(color = Color.White, shape = CircleShape)
                                 .clip(CircleShape)
@@ -125,7 +149,10 @@ val data=ProductpageMvvm.product
                                 .background(color = Color.White, shape = RoundedCornerShape(8.dp))
                                 .padding(3.dp)
                                 .clip(RoundedCornerShape(8.dp)),
-                            horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.CenterHorizontally),
+                            horizontalArrangement = Arrangement.spacedBy(
+                                4.dp,
+                                Alignment.CenterHorizontally
+                            ),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
@@ -148,7 +175,10 @@ val data=ProductpageMvvm.product
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color.White, shape = RoundedCornerShape(topStart = 15.dp, topEnd = 15.dp))
+                        .background(
+                            Color.White,
+                            shape = RoundedCornerShape(topStart = 15.dp, topEnd = 15.dp)
+                        )
                 ) {
                     Column(
                         modifier = Modifier
@@ -178,13 +208,41 @@ val data=ProductpageMvvm.product
                             }
 
                             var isLiked by remember { mutableStateOf(false) }
-                            IconButton(onClick = { isLiked = !isLiked }) {
+                            IconButton(onClick = {
+                                isLiked = !isLiked
+                                if (isLiked) {
+                                    corutineScope.launch {
+                                        val fav = FaveList(data.images[0], data.name)
+
+                                        var mapdata=fsds.run{fav.toHashMap() }
+
+
+                                        fsds.updateDataInFirestore(
+                                            collectionName = Routes.users,
+                                            documentName = common.myid.value ?: "",
+                                            fieldName = "fave",
+                                            data = mapdata,
+                                            appendToArray = true, // Append to array
+                                            onsuccess = {
+                                                Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                                            },
+                                            onfailure = {
+                                                Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                                            }
+                                        )
+
+                                    }
+                                }
+                            }) {
                                 Image(
                                     painter = painterResource(id = if (isLiked) R.drawable.heart else R.drawable.baseline_favorite_border_24),
                                     contentDescription = null,
                                     modifier = Modifier
                                         .size(35.dp)
-                                        .background(Color(0xFFFFFFFF), shape = RoundedCornerShape(20.dp))
+                                        .background(
+                                            Color(0xFFFFFFFF),
+                                            shape = RoundedCornerShape(20.dp)
+                                        )
                                 )
                             }
                         }
@@ -223,9 +281,13 @@ val data=ProductpageMvvm.product
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .background(Color(0xFFFFFFFF), shape = RoundedCornerShape(topStart = 25.dp, topEnd = 25.dp))
+                                .background(
+                                    Color(0xFFFFFFFF),
+                                    shape = RoundedCornerShape(topStart = 25.dp, topEnd = 25.dp)
+                                )
                         ) {
-                            Button(onClick = { showDetails = !showDetails },
+                            Button(
+                                onClick = { showDetails = !showDetails },
                                 colors = ButtonDefaults.buttonColors(
                                     containerColor = Color.White
                                 )
@@ -305,11 +367,14 @@ val data=ProductpageMvvm.product
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier
-                                .border(width = 1.dp,color = Color.Black, shape = CircleShape)
+                                .border(width = 1.dp, color = Color.Black, shape = CircleShape)
 
                         ) {
                             IconButton(
-                                onClick = {quantity=quantity-1},
+                                onClick = {
+                                    quantity = quantity - 1
+                                    cartdata.quantity = quantity.toString()
+                                },
                                 modifier = Modifier
                                     .background(color = Color.White, shape = CircleShape)
                                     .clip(CircleShape)
@@ -330,7 +395,8 @@ val data=ProductpageMvvm.product
                             )
                             IconButton(
                                 onClick = {
-                                    quantity=quantity+1
+                                    quantity = quantity + 1
+                                    cartdata.quantity = quantity.toString()
                                 },
                                 modifier = Modifier
                                     .background(color = Color.White, shape = CircleShape)
@@ -377,11 +443,16 @@ val data=ProductpageMvvm.product
                                 Column(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .padding(3.dp,3.dp,3.dp,3.dp)
+                                        .padding(3.dp, 3.dp, 3.dp, 3.dp)
                                         .border(
                                             width = 1.dp,
                                             color = Color.Black,
-                                            shape = RoundedCornerShape(topStart = 15.dp, topEnd = 15.dp, bottomStart = 15.dp, bottomEnd = 15.dp)
+                                            shape = RoundedCornerShape(
+                                                topStart = 15.dp,
+                                                topEnd = 15.dp,
+                                                bottomStart = 15.dp,
+                                                bottomEnd = 15.dp
+                                            )
                                         )
                                 ) {
                                     AsyncImage(
@@ -393,20 +464,20 @@ val data=ProductpageMvvm.product
                                         modifier = Modifier
                                             .size(84.dp)
                                             .clip(RoundedCornerShape(8.dp))
-                                            .padding(12.dp,12.dp,12.dp,12.dp)
+                                            .padding(12.dp, 12.dp, 12.dp, 12.dp)
                                     )
                                     Spacer(modifier = Modifier.width(16.dp))
                                     Text(
                                         text = "Product Title", // Replace with your product title
                                         fontWeight = FontWeight.Bold,
                                         modifier = Modifier
-                                            .padding(12.dp,12.dp,12.dp,12.dp)
+                                            .padding(12.dp, 12.dp, 12.dp, 12.dp)
                                     )
                                     Text(
                                         text = "$19.99", // Replace with your product price
                                         color = Color.Gray,
                                         modifier = Modifier
-                                            .padding(12.dp,6.dp,6.dp,12.dp)
+                                            .padding(12.dp, 6.dp, 6.dp, 12.dp)
                                     )
                                 }
                             }
@@ -438,11 +509,16 @@ val data=ProductpageMvvm.product
                         .fillMaxWidth()
                         .padding(5.dp)
                         .background(Color.White, shape = RoundedCornerShape(0.dp))
-                        .padding(5.dp,2.dp,5.dp,2.dp)
+                        .padding(5.dp, 2.dp, 5.dp, 2.dp)
                         .border(
                             width = 1.dp,
                             color = Color.Black,
-                            shape = RoundedCornerShape(topStart = 5.dp, topEnd = 5.dp, bottomStart = 5.dp, bottomEnd = 5.dp)
+                            shape = RoundedCornerShape(
+                                topStart = 5.dp,
+                                topEnd = 5.dp,
+                                bottomStart = 5.dp,
+                                bottomEnd = 5.dp
+                            )
                         )
                 ) {
                     Text(
@@ -450,7 +526,7 @@ val data=ProductpageMvvm.product
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp,
                         modifier = Modifier
-                            .padding(5.dp,5.dp,5.dp,0.dp)
+                            .padding(5.dp, 5.dp, 5.dp, 0.dp)
                     )
                     Spacer(modifier = Modifier.height(5.dp))
                     Text(
@@ -458,7 +534,7 @@ val data=ProductpageMvvm.product
                         fontSize = 14.sp,
                         color = Color.DarkGray,
                         modifier = Modifier
-                            .padding(5.dp,2.dp,5.dp,0.dp)
+                            .padding(5.dp, 2.dp, 5.dp, 0.dp)
                     )
                     Spacer(modifier = Modifier.height(5.dp))
                     Row {
@@ -490,14 +566,30 @@ val data=ProductpageMvvm.product
                         colors = ButtonDefaults.buttonColors(DarkOrchid),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(30.dp,15.dp,30.dp,15.dp)
+                            .padding(30.dp, 15.dp, 30.dp, 15.dp)
                             .clip(RoundedCornerShape(5.dp)),
                         onClick = {
-                            Toast.makeText(
-                                context,
-                                "Successfully added to cart",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            corutineScope.launch {
+
+                                var mapdata=fsds.run{cartdata.toHashMap() }
+
+
+
+                               fsds.updateDataInFirestore(
+                                    collectionName = Routes.users,
+                                    documentName = common.myid.value ?: "",
+                                    fieldName = "cart",
+                                    data = mapdata,
+                                    appendToArray = true, // Append to array
+                                    onsuccess = {
+                                        Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                                    },
+                                    onfailure = {
+                                        Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                                    }
+                                )
+                            }
+                            Log.e("data cart datat", cartdata.toString())
                         },
                     ) {
                         Text(text = "Add to Cart", fontSize = 16.sp)

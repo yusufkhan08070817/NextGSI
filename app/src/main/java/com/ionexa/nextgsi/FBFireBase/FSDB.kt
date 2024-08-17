@@ -43,6 +43,58 @@ class FSDB {
         }
     }
 
+    suspend fun updateDataInFirestore(
+        collectionName: String,
+        documentName: String,
+        fieldName: String, // The field you want to update
+        data: Any, // The data to set or append
+        appendToArray: Boolean = false, // Flag to append if it's an array
+        onsuccess: (log: String) -> Unit,
+        onfailure: (log: String) -> Unit
+    ) {
+        try {
+            val documentRef = db.collection(collectionName).document(documentName)
+
+            // Get the document snapshot to check if it exists
+            val documentSnapshot = documentRef.get().await()
+
+            if (documentSnapshot.exists()) {
+                if (appendToArray) {
+                    // Append data to array field if it exists
+                    val existingArray = documentSnapshot.get(fieldName) as? MutableList<Any>
+
+                    if (existingArray != null) {
+                        // Add new data to the existing array
+                        existingArray.add(data)
+
+                        // Update the document with the new array
+                        documentRef.update(fieldName, existingArray).await()
+                    } else {
+                        // If the array doesn't exist, create a new one with the data
+                        documentRef.update(fieldName, listOf(data)).await()
+                    }
+                } else {
+                    // For non-array fields, just update the field with the new data
+                    documentRef.update(fieldName, data).await()
+                }
+            } else {
+                // If the document doesn't exist, create it with the provided data
+                if (appendToArray) {
+                    // Create a document with an array field
+                    documentRef.set(hashMapOf(fieldName to listOf(data))).await()
+                } else {
+                    // Create a document with the provided field and data
+                    documentRef.set(hashMapOf(fieldName to data)).await()
+                }
+            }
+
+            onsuccess("Data updated successfully")
+        } catch (e: Exception) {
+            onfailure(e.toString())
+        }
+    }
+
+
     suspend fun getDataFromFireStoreDB(
         collectionName: String,
         documentName: String,
