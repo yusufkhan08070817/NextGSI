@@ -28,7 +28,11 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.ionexa.nextgsi.Components.AutoSlidingCarousel
+import com.ionexa.nextgsi.DataClass.ProductTypeId
+import com.ionexa.nextgsi.MVVM.ProductpageMvvm
 import com.ionexa.nextgsi.R
+import com.ionexa.nextgsi.SingleTon.Navigation.navController
+import com.ionexa.nextgsi.SingleTon.common
 import com.ionexa.nextgsi.ui.theme.DarkOrchid
 
 data class Review(
@@ -46,19 +50,13 @@ val reviews = listOf(
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun ProductDetailScreen() {
-
+fun ProductDetailScreen(ProductpageMvvm: ProductpageMvvm) {
+val data=ProductpageMvvm.product
     val context = LocalContext.current
-    val productDetail = "dummy"
+    val productDetail = data.productDetails
     var quantity by remember { mutableStateOf(1) }
     val errorMessage = "Cant load page"
-    val images = listOf(
-        "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg",
-        "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg",
-        "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg",
-        "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg",
-        "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg",
-    )
+    val images =data.images
 
     val scrollState = rememberScrollState()
 
@@ -89,7 +87,7 @@ fun ProductDetailScreen() {
                             itemContent = { index ->
                                 AsyncImage(
                                     model = ImageRequest.Builder(LocalContext.current)
-                                        .data(images[index])
+                                        .data(common.decodeFromBase64(images[index]))
                                         .build(),
                                     contentDescription = null,
                                     contentScale = ContentScale.Crop,
@@ -108,7 +106,7 @@ fun ProductDetailScreen() {
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         IconButton(
-                            onClick = {},
+                            onClick = {navController.popBackStack()},
                             modifier = Modifier
                                 .background(color = Color.White, shape = CircleShape)
                                 .clip(CircleShape)
@@ -131,7 +129,7 @@ fun ProductDetailScreen() {
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
-                                text = "4.8",
+                                text = data.rating,
                                 fontWeight = FontWeight.Bold,
                                 color = Color.Black
                             )
@@ -166,13 +164,13 @@ fun ProductDetailScreen() {
                         ) {
                             Column {
                                 Text(
-                                    text = "WestSide Jacket",
+                                    text = data.name,
                                     fontWeight = FontWeight.Normal,
                                     fontSize = 22.sp
                                 )
                                 Spacer(modifier = Modifier.height(10.dp))
                                 Text(
-                                    text = "$200",
+                                    text = "RS ${data.price}",
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 28.sp,
                                     fontStyle = FontStyle.Italic
@@ -207,7 +205,7 @@ fun ProductDetailScreen() {
                                 .padding(15.dp)
                         )
                         Text(
-                            text = "THIS is a dummy text for the description of the product. THIS is a dummy text for the description of the product. THIS is a dummy text for the description of the product. THIS is a dummy text for the description of the product ",
+                            text = data.productDetails,
                             fontSize = 16.sp,
                             color = Color.DarkGray,
                             modifier = Modifier

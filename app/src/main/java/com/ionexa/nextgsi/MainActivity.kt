@@ -39,6 +39,7 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.ionexa.nextgsi.Classes.LocationProvider
 import com.ionexa.nextgsi.DataClass.Customer
 import com.ionexa.nextgsi.DataClass.Order
+import com.ionexa.nextgsi.DataClass.ProductTypeId
 import com.ionexa.nextgsi.FBFireBase.FSDB
 import com.ionexa.nextgsi.FBFireBase.FireBaseStorage
 import com.ionexa.nextgsi.FBFireBase.FireBaseStoreDBMyClass
@@ -66,6 +67,7 @@ class MainActivity : ComponentActivity() {
     private val locationProvider by lazy { LocationProvider(this) }
     private val SignInMVVM by viewModels<SignInMVVM>()
     private val OTP by viewModels<OtpVerificationViewModel>()
+    private val ProductpageMvvm by viewModels<ProductpageMvvm>()
     private val googleAuthUiClient by lazy {
         FirebaseGoogleAuth(
             context = applicationContext,
@@ -146,6 +148,9 @@ LaunchedEffect(key1 = MapeViewModel.currentLatitude, key2 =MapeViewModel.current
                 googleAuthUiClient = googleAuthUiClient,
                 FBauthManager = FBauthManager,
                 OTP = OTP,
+                ProductpageMvvm=ProductpageMvvm
+                ,
+
                 activity = this
             )
 
@@ -189,6 +194,7 @@ fun Main(
     signInMVVM: SignInMVVM,
     googleAuthUiClient: FirebaseGoogleAuth,
     FBauthManager: FirebaseAuthManager,
+    ProductpageMvvm: ProductpageMvvm,
     OTP: OtpVerificationViewModel,
     activity: MainActivity
 ) {
@@ -242,6 +248,7 @@ fun Main(
                     homeViewModel = homeViewModel,
                     locationProvider = locationProvider,
                     mapViewModel = mapeViewModel,
+                    ProductpageMvvm=ProductpageMvvm,
                     navController = navController
                 )
             }
@@ -293,9 +300,17 @@ fun Main(
         }
         composable(NaveLabels.product) {
             ScreenWithBottomBar(navController) { innerPadding ->
-                ProductDetailScreen()
+
+
+                ProductDetailScreen(ProductpageMvvm)
             }
         }
+        composable(NaveLabels.SellerAddProduct) {
+            ScreenWithBottomBar(navController) { innerPadding ->
+              ProductEntryPage()
+            }
+        }
+
         composable(NaveLabels.Tracking) {
             ScreenWithBottomBar(navController) { innerPadding ->
                 OrderTrackingscreen(

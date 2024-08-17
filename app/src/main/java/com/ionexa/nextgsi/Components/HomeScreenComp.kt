@@ -588,7 +588,7 @@ fun ProductCard(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun IteamSearch(ShowData: ProductTypeId) {
+fun IteamSearch(ShowData: ProductTypeId,onclick:(data:ProductTypeId)->Unit) {
   //  val fsdb=FSDB()
 
    // val imagearray =extractJsonArrayFromJsonObject(ShowData["images"],"0")
@@ -596,7 +596,8 @@ fun IteamSearch(ShowData: ProductTypeId) {
     Card (modifier = Modifier
         .fillMaxWidth(1f)
         .height(80.dp)
-        .padding(10.dp), colors = CardDefaults.cardColors(Color.White), elevation = CardDefaults.elevatedCardElevation(5.dp)){
+        .padding(10.dp)
+        .clickable { onclick(ShowData) },onClick = { onclick(ShowData) }, colors = CardDefaults.cardColors(Color.White), elevation = CardDefaults.elevatedCardElevation(5.dp)){
         Row( verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxSize(1f)) {
             AsyncImage(
                 model = "https://media.istockphoto.com/id/1153088551/photo/almond-backgrounds-nut-food-textured-harvesting.jpg?s=2048x2048&w=is&k=20&c=BdqKAOtcNWpFVC7Y2yj6eprbqm1kkU_WCrvKwm3GVFM=",
