@@ -42,28 +42,25 @@ Column(Modifier.fillMaxSize(1f), verticalArrangement = Arrangement.Bottom) {
         Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "")
     }
 }
-
+Text(text = " We're Sorry to See You Go!")
         }
         Text(
             text = """
-            An About Us page is an integral piece of content to have on your website.
+     
+         We're truly sorry to hear that you're considering deleting your account. Before you go, we want to thank you for being a part of our community. Your experience and feedback mean a lot to us.
 
-            Every single successful business has one, no matter their industry or what they sell.
+         If there's anything that's not working for you, we'd love to know how we can make it better. Your thoughts and suggestions can help us improve and make your experience more enjoyable.
 
-            After all, every brand has a story – and your About Us page helps you tell yours.
+         Would you give us another chance? We’re always here to help if you have any questions or concerns.
 
-            That’s important because, these days, story and connection matter more than ever to customers.
-
-            In a Demand Gen survey, 55% of B2B buyers said content that tells a strong, resonating story is what would make them most likely to talk to sales.
-
-            Because your About Us page is one of the first places customers will look to find out about your business and story, it’s a foundational page that deserves time and attention to get right.
-
-            Let’s talk about it, including how to write an About Us page.
+         If you still wish to proceed, you can delete your account below.
         """.trimIndent(),
             modifier
                 .fillMaxWidth(1f)
                 .padding(top = 20.dp))
-        Card (modifier = Modifier.fillMaxWidth(1f).padding(top = 20.dp), colors = CardDefaults.cardColors(Mediumpurple), shape = CutCornerShape(2.dp), elevation = CardDefaults.cardElevation(12.dp)){
+        Card (modifier = Modifier
+            .fillMaxWidth(1f)
+            .padding(top = 20.dp), colors = CardDefaults.cardColors(Mediumpurple), shape = CutCornerShape(2.dp), elevation = CardDefaults.cardElevation(12.dp)){
           Column(modifier = Modifier.fillMaxWidth(1f), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
               Text(text = "Do you want to delete your account", color = Color.White)
               Button(onClick = { /*TODO*/ }, colors = ButtonDefaults.buttonColors(Color.White)) {

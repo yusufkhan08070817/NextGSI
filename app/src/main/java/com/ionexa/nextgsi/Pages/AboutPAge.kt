@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.ionexa.nextgsi.SingleTon.NaveLabels
 import com.ionexa.nextgsi.SingleTon.Navigation
@@ -60,7 +61,9 @@ fun AboutUs(modifier: Modifier = Modifier) {
         """.trimIndent(),
             modifier
                 .fillMaxWidth(1f)
-                .padding(top = 20.dp))
+                .padding(top = 20.dp)
+        , color = Color.Black, textAlign = TextAlign.Center
+        )
 
     }
 

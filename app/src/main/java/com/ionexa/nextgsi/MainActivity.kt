@@ -53,12 +53,13 @@ import com.ionexa.nextgsi.SingleTon.*
 import com.ionexa.nextgsi.SingleTon.common.db
 import com.ionexa.nextgsi.ui.theme.Mediumpurple
 import com.ionexa.nextgsi.ui.theme.NextGsiTheme
+import com.razorpay.PaymentResultListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class MainActivity : ComponentActivity() {
+class MainActivity : ComponentActivity(), PaymentResultListener {
     private val LoginViewModel by viewModels<Loginmvvm>()
     private val HomeViewModel by viewModels<HomeMVVM>()
     private val ProfileViewModel by viewModels<ProfileMVVM>()
@@ -176,6 +177,14 @@ LaunchedEffect(key1 = MapeViewModel.currentLatitude, key2 =MapeViewModel.current
             Order("https://i.imgur.com/tGbaZCY.jpg", "Item 11", "Details of Item 11", "₹400")
         )
         orderList.addAll(orders)
+    }
+
+    override fun onPaymentSuccess(razorpayPaymentID: String?) {
+        Toast.makeText(this, "Payment Successful: $razorpayPaymentID", Toast.LENGTH_LONG).show()
+    }
+
+    override fun onPaymentError(code: Int, description: String?) {
+        Toast.makeText(this, "Payment Failed: $description", Toast.LENGTH_LONG).show()
     }
 
 }
@@ -308,9 +317,30 @@ fun Main(
         }
         composable(NaveLabels.SellerAddProduct) {
             ScreenWithBottomBar(navController) { innerPadding ->
-              ProductEntryPage()
+                ProductEntryPage()
             }
         }
+        composable(NaveLabels.fave) {
+            ScreenWithBottomBar(navController) { innerPadding ->
+                FaveIteam()
+            }
+        }
+        composable(NaveLabels.Couppen) {
+            ScreenWithBottomBar(navController) { innerPadding ->
+                coupons()
+            }
+        }
+        composable(NaveLabels.CustomerCare) {
+            ScreenWithBottomBar(navController) { innerPadding ->
+                Customercare()
+            }
+        }
+        composable(NaveLabels.Payment) {
+            ScreenWithBottomBar(navController) { innerPadding ->
+                PaymentScreen(activity)
+            }
+        }
+
 
         composable(NaveLabels.Tracking) {
             ScreenWithBottomBar(navController) { innerPadding ->
@@ -325,6 +355,7 @@ fun Main(
             }
         }
     }
+
 }
 
 @Composable
@@ -346,6 +377,8 @@ fun ScreenWithBottomBar(
                 ButtonFour = { navController.navigate(NaveLabels.Profile) },
                 ButtonOne = { navController.navigate(NaveLabels.Home) },
                 ButtonTwo = { navController.navigate(NaveLabels.Cart) },
+                ButtonThree = {navController.navigate(NaveLabels.fave)}
+                ,
                 FloatingButton = { navController.navigate(NaveLabels.Tracking) })
         }
     }
