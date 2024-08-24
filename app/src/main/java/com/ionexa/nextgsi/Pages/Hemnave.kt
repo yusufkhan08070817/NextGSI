@@ -92,15 +92,12 @@ val stateScroll = rememberScrollState()
                     .verticalScroll(stateScroll)
                 ) {
                     TextCard(labletext = "Your Order", icon = R.drawable.order){Navigation.navController.navigate(NaveLabels.CartHistory)}
-                    TextCard(labletext = "Address Book", icon = R.drawable.addressbook){}
-                    TextCard(labletext = "Collected coupons", icon = R.drawable.cupons){}
+                    TextCard(labletext = "Collected coupons", icon = R.drawable.cupons){Navigation.navController.navigate(NaveLabels.Couppen)}
                     TextCard(labletext = "Shear this app", icon = R.drawable.shear){shareContent(context, "https://play.google.com/store/search?q=blinkit&c=apps&hl=en_IN \n hey download this app")}
-
                     TextCard(labletext = "About us", icon = R.drawable.info){Navigation.navController.navigate(NaveLabels.AboutUs)}
-                    TextCard(labletext = "Get Feeding Indian receipt", icon = R.drawable.receipt){}
                     TextCard(labletext = "Account Privacy", icon = R.drawable.privacy){Navigation.navController.navigate(NaveLabels.AccountPravicy)}
                     TextCard(labletext = "Notification Prefernces", icon = R.drawable.noti){}
-                    TextCard(labletext = "Customer Care ", icon = R.drawable.customercare){}
+                    TextCard(labletext = "Customer Care ", icon = R.drawable.customercare){Navigation.navController.navigate(NaveLabels.CustomerCare)}
                     TextCard(labletext = "Log Out", icon = R.drawable.baseline_logout_24){logout()}
                 }
             }

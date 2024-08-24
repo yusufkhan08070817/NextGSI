@@ -1,5 +1,6 @@
 package com.ionexa.nextgsi.Pages
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,7 +18,9 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -28,8 +31,10 @@ import androidx.compose.ui.unit.dp
 import com.ionexa.nextgsi.Components.BillComponent
 import com.ionexa.nextgsi.Components.CartItem
 import com.ionexa.nextgsi.DataClass.CartItemInfo
+import com.ionexa.nextgsi.FBFireBase.FSDB
 import com.ionexa.nextgsi.SingleTon.NaveLabels
 import com.ionexa.nextgsi.SingleTon.Navigation
+import com.ionexa.nextgsi.SingleTon.common
 import com.ionexa.nextgsi.ui.theme.BalckeshPurple
 import com.ionexa.nextgsi.ui.theme.DarkOrchidwebcolor
 import com.ionexa.nextgsi.ui.theme.IndigoHeading
@@ -41,9 +46,28 @@ fun CartPage(modifier: Modifier = Modifier) {
     var totalprice by remember {
         mutableStateOf(0f)
     }
-    list.map {it->
-        totalprice=totalprice+it.price
-    }
+    var fsdb=FSDB()
+
+    var listdata = remember { mutableStateListOf<Map<String, Any>>() }
+   LaunchedEffect(key1=true) { fsdb.getDataFromFireStoreDB("users",common.myid.value, onSuccess = {
+
+       if (it!= null)
+       {
+           var data=it["cart"] as List<Map<String,Any>>
+           Log.e("data",data.toString())
+           listdata.clear()
+           listdata.addAll(data)
+           for (i in listdata)
+           {
+               totalprice+=i["price"].toString().toFloat()*i["quantity"].toString().toInt()
+           }
+
+       }
+   }){
+
+   }
+
+   }
 Row(modifier = Modifier
     .offset(20.dp, 40.dp)
     .fillMaxWidth(1f), horizontalArrangement = Arrangement.SpaceAround) {
@@ -67,8 +91,9 @@ Row(modifier = Modifier
                 .fillMaxHeight(0.5f)
                 .padding(top = 40.dp, start = 10.dp, end = 10.dp, bottom = 10.dp)
         ) {
-            items(list){data->
-                CartItem(data=data)
+            items(listdata){data->
+                val cartItem=CartItemInfo(price = data["price"].toString().toFloat(), productname = data["name"].toString(), quantity = data["quantity"].toString().toInt(), url = common.decodeFromBase64(data["image"].toString()))
+                CartItem(data=cartItem)
             }
         }
 
@@ -78,8 +103,8 @@ Row(modifier = Modifier
             .padding(top = 40.dp, start = 10.dp, end = 10.dp), colors = CardDefaults.cardColors(BalckeshPurple)) {
             Column(modifier.fillMaxSize(1f)) {
                 LazyColumn {
-                    items(list){ data->
-                        BillComponent(name = data.productname, price = data.price, quantity = data.quantity)
+                    items(listdata){ data->
+                        BillComponent(name = data["name"].toString(), price = data["price"].toString().toFloat(), quantity = data["quantity"].toString().toInt())
 
                     }
                 }
@@ -90,7 +115,7 @@ Row(modifier = Modifier
             Modifier
                 .fillMaxWidth(1f)
                 .padding(horizontal = 40.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-            Button(onClick = { /*TODO*/ }) {
+            Button(onClick = { Navigation.navController.navigate(NaveLabels.Payment)}) {
                 Text(text = "Pay")
             }
             Text(text = "total : ${totalprice}")

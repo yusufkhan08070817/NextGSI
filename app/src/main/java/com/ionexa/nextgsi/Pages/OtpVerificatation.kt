@@ -48,9 +48,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.Navigation
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 import com.ionexa.nextgsi.DataClass.Customer
 import com.ionexa.nextgsi.FBFireBase.FSDB
 import com.ionexa.nextgsi.FBFireBase.FireBaseStoreDBMyClass
+import com.ionexa.nextgsi.FBFireBase.FirebaseAuthManager
 import com.ionexa.nextgsi.MVVM.Loginmvvm
 import com.ionexa.nextgsi.MVVM.OtpVerificationViewModel
 
@@ -59,6 +62,7 @@ import com.ionexa.nextgsi.SingleTon.NaveLabels
 import com.ionexa.nextgsi.SingleTon.Routes
 import com.ionexa.nextgsi.SingleTon.common
 import com.ionexa.nextgsi.ui.theme.RebeccaPurpleHilghtText
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.UUID
 
@@ -108,10 +112,24 @@ fun OtpVerification(
             )
 
             val customerhashmap = fsdb.run { customerdata.toHashMap() }
-            val uploadhashmap= hashMapOf<String,Any?>()
-            uploadhashmap.put("personel_info",customerhashmap)
+            val uploadhashmap = hashMapOf<String, Any?>()
+            uploadhashmap.put("personel_info", customerhashmap)
             fsdb.uploadDataToFireStoreDB(uploadhashmap, "users", customerdata.id, onsuccess = {
-                com.ionexa.nextgsi.SingleTon.Navigation.navController.navigate(NaveLabels.Home)
+                fbcorutinscope.launch {
+                    FirebaseAuthManager().signOut()
+                    delay(1000)
+                    FirebaseAuthManager().signInWithEmail(loginViewModel.email, loginViewModel.password)
+                    { it, it1, it3 ->
+                        if (it) {
+                            com.ionexa.nextgsi.SingleTon.Navigation.navController.navigate(
+                                NaveLabels.Home
+                            )
+                        }
+
+                    }
+                }
+
+
             })
             {
                 Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
