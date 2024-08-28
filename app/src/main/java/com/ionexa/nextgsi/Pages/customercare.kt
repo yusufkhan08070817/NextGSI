@@ -26,7 +26,7 @@ fun Customercare(modifier: Modifier = Modifier) {
     var body by remember {
         mutableStateOf("")
     }
-   Column(modifier=Modifier.fillMaxSize()) {
+   Column(modifier=Modifier.fillMaxSize(),horizontalAlignment = Alignment.CenterHorizontally,verticalArrangement = Arrangement.Center) {
        Card(modifier = Modifier
            .fillMaxWidth(1f)
            .fillMaxHeight(0.1f)) {
