@@ -121,9 +121,16 @@ fun OtpVerification(
                     FirebaseAuthManager().signInWithEmail(loginViewModel.email, loginViewModel.password)
                     { it, it1, it3 ->
                         if (it) {
-                            com.ionexa.nextgsi.SingleTon.Navigation.navController.navigate(
-                                NaveLabels.Home
-                            )
+                            if (loginViewModel.roll == "Customer")
+                            {
+                                com.ionexa.nextgsi.SingleTon.Navigation.navController.navigate(
+                                    NaveLabels.Home
+                                )
+                            }else{
+                                com.ionexa.nextgsi.SingleTon.Navigation.navController.navigate(
+                                    NaveLabels.seller
+                                )
+                            }
                         }
 
                     }

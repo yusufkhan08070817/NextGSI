@@ -1,5 +1,6 @@
 package com.ionexa.nextgsi
 
+import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.os.Build
@@ -87,6 +88,7 @@ class MainActivity : ComponentActivity(), PaymentResultListener {
     }
 
 
+    @SuppressLint("CoroutineCreationDuringComposition")
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -96,16 +98,11 @@ class MainActivity : ComponentActivity(), PaymentResultListener {
             HideSystemUI()
             addLocalData()
             Navigation.navController = rememberNavController()
-
+            val fsdb = FSDB()
             val authViewModel: AuthViewModel = viewModel()
             val currentUser = authViewModel.currentUser.observeAsState()
 
-            if (currentUser.value != null) {
-                common.myid.value=common.replaceSpecialChars(currentUser.value!!.email?:common.replaceSpecialChars(LoginViewModel.email))
-                NaveLabels.DefaultLoag = NaveLabels.Home
-            } else {
-                NaveLabels.DefaultLoag = NaveLabels.SplashScreen
-            }
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 ActivityCompat.requestPermissions(
                     this,
@@ -113,6 +110,39 @@ class MainActivity : ComponentActivity(), PaymentResultListener {
                     1
                 )
             }
+            if (currentUser.value != null) {
+                common.myid.value = common.replaceSpecialChars(
+                    currentUser.value!!.email ?: common.replaceSpecialChars(LoginViewModel.email)
+                )
+
+                LaunchedEffect(key1 = true) {
+                    fsdb.getDataFromFireStoreDB("users", common.myid.value, onSuccess = {
+                        if (it != null) {
+                            val raw = it["personel_info"] as Map<String, Any>
+                            val roll = raw["role"].toString()
+                            Log.e("roll", raw.toString())
+                            Log.e("roll", roll.toString())
+
+                            if (roll == "customer") {
+                                common.roll=roll
+                                NaveLabels.DefaultLoag = NaveLabels.Home
+                            } else {
+                                NaveLabels.DefaultLoag = NaveLabels.seller
+                            }
+                        } else {
+                            Log.e("error", "data is null")
+                        }
+
+                    })
+                    {
+                        Log.e("data base fail", "${it}")
+                    }
+                }
+            } else {
+                NaveLabels.DefaultLoag = NaveLabels.SplashScreen
+            }
+
+
 
             // Fetch the user token
             FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
@@ -124,19 +154,25 @@ class MainActivity : ComponentActivity(), PaymentResultListener {
                 }
             }
 
-LaunchedEffect(key1 = MapeViewModel.currentLatitude, key2 =MapeViewModel.currentLongitude ) {
-    CoroutineScope(Dispatchers.IO).launch {
+            LaunchedEffect(
+                key1 = MapeViewModel.currentLatitude,
+                key2 = MapeViewModel.currentLongitude
+            ) {
+                CoroutineScope(Dispatchers.IO).launch {
 
-        val locationName = getLocationName(MapeViewModel.currentLatitude.toString(), MapeViewModel.currentLongitude.toString())
-        // Use the result
-        Log.d("LocationName", locationName)
-    }
-}
+                    val locationName = getLocationName(
+                        MapeViewModel.currentLatitude.toString(),
+                        MapeViewModel.currentLongitude.toString()
+                    )
+                    // Use the result
+                    Log.d("LocationName", locationName)
+                }
+            }
 
-           /*
+            /*
 
 
-            */
+             */
             Main(
                 loginViewModel = LoginViewModel,
                 homeViewModel = HomeViewModel,
@@ -149,8 +185,7 @@ LaunchedEffect(key1 = MapeViewModel.currentLatitude, key2 =MapeViewModel.current
                 googleAuthUiClient = googleAuthUiClient,
                 FBauthManager = FBauthManager,
                 OTP = OTP,
-                ProductpageMvvm=ProductpageMvvm
-                ,
+                ProductpageMvvm = ProductpageMvvm,
 
                 activity = this
             )
@@ -190,7 +225,6 @@ LaunchedEffect(key1 = MapeViewModel.currentLatitude, key2 =MapeViewModel.current
 }
 
 
-
 @Composable
 fun Main(
     navController: NavHostController,
@@ -224,7 +258,11 @@ fun Main(
     }
 
     NavHost(navController = navController,
-        startDestination = NaveLabels.DefaultLoag,
+        startDestination =
+        if (common.roll == "customer")
+        NaveLabels.DefaultLoag
+        else
+            NaveLabels.seller,
         enterTransition = { fadeIn(tween(durationMillis = duration)) },
         exitTransition = { fadeOut(tween(durationMillis = duration)) }) {
         composable(NaveLabels.Login) {
@@ -257,7 +295,7 @@ fun Main(
                     homeViewModel = homeViewModel,
                     locationProvider = locationProvider,
                     mapViewModel = mapeViewModel,
-                    ProductpageMvvm=ProductpageMvvm,
+                    ProductpageMvvm = ProductpageMvvm,
                     navController = navController
                 )
             }
@@ -285,7 +323,7 @@ fun Main(
             }
         }
         composable(NaveLabels.OTPVerificatation) {
-            OtpVerification(activity = activity, viewModel = OTP,loginViewModel = loginViewModel)
+            OtpVerification(activity = activity, viewModel = OTP, loginViewModel = loginViewModel)
         }
         composable(NaveLabels.Cart) {
             ScreenWithBottomBar(navController) { innerPadding ->
@@ -340,6 +378,11 @@ fun Main(
                 PaymentScreen(activity)
             }
         }
+        composable(NaveLabels.seller) {
+            ScreenWithBottomBarseller(navController) { innerPadding ->
+                ProductEntryPage()
+            }
+        }
 
 
         composable(NaveLabels.Tracking) {
@@ -377,9 +420,33 @@ fun ScreenWithBottomBar(
                 ButtonFour = { navController.navigate(NaveLabels.Profile) },
                 ButtonOne = { navController.navigate(NaveLabels.Home) },
                 ButtonTwo = { navController.navigate(NaveLabels.Cart) },
-                ButtonThree = {navController.navigate(NaveLabels.fave)}
-                ,
+                ButtonThree = { navController.navigate(NaveLabels.fave) },
                 FloatingButton = { navController.navigate(NaveLabels.Tracking) })
+        }
+    }
+}
+
+@Composable
+fun ScreenWithBottomBarseller(
+    navController: NavHostController, content: @Composable (PaddingValues) -> Unit
+) {
+    Box {
+        Column {
+            content(PaddingValues(0.dp))
+        }
+
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(), verticalAlignment = Alignment.Bottom
+        ) {
+            NaviGatationWithFloatingActionButton(NaveContainerColor = Mediumpurple,
+                FloatingActionButtonIconSize = 50.dp,
+                ButtonFour = {  },
+                ButtonOne = {  },
+                ButtonTwo = {  },
+                ButtonThree = {  },
+                FloatingButton = {  })
         }
     }
 }

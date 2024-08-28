@@ -19,4 +19,5 @@ const val SellerAddProduct="SellerAddProduct"
     const val Couppen="couppen"
     const val CustomerCare="customercare"
     const val Payment="payment"
+    const val seller="seller"
 }

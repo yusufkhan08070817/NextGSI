@@ -27,6 +27,8 @@ fun RazorpayPaymentButton(activity: Activity) {
 }
 
 private fun initiatePayment(activity: Activity) {
+
+
     val checkout = Checkout()
 
     // Use the test Key ID
@@ -34,16 +36,21 @@ private fun initiatePayment(activity: Activity) {
 
     try {
         val options = JSONObject().apply {
-            put("name", "Your App Name")
-            put("description", "Payment for XYZ")
+            put("name", "Razorpay Corp")
+            put("description", "Demoing Charges")
             put("currency", "INR")
-            put("amount", "10000") // amount in paise (10000 paise = 100 INR)
+            put("amount", "10000") // 100 INR in paise
 
+            // Optional settings
+            put("send_sms_hash", true)
+            put("allow_rotation", true)
+            put("image", "https://s3.amazonaws.com/rzp-mobile/images/rzp.png")
+
+            // Prefill user data
             val prefill = JSONObject().apply {
-                put("email", "user_email@example.com")
+                put("email", "test@razorpay.com")
                 put("contact", "9876543210")
             }
-
             put("prefill", prefill)
         }
 

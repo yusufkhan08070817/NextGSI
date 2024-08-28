@@ -21,7 +21,7 @@ object common {
     const val defaultpic =
         "https://static.vecteezy.com/system/resources/previews/002/002/403/large_2x/man-with-beard-avatar-character-isolated-icon-free-vector.jpg"
     val FBDBTAG = "FBDBTages"
-
+    var roll=""
     var myid = mutableStateOf("")
     fun getCurrentDateTime(): String {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
