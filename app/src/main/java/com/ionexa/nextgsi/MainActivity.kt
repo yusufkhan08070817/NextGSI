@@ -1,5 +1,7 @@
 package com.ionexa.nextgsi
 
+import SellerInfo
+import SellerProfile
 import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
 import android.content.Context
@@ -36,6 +38,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.auth
 import com.google.firebase.messaging.FirebaseMessaging
 import com.ionexa.nextgsi.Classes.LocationProvider
 import com.ionexa.nextgsi.DataClass.Customer
@@ -94,6 +97,8 @@ class MainActivity : ComponentActivity(), PaymentResultListener {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            val context = LocalContext.current
+
             var corutinescope = rememberCoroutineScope()
             HideSystemUI()
             addLocalData()
@@ -102,12 +107,9 @@ class MainActivity : ComponentActivity(), PaymentResultListener {
             val authViewModel: AuthViewModel = viewModel()
             val currentUser = authViewModel.currentUser.observeAsState()
 
-
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 ActivityCompat.requestPermissions(
-                    this,
-                    arrayOf(android.Manifest.permission.POST_NOTIFICATIONS),
-                    1
+                    this, arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), 1
                 )
             }
             if (currentUser.value != null) {
@@ -115,33 +117,8 @@ class MainActivity : ComponentActivity(), PaymentResultListener {
                     currentUser.value!!.email ?: common.replaceSpecialChars(LoginViewModel.email)
                 )
 
-                LaunchedEffect(key1 = true) {
-                    fsdb.getDataFromFireStoreDB("users", common.myid.value, onSuccess = {
-                        if (it != null) {
-                            val raw = it["personel_info"] as Map<String, Any>
-                            val roll = raw["role"].toString()
-                            Log.e("roll", raw.toString())
-                            Log.e("roll", roll.toString())
-
-                            if (roll == "customer") {
-                                common.roll=roll
-                                NaveLabels.DefaultLoag = NaveLabels.Home
-                            } else {
-                                NaveLabels.DefaultLoag = NaveLabels.seller
-                            }
-                        } else {
-                            Log.e("error", "data is null")
-                        }
-
-                    })
-                    {
-                        Log.e("data base fail", "${it}")
-                    }
-                }
-            } else {
-                NaveLabels.DefaultLoag = NaveLabels.SplashScreen
+                Log.e("get uid", "uid")
             }
-
 
 
             // Fetch the user token
@@ -155,8 +132,7 @@ class MainActivity : ComponentActivity(), PaymentResultListener {
             }
 
             LaunchedEffect(
-                key1 = MapeViewModel.currentLatitude,
-                key2 = MapeViewModel.currentLongitude
+                key1 = MapeViewModel.currentLatitude, key2 = MapeViewModel.currentLongitude
             ) {
                 CoroutineScope(Dispatchers.IO).launch {
 
@@ -173,6 +149,7 @@ class MainActivity : ComponentActivity(), PaymentResultListener {
 
 
              */
+
             Main(
                 loginViewModel = LoginViewModel,
                 homeViewModel = HomeViewModel,
@@ -241,6 +218,8 @@ fun Main(
     OTP: OtpVerificationViewModel,
     activity: MainActivity
 ) {
+
+
     val coroutineScope = rememberCoroutineScope()
     val duration = 300
     val state by signInMVVM.state.collectAsStateWithLifecycle()
@@ -257,12 +236,11 @@ fun Main(
         }
     }
 
+
+
+    Toast.makeText(context, NaveLabels.DefaultLoag, Toast.LENGTH_SHORT).show()
     NavHost(navController = navController,
-        startDestination =
-        if (common.roll == "customer")
-        NaveLabels.DefaultLoag
-        else
-            NaveLabels.seller,
+        startDestination = NaveLabels.SplashScreen,
         enterTransition = { fadeIn(tween(durationMillis = duration)) },
         exitTransition = { fadeOut(tween(durationMillis = duration)) }) {
         composable(NaveLabels.Login) {
@@ -290,6 +268,7 @@ fun Main(
         }
         composable(NaveLabels.Home) {
             ScreenWithBottomBar(navController) { innerPadding ->
+                Toast.makeText(context, "role " + common.roll, Toast.LENGTH_SHORT).show()
                 HomePage(
                     modifier = Modifier.padding(innerPadding),
                     homeViewModel = homeViewModel,
@@ -379,10 +358,46 @@ fun Main(
             }
         }
         composable(NaveLabels.seller) {
+            Toast.makeText(context, "role " + common.roll, Toast.LENGTH_SHORT).show()
             ScreenWithBottomBarseller(navController) { innerPadding ->
                 ProductEntryPage()
             }
         }
+        composable(NaveLabels.sellerprofile) {
+            ScreenWithBottomBarseller(navController) { innerPadding ->
+                val seller = SellerInfo(
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    "",
+                    9.9f,
+                    listOf("sfsf", "SDfs", "fgdrg"),
+                    "",
+                    "",
+                    0.8f,
+                    "",
+                    87,
+                    listOf("sfsf", "SDfs", "fgdrg")
+                )
+                SellerProfile(seller){
+
+                }
+            }
+        }
+        composable(NaveLabels.sellerprodectpagelist) {
+            ScreenWithBottomBarseller(navController) { innerPadding ->
+                var Product= listOf(Product(90,"","",""),Product(90,"","",""),Product(90,"","",""),Product(90,"","",""))
+                 ProductList(Product,{},{})
+            }
+        }
+        composable(NaveLabels.Sellerinfo) {
+            ScreenWithBottomBarseller(navController) { innerPadding ->
+               SellerInfo()
+            }
+        }
+
 
 
         composable(NaveLabels.Tracking) {
@@ -442,11 +457,20 @@ fun ScreenWithBottomBarseller(
         ) {
             NaviGatationWithFloatingActionButton(NaveContainerColor = Mediumpurple,
                 FloatingActionButtonIconSize = 50.dp,
-                ButtonFour = {  },
-                ButtonOne = {  },
-                ButtonTwo = {  },
-                ButtonThree = {  },
-                FloatingButton = {  })
+                ButtonFour = {Navigation.navController.navigate(NaveLabels.sellerprofile) },
+                ButtonOnevisibility =  true,
+                Buttontwovisibility = false
+                ,
+                Buttonthreevisibility = false
+                , NormalIconList = listOf(R.drawable.home
+                ,R.drawable.home,
+                    R.drawable.fave,
+                    R.drawable.user
+                    ),
+                ButtonOne = { Navigation.navController.navigate(NaveLabels.seller)},
+                ButtonTwo = { },
+                ButtonThree = { },
+                FloatingButton = {Navigation.navController.navigate(NaveLabels.sellerprodectpagelist) })
         }
     }
 }

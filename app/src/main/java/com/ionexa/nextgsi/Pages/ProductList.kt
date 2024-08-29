@@ -5,8 +5,14 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.Text
 //noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.*
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.Color
@@ -24,14 +30,14 @@ fun ProductList(products: List<Product>, onDelete: (Product) -> Unit, onEdit: (P
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
-                elevation = 4.dp
+                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
             ) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp)
                 ) {
-                    Text(text = product.name, style = MaterialTheme.typography.h6)
+                    Text(text = product.name, style = MaterialTheme.typography.bodySmall)
                     Text(text = "Price: ${product.price}")
                     Image(
                         painter = rememberImagePainter(product.imageUrl),

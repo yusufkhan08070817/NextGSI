@@ -1,6 +1,8 @@
 package com.ionexa.nextgsi.FBFireBase
 
 import android.util.Log
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 import com.google.gson.Gson
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
@@ -241,7 +243,26 @@ class FSDB {
 
         return raw
     }
+    fun uploadListToFirestore(
+        collectionPath: String,
+        documentId: String,
+        dataList: List<Any>,
+        onSuccess: () -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+        val firestore = FirebaseFirestore.getInstance()
+        val dataMap = mapOf("items" to dataList)
 
+        firestore.collection(collectionPath)
+            .document(documentId)
+            .set(dataMap, SetOptions.merge())
+            .addOnSuccessListener {
+                onSuccess()
+            }
+            .addOnFailureListener { exception ->
+                onFailure(exception)
+            }
+    }
 
 
 

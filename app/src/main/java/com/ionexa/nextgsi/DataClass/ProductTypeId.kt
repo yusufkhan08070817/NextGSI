@@ -4,19 +4,19 @@ import kotlinx.serialization.Serializable
 
 
 data class ProductTypeId(
-    val productid: String = "",
-    val name: String = "",
-    val price: String = "",
-    val images: List<String> = listOf(),
-    val offer: String = "",
-    val seller: String = "",
-    val rating: String = "",
-    val address: String = "",
-    val productQuantity: String = "",
-    val types: String = "",
-    val productDetails: String = "",
-    val shopid: String = "",
-    val extraInfo:ExtraInfo= ExtraInfo(""),
-    val review: String = "",
-    val availableStock: String = ""
+    var productid: String = "",
+    var name: String = "",
+    var price: String = "",
+    var images: List<String> = listOf(),
+    var offer: String = "",
+    var seller: String = "",
+    var rating: String = "",
+    var address: String = "",
+    var productQuantity: String = "",
+    var types: String = "",
+    var productDetails: String = "",
+    var shopid: String = "",
+    var extraInfo:ExtraInfo= ExtraInfo(""),
+    var review: String = "",
+    var availableStock: String = ""
 )

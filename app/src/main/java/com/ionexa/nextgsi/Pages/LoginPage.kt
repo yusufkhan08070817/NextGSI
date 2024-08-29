@@ -34,6 +34,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 import com.ionexa.nextgsi.Components.ButtonWithCutCornerShape
 import com.ionexa.nextgsi.Components.Combined
 import com.ionexa.nextgsi.Components.Dropdownroll
@@ -52,7 +54,9 @@ import com.ionexa.nextgsi.MVVM.Loginmvvm
 import com.ionexa.nextgsi.MVVM.OtpVerificationViewModel
 import com.ionexa.nextgsi.R
 import com.ionexa.nextgsi.SingleTon.NaveLabels
+import com.ionexa.nextgsi.SingleTon.Navigation
 import com.ionexa.nextgsi.SingleTon.common
+import com.ionexa.nextgsi.SingleTon.common.db
 import com.ionexa.nextgsi.SingleTon.common.replaceSpecialChars
 import com.ionexa.nextgsi.ui.theme.DarkOrchidwebcolor
 import com.ionexa.nextgsi.ui.theme.Standardpurple
@@ -236,7 +240,41 @@ fun LoginPage(
                         password = password,
                         onComplete = { status, user, error ->
                             if (status) {
-                                navController.navigate(NaveLabels.Home)
+                                val TAG="signup"
+                                val vv= common.replaceSpecialChars(
+                                    common.replaceSpecialChars(email)
+                                )
+                                Log.e("lunnnd",vv)
+                                Toast.makeText(context, vv, Toast.LENGTH_SHORT).show()
+                                val docRef = db.collection("users").document(vv)
+                                docRef.get().addOnSuccessListener { document ->
+                                    if (document != null) {
+                                        var data = document.data
+                                        var profile = data?.get("personel_info") as Map<String, Any>
+                                        var roll = profile["role"].toString()
+                                        common.roll = roll
+                                        var address=profile["address"].toString()
+                                        common.locatation=address
+                                        if (common.roll == "customer") {
+                                            Navigation.navController.navigate(NaveLabels.Home)
+                                            NaveLabels.DefaultLoag = NaveLabels.Home
+                                        }
+                                        else {
+                                            if (common.roll == "seller") {
+                                                Navigation.navController.navigate(NaveLabels.seller)
+                                                NaveLabels.DefaultLoag = NaveLabels.seller
+                                            }
+                                            // else NaveLabels.DefaultLoag = NaveLabels.SplashScreen
+                                        }
+                                        Log.d(TAG, "DocumentSnapshot data: ${profile["role"]}")
+                                        Log.e("common.roll", common.roll)
+                                    } else {
+                                        Log.d(TAG, "No such document")
+                                    }
+                                }.addOnFailureListener { exception ->
+                                    Log.d(TAG, "get failed with ", exception)
+                                }
+
                             } else {
                                 Toast.makeText(context, error, Toast.LENGTH_LONG).show()
                             }

@@ -128,7 +128,7 @@ fun OtpVerification(
                                 )
                             }else{
                                 com.ionexa.nextgsi.SingleTon.Navigation.navController.navigate(
-                                    NaveLabels.seller
+                                    NaveLabels.Sellerinfo
                                 )
                             }
                         }

@@ -55,6 +55,12 @@ fun NaviGatationWithFloatingActionButton(
     NaveContainerColor: Color = Color.White,
     FloatingButtonColor: Color = Color.White,
     FolatingButtonIconColor: Color = Color.DarkGray,
+    ButtonOnevisibility:Boolean=true,
+    Buttontwovisibility:Boolean=true,
+    Buttonthreevisibility:Boolean=true,
+    Buttonfourvisibility:Boolean=true,
+
+
 
     ButtonOne: () -> Unit = {},
     ButtonTwo: () -> Unit = {},
@@ -142,7 +148,7 @@ fun NaviGatationWithFloatingActionButton(
                     ) {
 
                         IconButton(onClick = { ButtonThree();Navigation.position=3}, modifier = Modifier.padding(10.dp)) {
-
+                            if (Buttonthreevisibility)
                             Image(painter = painterResource(id =NormalIconList[2] ),  contentDescription = "Search",
                                 colorFilter = ColorFilter.tint(if (Navigation.position==3) Color.White else NormalIconColor) ,
                                 modifier = Modifier
@@ -154,7 +160,9 @@ fun NaviGatationWithFloatingActionButton(
 
 
                         }
+
                         IconButton(onClick = { ButtonFour() ;Navigation.position=4}, modifier = Modifier.padding(10.dp)) {
+                            if (Buttonfourvisibility)
                             Image(painter = painterResource(id =NormalIconList[3] ),  contentDescription = "Search",
                                 colorFilter = ColorFilter.tint(if (Navigation.position==4) Color.White else NormalIconColor) ,
                                 modifier = Modifier
@@ -176,7 +184,7 @@ fun NaviGatationWithFloatingActionButton(
                     ) {
 
                         IconButton(onClick = { ButtonOne();Navigation.position=1 }, modifier = Modifier.padding(10.dp)) {
-
+                            if (ButtonOnevisibility)
                             Image(painter = painterResource(id =NormalIconList[0] ),  contentDescription = "Search",
                                 colorFilter = ColorFilter.tint(if (Navigation.position==1) Color.White else NormalIconColor) ,
                                 modifier = Modifier
@@ -186,8 +194,9 @@ fun NaviGatationWithFloatingActionButton(
                             )
 
                         }
-                        IconButton(onClick = { ButtonTwo();Navigation.position=2 }, modifier = Modifier.padding(10.dp)) {
 
+                        IconButton(onClick = { ButtonTwo();Navigation.position=2 }, modifier = Modifier.padding(10.dp)) {
+                            if (Buttontwovisibility)
                             Image(painter = painterResource(id =NormalIconList[1] ),  contentDescription = "Search",
                                 colorFilter = ColorFilter.tint(if (Navigation.position==2) Color.White else NormalIconColor) ,
                                 modifier = Modifier

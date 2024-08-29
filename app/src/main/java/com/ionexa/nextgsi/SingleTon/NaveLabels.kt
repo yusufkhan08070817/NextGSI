@@ -20,4 +20,8 @@ const val SellerAddProduct="SellerAddProduct"
     const val CustomerCare="customercare"
     const val Payment="payment"
     const val seller="seller"
+    const val sellerprofile="sellerprofile"
+    const val sellerprodectpagelist="sellerprodectpagelist"
+    const val Sellerinfo="Sellerinfo"
+
 }
