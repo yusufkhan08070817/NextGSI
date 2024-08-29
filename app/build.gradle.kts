@@ -110,4 +110,5 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.9.22")
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("com.razorpay:checkout:1.6.26")
+    implementation ("com.google.firebase:firebase-appcheck-safetynet:16.0.0")
 }

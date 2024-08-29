@@ -56,6 +56,8 @@ import com.ionexa.nextgsi.FBFireBase.FireBaseStorage
 import com.ionexa.nextgsi.MVVM.Loginmvvm
 import com.ionexa.nextgsi.MVVM.ProfileMVVM
 import com.ionexa.nextgsi.R
+import com.ionexa.nextgsi.SingleTon.NaveLabels
+import com.ionexa.nextgsi.SingleTon.Navigation
 import com.ionexa.nextgsi.SingleTon.common
 import com.ionexa.nextgsi.ui.theme.DarkSlateBlue
 import kotlinx.coroutines.launch
@@ -79,14 +81,20 @@ fun ProfilePage(
     var menueState by remember { mutableStateOf(false) }
     val fsdb = FSDB()
     val coroutineScope = rememberCoroutineScope()
-    var fbauth = common.replaceSpecialChars(Firebase.auth.currentUser!!.email ?: common.replaceSpecialChars(Loginmmvm.email))
+    var fbauth by remember { mutableStateOf("") }
+    if (Firebase.auth.currentUser != null) {
+        if (Firebase.auth.currentUser?.email != null) {
+            fbauth = common.replaceSpecialChars(Firebase.auth.currentUser!!.email ?: common.replaceSpecialChars(Loginmmvm.email))
+        }
+    }
+
     LaunchedEffect(true) {
         ProfileViewModel.updateprofileImageUrl(
             googleUserData?.profilePictureUrl
                 ?: "https://static.vecteezy.com/system/resources/previews/002/002/403/large_2x/man-with-beard-avatar-character-isolated-icon-free-vector.jpg"
         )
         ProfileViewModel.updatname(googleUserData?.userName ?: "Name")
-        ProfileViewModel.updateemail(googleUserData?.userId ?: "Email")
+        ProfileViewModel.updateemail(googleUserData?.userId?: "Email")
     }
 
 
@@ -382,6 +390,7 @@ fun ProfilePage(
             menueState = false
         }, logout = {
             LogOutPRofile()
+
         })
     }
 }

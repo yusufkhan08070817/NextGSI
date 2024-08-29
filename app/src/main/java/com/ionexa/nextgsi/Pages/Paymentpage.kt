@@ -1,17 +1,35 @@
 package com.ionexa.nextgsi.Pages
 
 import android.app.Activity
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.ionexa.nextgsi.FBFireBase.FSDB
+import com.ionexa.nextgsi.SingleTon.NaveLabels
+import com.ionexa.nextgsi.SingleTon.Navigation
+import com.ionexa.nextgsi.SingleTon.common
 import com.razorpay.Checkout
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.json.JSONObject
+import kotlin.coroutines.coroutineContext
 
 @Composable
 fun RazorpayPaymentButton(activity: Activity) {
@@ -64,6 +82,27 @@ private fun initiatePayment(activity: Activity) {
 
 @Composable
 fun PaymentScreen(activity: Activity) {
+    var corutineScope= rememberCoroutineScope()
+    var fsdb=FSDB()
+    var dd by remember {
+        mutableStateOf(false)
+    }
+    var context= LocalContext.current
+    var listdata = remember { mutableStateListOf<Map<String, Any>>() }
+    LaunchedEffect(key1=true) { fsdb.getDataFromFireStoreDB("users", common.myid.value, onSuccess = {
+
+        if (it!= null)
+        {
+            var data=it["cart"] as List<Map<String,Any>>
+            Log.e("data",data.toString())
+            listdata.clear()
+            listdata.addAll(data)
+        }
+    }){
+
+    }
+
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -74,5 +113,40 @@ fun PaymentScreen(activity: Activity) {
         Text(text = "Razorpay Payment", style = MaterialTheme.typography.headlineLarge)
         Spacer(modifier = Modifier.height(20.dp))
         RazorpayPaymentButton(activity = activity)
+        Spacer(modifier = Modifier.height(40.dp))
+        Text(text = "or")
+        TextButton(onClick = {
+
+            corutineScope.launch {
+                fsdb.updateDataInFirestore("users",common.myid.value,"history",listdata, onsuccess = {
+
+dd=true
+
+
+                }, onfailure = {
+                    Toast.makeText(activity,it,Toast.LENGTH_LONG).show()
+                })
+                while (!dd)
+                    delay(100)
+                    if (dd)
+                    {
+                        fsdb.updateDataInFirestore("users",common.myid.value,"history",listdata, onsuccess = {}){}
+                        Toast.makeText(context, "clean cart", Toast.LENGTH_SHORT).show()
+                        var li= mutableListOf<Map<String,Any>>()
+                        fsdb.updateDataInFirestore("users",common.myid.value,"cart",li, onsuccess = {
+
+                            Navigation.navController.navigate(NaveLabels.Home)
+dd=true
+
+                        }, onfailure = {
+                            Toast.makeText(activity,it,Toast.LENGTH_LONG).show()
+                        })
+                    }
+
+            }
+
+           }) {
+          Text(text = "cash on delivery")
+        }
     }
 }

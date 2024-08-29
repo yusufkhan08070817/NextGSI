@@ -41,8 +41,7 @@ import com.ionexa.nextgsi.ui.theme.IndigoHeading
 
 @Composable
 fun CartPage(modifier: Modifier = Modifier) {
-    val listofitem = itemdata()
-    var list by remember { mutableStateOf(listofitem) }
+
     var totalprice by remember {
         mutableStateOf(0f)
     }
@@ -64,7 +63,7 @@ fun CartPage(modifier: Modifier = Modifier) {
 
        }
    }){
-
+Log.e("cart error",it)
    }
 
    }

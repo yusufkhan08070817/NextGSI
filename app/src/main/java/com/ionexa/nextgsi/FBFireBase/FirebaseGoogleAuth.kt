@@ -12,6 +12,7 @@ import com.google.firebase.ktx.Firebase
 import com.ionexa.nextgsi.DataClass.GoogleSignINResult
 import com.ionexa.nextgsi.DataClass.GoogleUserData
 import com.ionexa.nextgsi.R
+import com.ionexa.nextgsi.SingleTon.common
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.tasks.await
 
@@ -40,9 +41,9 @@ return  result?.pendingIntent?.intentSender!!
            GoogleSignINResult(
                data = user?.run {
                    GoogleUserData(
-                       userId = uid,
+                       userId = email!!,
                        userName = displayName,
-                       profilePictureUrl = photoUrl?.toString()
+                       profilePictureUrl = photoUrl?.toString(),
                    )
                }, errormsg = null
            )

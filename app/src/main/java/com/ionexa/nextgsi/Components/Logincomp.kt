@@ -31,6 +31,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -277,6 +278,8 @@ fun Password(modifier: Modifier = Modifier,error:Boolean, Password: String, setP
 @Composable
 fun RememberAndForgot(
     modifier: Modifier = Modifier,
+    forgot :()->Unit
+    ,
     IsChecked: Boolean,
     onCheckedChange: () -> Unit
 ) {
@@ -299,14 +302,16 @@ fun RememberAndForgot(
             Row(verticalAlignment = Alignment.CenterVertically) {
 
 
-                Text(
-                    text = "Forget password",
-                    modifier = Modifier.padding(15.dp, 15.dp),
-                    style = TextStyle(
+               TextButton(onClick = { forgot() }) {
+                   Text(
+                       text = "Forget password",
+                       modifier = Modifier.padding(15.dp, 15.dp),
+                       style = TextStyle(
 
-                        color = RebeccaPurpleHilghtText
-                    )
-                )
+                           color = RebeccaPurpleHilghtText
+                       )
+                   )
+               }
             }
         }
 

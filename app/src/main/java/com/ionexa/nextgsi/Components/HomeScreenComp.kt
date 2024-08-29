@@ -298,10 +298,10 @@ var locatationset by remember {
                     horizontalArrangement = Arrangement.SpaceAround,
                     modifier = Modifier.fillMaxWidth(1f)
                 ) {
-                    Check(homeMVVM.available, "Acailable") {
+                    Check(homeMVVM.available, "Available") {
                         homeMVVM.updateAvailable(it)
                         setAvailabilityvalue(true)}
-                    Check(homeMVVM.unavailable, "Comming soon") {
+                    Check(homeMVVM.unavailable, "Coming soon") {
                         homeMVVM.updateUnavailable(it)
                         setAvailabilityvalue(false)}
 

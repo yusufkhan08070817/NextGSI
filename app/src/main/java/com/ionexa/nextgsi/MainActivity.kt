@@ -37,6 +37,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
 import com.google.firebase.Firebase
+import com.google.firebase.FirebaseApp
+import com.google.firebase.appcheck.FirebaseAppCheck
+import com.google.firebase.appcheck.safetynet.SafetyNetAppCheckProviderFactory
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import com.google.firebase.messaging.FirebaseMessaging
@@ -94,9 +97,16 @@ class MainActivity : ComponentActivity(), PaymentResultListener {
     @SuppressLint("CoroutineCreationDuringComposition")
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
+        FirebaseApp.initializeApp(this)
+
+        // Initialize App Check
+        val appCheck = FirebaseAppCheck.getInstance()
+        appCheck.installAppCheckProviderFactory(SafetyNetAppCheckProviderFactory.getInstance())
+
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+
             val context = LocalContext.current
 
             var corutinescope = rememberCoroutineScope()
@@ -268,7 +278,7 @@ fun Main(
         }
         composable(NaveLabels.Home) {
             ScreenWithBottomBar(navController) { innerPadding ->
-                Toast.makeText(context, "role " + common.roll, Toast.LENGTH_SHORT).show()
+              //  Toast.makeText(context, "role " + common.roll, Toast.LENGTH_SHORT).show()
                 HomePage(
                     modifier = Modifier.padding(innerPadding),
                     homeViewModel = homeViewModel,
@@ -287,12 +297,11 @@ fun Main(
                     googleUserData = googleAuthUiClient.getSignedInUser(),
                     Loginmmvm = loginViewModel,
                     LogOutPRofile = {
-                        coroutineScope.launch {
-                            googleAuthUiClient.signOut();
-                            navController.navigate(NaveLabels.Login)
-                        }
-
-
+                    coroutineScope.launch {
+                        FirebaseAuth.getInstance().signOut()
+                        delay(500)
+                        Navigation.navController.navigate(NaveLabels.Login)
+                    }
                     })
             }
         }
@@ -311,7 +320,7 @@ fun Main(
         }
         composable(NaveLabels.CartHistory) {
             ScreenWithBottomBar(navController) { innerPadding ->
-                OrderHistoryScreen(orderList = orderList)
+                OrderHistoryScreen()
 
             }
         }
@@ -358,7 +367,7 @@ fun Main(
             }
         }
         composable(NaveLabels.seller) {
-            Toast.makeText(context, "role " + common.roll, Toast.LENGTH_SHORT).show()
+         //   Toast.makeText(context, "role " + common.roll, Toast.LENGTH_SHORT).show()
             ScreenWithBottomBarseller(navController) { innerPadding ->
                 ProductEntryPage()
             }

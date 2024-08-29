@@ -28,6 +28,8 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 import com.ionexa.nextgsi.Components.AutoSlidingCarousel
 import com.ionexa.nextgsi.DataClass.CartInfo
 import com.ionexa.nextgsi.DataClass.FaveList
@@ -59,6 +61,7 @@ val reviews = listOf(
 @Composable
 fun ProductDetailScreen(ProductpageMvvm: ProductpageMvvm) {
     val fsds = FSDB()
+    var emailiid=common.replaceSpecialChars(Firebase.auth.currentUser?.email!!)
     var data = ProductpageMvvm.product
     val context = LocalContext.current
     val productDetail = data.productDetails
@@ -577,7 +580,7 @@ fun ProductDetailScreen(ProductpageMvvm: ProductpageMvvm) {
 
                                fsds.updateDataInFirestore(
                                     collectionName = Routes.users,
-                                    documentName = common.myid.value ?: "",
+                                    documentName = if (common.myid.value.isNullOrEmpty())common.myid.value else emailiid,
                                     fieldName = "cart",
                                     data = mapdata,
                                     appendToArray = true, // Append to array
@@ -585,6 +588,7 @@ fun ProductDetailScreen(ProductpageMvvm: ProductpageMvvm) {
                                         Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
                                     },
                                     onfailure = {
+                                        Log.e("error addproduct",it)
                                         Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
                                     }
                                 )
