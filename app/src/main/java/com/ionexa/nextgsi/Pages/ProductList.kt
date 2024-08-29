@@ -20,7 +20,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
 
-data class Product(val id: Int, val name: String, val price: String, val imageUrl: String)
+data class Product(val id: String, val name: String, val price: String, val imageUrl: String)
 
 @Composable
 fun ProductList(products: List<Product>, onDelete: (Product) -> Unit, onEdit: (Product) -> Unit) {

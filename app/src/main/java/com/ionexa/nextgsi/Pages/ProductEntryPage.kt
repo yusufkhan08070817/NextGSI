@@ -105,7 +105,7 @@ var coroutineScope= rememberCoroutineScope()
                     path = "${common.myid.value}/product/${category}",
                     onProgress = { prograssbar = it },
                     onSuccess = { uploadedImages ->
-                        val images = uploadedImages.map { common.encodeToBase64(it.toString()) }
+                        var images = uploadedImages.map { common.encodeToBase64(it.toString()) }
                         dalaclass.images = images
 
                         // Launch a coroutine to handle suspend functions
@@ -140,6 +140,14 @@ var coroutineScope= rememberCoroutineScope()
                                         Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
                                     }
                                 )
+                                var list= listOf(dalaclass)
+                                fsdb.updateDataInFirestore("users", common.myid.value, "products", list, onsuccess = {
+                                    Log.e("error","sucess")
+                                    Toast.makeText(context, "catagory updated", Toast.LENGTH_SHORT).show()
+                                }, onfailure = {
+                                    Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                                    Log.e("error",it)
+                                })
 
                                 fsdb.getDataFromFireStoreDB("productCatagory", category, onSuccess = {
                                     var data = it as MutableList<String>
@@ -152,6 +160,8 @@ var coroutineScope= rememberCoroutineScope()
                                         list,
                                         onSuccess = {
                                             loaderror = false
+                                            submit=false
+                                            images = emptyList()
                                         }
                                     ) {}
                                 }

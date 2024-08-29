@@ -365,31 +365,90 @@ fun Main(
         }
         composable(NaveLabels.sellerprofile) {
             ScreenWithBottomBarseller(navController) { innerPadding ->
-                val seller = SellerInfo(
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    "",
-                    9.9f,
-                    listOf("sfsf", "SDfs", "fgdrg"),
-                    "",
-                    "",
-                    0.8f,
-                    "",
-                    87,
-                    listOf("sfsf", "SDfs", "fgdrg")
-                )
-                SellerProfile(seller){
-
+                var seller by remember {
+                    mutableStateOf(SellerInfo(
+                        name = "",
+                        description = "",
+                        imageUrl = "",
+                        email = "",
+                        phoneNumber = "",
+                        chatOption = "",
+                        overallRating = 9.9f,
+                        customerReviews = listOf("sfsf", "SDfs", "fgdrg"),
+                        returnPolicy = "",
+                        warrantyInfo = "",
+                        fulfillmentRate = 0.8f,
+                        responseTime = "",
+                        salesVolume = 87,
+                        socialMediaLinks = listOf("sfsf", "SDfs", "fgdrg")
+                    ))
                 }
+
+                LaunchedEffect(key1 = true) {
+                    FSDB().getDataFromFireStoreDB("users", common.myid.value, onSuccess = { result ->
+                        result?.let {
+                            val data = it["personel_info"] as Map<String, Any>
+                            Log.e("msg", "$data")
+
+                            // Update the seller state with new data
+                            seller = seller.copy(
+                                name = data["name"].toString(),
+                                description = data["sellerDescription"].toString(),
+                                imageUrl = common.decodeFromBase64(data["profilePic"].toString()),
+                                email = common.decodeFromBase64(data["email"].toString()),
+                                phoneNumber = data["phone"].toString(),
+                                chatOption = data["sellerChatOption"].toString(),
+                                returnPolicy = data["returnPolicy"].toString(),
+                                responseTime = data["responseTime"].toString()
+                            )
+                        }
+                    }, onFailure = {
+                        Log.e("Product_enter_page", it)
+                    })
+                }
+
+                Log.e("msgselerprofil", "$seller")
+
+                SellerProfile(seller) {
+                    // Callback or action if needed
+                }
+
             }
         }
         composable(NaveLabels.sellerprodectpagelist) {
             ScreenWithBottomBarseller(navController) { innerPadding ->
-                var Product= listOf(Product(90,"","",""),Product(90,"","",""),Product(90,"","",""),Product(90,"","",""))
-                 ProductList(Product,{},{})
+                var productList by remember { mutableStateOf<List<Product>>(emptyList()) }
+
+                LaunchedEffect(key1 = true) {
+                    FSDB().getDataFromFireStoreDB("users", common.myid.value, onSuccess = {
+                        if (it != null) {
+                            val data = it["products"] as List<Map<String, Any>>
+                            Log.e("msg", "$data")
+
+                            // Map the data and update the state
+                            productList = data.map { productData ->
+                                val image = productData["images"] as List<String>
+                                Product(
+                                    productData["productid"].toString(),
+                                    productData["name"].toString(),
+                                    productData["price"].toString(),
+                                    common.decodeFromBase64(image[0].toString())
+                                )
+                            }
+                        }
+                    }, onFailure = {
+                        Log.e("Product_enter_page", it)
+                    })
+                }
+
+                // ProductList will be called only after the data is loaded and the list is updated
+                if (productList.isNotEmpty()) {
+                    ProductList(productList, {}, {})
+                } else {
+                    // Show loading or empty state if the list is still empty
+                    Text("Loading products...")
+                }
+
             }
         }
         composable(NaveLabels.Sellerinfo) {

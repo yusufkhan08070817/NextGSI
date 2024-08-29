@@ -9,7 +9,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -39,6 +42,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun SellerInfo() {
     var fsdb = FSDB()
+    var scroll= rememberScrollState()
     var context = LocalContext.current
     var coroutineScope = rememberCoroutineScope()
     var sellerDescription by remember { mutableStateOf("") }
@@ -61,7 +65,7 @@ Toast.makeText(context, "Failed $it", Toast.LENGTH_SHORT).show()
     Column(
         modifier = Modifier
             .fillMaxSize(1f)
-            .padding(8.dp)
+            .padding(8.dp).verticalScroll(scroll)
     ) {
         Card(
             modifier = Modifier
@@ -135,7 +139,7 @@ fun Textcustomfild(onset: (String) -> Unit, label: String, value: String) {
     Card(
         modifier = Modifier
             .fillMaxWidth(1f)
-            .fillMaxHeight(0.14f)
+            .height(70.dp)
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -144,7 +148,9 @@ fun Textcustomfild(onset: (String) -> Unit, label: String, value: String) {
         ) {
             TextField(
                 value = value,
-                modifier = Modifier.fillMaxWidth(1f),
+                modifier = Modifier
+                    .fillMaxWidth(1f)
+                    .height(70.dp),
                 onValueChange = { onset(it) },
                 label = { Text(text = label) },
                 colors = TextFieldDefaults.textFieldColors(
