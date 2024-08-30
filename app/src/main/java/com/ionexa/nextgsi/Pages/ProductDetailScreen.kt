@@ -85,7 +85,12 @@ fun ProductDetailScreen(ProductpageMvvm: ProductpageMvvm) {
         )
     }
     val scrollState = rememberScrollState()
-
+    var fbauth by remember { mutableStateOf("") }
+    if (Firebase.auth.currentUser != null) {
+        if (Firebase.auth.currentUser?.email != null) {
+            fbauth = common.replaceSpecialChars(Firebase.auth.currentUser!!.email ?: common.replaceSpecialChars( common.myid.value))
+        }
+    }
     if (false) {
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -222,7 +227,7 @@ fun ProductDetailScreen(ProductpageMvvm: ProductpageMvvm) {
 
                                         fsds.updateDataInFirestore(
                                             collectionName = Routes.users,
-                                            documentName = common.myid.value ?: "",
+                                            documentName =  common.replaceSpecialChars(Firebase.auth.currentUser?.email!!),
                                             fieldName = "fave",
                                             data = mapdata,
                                             appendToArray = true, // Append to array
@@ -576,11 +581,12 @@ fun ProductDetailScreen(ProductpageMvvm: ProductpageMvvm) {
 
                                 var mapdata=fsds.run{cartdata.toHashMap() }
 
-
+                                Toast.makeText(context,common.myid.value.toString(),Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context,"${common.replaceSpecialChars(Firebase.auth.currentUser?.email!!)}",Toast.LENGTH_SHORT).show()
 
                                fsds.updateDataInFirestore(
                                     collectionName = Routes.users,
-                                    documentName = if (common.myid.value.isNullOrEmpty())common.myid.value else emailiid,
+                                    documentName =  common.replaceSpecialChars(Firebase.auth.currentUser?.email!!),
                                     fieldName = "cart",
                                     data = mapdata,
                                     appendToArray = true, // Append to array
